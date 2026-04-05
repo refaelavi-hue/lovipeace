@@ -1,30 +1,13 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import BottomNav from '@/components/BottomNav';
-import WeekCard from '@/components/WeekCard';
-
-const WEEKS_DATA = [
-  { weekNumber: 1, title: 'מיפוי חרדה + שגרה בטוחה', description: 'נשימה קלה (נשיפה ארוכה 5–8 דק׳), הליכה 10–20 דק׳, קרקוע 5 דק׳, דף פריקה 10 דק׳. חשיפה: לבחור אי-ודאות קטנה אחת.', phase: 'א׳ — יציבות' },
-  { weekNumber: 2, title: 'זיהוי התנהגויות ביטחון', description: 'PMR קצר 8–10 דק׳, קשב לנשימה 7–10 דק׳, כתיבה 10–12 דק׳, תנועה 15–25 דק׳. חשיפה: להפחית התנהגות ביטחון ב-10%.', phase: 'א׳ — יציבות' },
-  { weekNumber: 3, title: 'גמישות אוטונומית', description: 'נשימה קצב 10 למשך 10 דק׳, Zone 2 תנועה 20–30 דק׳, מיינדפולנס 10 דק׳. חשיפה: עליה במדרגות → תחושת דופק → נשימה איטית.', phase: 'ב׳ — גמישות' },
-  { weekNumber: 4, title: 'מרחב בין מחשבה לתגובה', description: 'דיפוזיה (ACT) 10 דק׳, נשימה 10–12 דק׳, תנועה 25–35 דק׳, יצירה 12–15 דק׳. חשיפה: דאגה מתוזמנת + פעולה ערכית קטנה.', phase: 'ב׳ — גמישות' },
-  { weekNumber: 5, title: 'ביטחון חברתי וחמלה', description: 'חמלה עצמית 10–15 דק׳, נשימה + הימהום 10 דק׳, תנועה עם אדם ×2 בשבוע, יצירה 15 דק׳. חשיפה: מפגש חברתי ללא ניהול רושם.', phase: 'ג׳ — חשיפות' },
-  { weekNumber: 6, title: 'ערכים → פעולה', description: 'עבודה עם ערכים (ACT) 10 דק׳, נשימה 8–10 דק׳, תנועה + כוח 30–45 דק׳, יצירה ערך-מכוונת 15 דק׳. חשיפה: לעשות משימה חשובה עם חרדה (20 דק׳).', phase: 'ג׳ — חשיפות' },
-  { weekNumber: 7, title: 'חשיפה מתקדמת', description: 'חשיפות מובנות עם עיבוד רגשי, שילוב נשימה ותנועה מתקדמת, כתיבה רפלקטיבית.', phase: 'ג׳ — חשיפות' },
-  { weekNumber: 8, title: 'אינטגרציה', description: 'שילוב כל הכלים שנלמדו, בניית פרוטוקול אישי, חשיפות מורכבות יותר, ביטחון חברתי ויצירה.', phase: 'ג׳ — חשיפות' },
-  { weekNumber: 9, title: 'מניעת הישנות', description: 'בניית פרוטוקול אישי, זיהוי טריגרים, עבודה עם ערכים ומשמעות, תכנית תחזוקה לטווח ארוך.', phase: 'ד׳ — אינטגרציה' },
-  { weekNumber: 10, title: 'סיום ועצמאות', description: 'חגיגת הדרך, גיבוש תכנית תחזוקה, מניעת הישנות, ביטחון חברתי ויצירה.', phase: 'ד׳ — אינטגרציה' },
-];
-
-const PHASES = [
-  { name: 'א׳ — יציבות', weeks: '1–2', color: 'bg-primary/15 text-primary' },
-  { name: 'ב׳ — גמישות', weeks: '3–4', color: 'bg-blue-100 text-blue-600' },
-  { name: 'ג׳ — חשיפות', weeks: '5–8', color: 'bg-amber-100 text-amber-700' },
-  { name: 'ד׳ — אינטגרציה', weeks: '9–10', color: 'bg-green-100 text-green-700' },
-];
+import { WEEKS_DATA, PHASES } from '@/data/weeksData';
 
 const currentWeek = 1; // Will be dynamic later
 
 const Weeks: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-background pb-24">
       {/* Header */}
@@ -55,7 +38,11 @@ const Weeks: React.FC = () => {
           const isLocked = week.weekNumber > currentWeek;
 
           return (
-            <div key={week.weekNumber} className={isLocked ? 'opacity-40' : ''}>
+            <button
+              key={week.weekNumber}
+              onClick={() => navigate(`/weeks/${week.weekNumber}`)}
+              className={`w-full text-right ${isLocked ? 'opacity-40' : ''}`}
+            >
               <div
                 className={`rounded-3xl p-5 transition-all duration-300 ${
                   isActive
@@ -76,19 +63,17 @@ const Weeks: React.FC = () => {
                     {week.weekNumber < currentWeek ? '✓' : week.weekNumber}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-foreground font-semibold text-base">{week.title}</h3>
-                    </div>
-                    <p className="text-muted-foreground text-sm leading-relaxed">{week.description}</p>
+                    <h3 className="text-foreground font-semibold text-base mb-1">{week.title}</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2">{week.subtitle}</p>
                     {isActive && (
-                      <button className="mt-3 bg-primary/10 text-primary text-sm font-medium px-4 py-2 rounded-xl hover:bg-primary/20 transition-colors">
+                      <span className="inline-block mt-3 bg-primary/10 text-primary text-sm font-medium px-4 py-2 rounded-xl">
                         להתחיל את השבוע →
-                      </button>
+                      </span>
                     )}
                   </div>
                 </div>
               </div>
-            </div>
+            </button>
           );
         })}
       </div>
