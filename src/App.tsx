@@ -10,6 +10,7 @@ import Onboarding from "./pages/Onboarding.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import SOS from "./pages/SOS.tsx";
 import Tools from "./pages/Tools.tsx";
+import Journal from "./pages/Journal.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/sos" element={<SOS />} />
           <Route path="/tools" element={<Tools />} />
+          <Route path="/journal" element={<Journal />} />
           <Route path="/weeks" element={<Weeks />} />
           <Route path="/weeks/:weekNumber" element={<WeekDetail />} />
           <Route path="*" element={<NotFound />} />
