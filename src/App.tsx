@@ -9,6 +9,7 @@ import WeekDetail from "./pages/WeekDetail.tsx";
 import Onboarding from "./pages/Onboarding.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import SOS from "./pages/SOS.tsx";
+import Tools from "./pages/Tools.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
