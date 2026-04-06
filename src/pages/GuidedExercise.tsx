@@ -50,19 +50,21 @@ const GuidedExercise: React.FC = () => {
     setCurrentStep(0);
     setTimeLeft(8); // intro duration
     setIsPaused(false);
+    playCue('deep-breath');
     if (soundOn) {
       play(meditation.soundType, 0.6);
     }
-  }, [meditation, play, soundOn]);
+  }, [meditation, play, playCue, soundOn]);
 
   const resetMeditation = useCallback(() => {
     clearTimer();
     stop();
+    stopCue();
     setPhase('idle');
     setCurrentStep(0);
     setTimeLeft(0);
     setIsPaused(false);
-  }, [clearTimer, stop]);
+  }, [clearTimer, stop, stopCue]);
 
   const handleBack = useCallback(() => {
     resetMeditation();
