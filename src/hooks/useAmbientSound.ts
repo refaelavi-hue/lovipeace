@@ -65,7 +65,7 @@ export function useAmbientSound() {
     return source;
   }, []);
 
-  const play = useCallback((type: SoundType, volume = 0.3) => {
+  const play = useCallback((type: SoundType, volume = 0.5) => {
     if (type === 'silence') {
       setIsPlaying(true);
       return;
@@ -75,9 +75,15 @@ export function useAmbientSound() {
     
     try {
       const ctx = getContext();
+      
+      // Ensure AudioContext is running (iOS requires resume after user gesture)
+      if (ctx.state === 'suspended') {
+        ctx.resume().catch(() => {});
+      }
+
       const gain = ctx.createGain();
-      gain.gain.setValueAtTime(0, ctx.currentTime);
-      gain.gain.linearRampToValueAtTime(volume, ctx.currentTime + 0.5);
+      gain.gain.setValueAtTime(0.001, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(Math.max(volume, 0.01), ctx.currentTime + 0.8);
       gain.connect(ctx.destination);
       gainRef.current = gain;
 
@@ -85,11 +91,11 @@ export function useAmbientSound() {
         const noise = createNoise(ctx, 'brown');
         const filter = ctx.createBiquadFilter();
         filter.type = 'lowpass';
-        filter.frequency.value = 500;
+        filter.frequency.value = 600;
         const lfo = ctx.createOscillator();
         const lfoGain = ctx.createGain();
         lfo.frequency.value = 0.08;
-        lfoGain.gain.value = 300;
+        lfoGain.gain.value = 350;
         lfo.connect(lfoGain);
         lfoGain.connect(filter.frequency);
         lfo.start();
@@ -101,10 +107,10 @@ export function useAmbientSound() {
         const noise = createNoise(ctx, 'pink');
         const filter = ctx.createBiquadFilter();
         filter.type = 'highpass';
-        filter.frequency.value = 1000;
+        filter.frequency.value = 800;
         const filter2 = ctx.createBiquadFilter();
         filter2.type = 'lowpass';
-        filter2.frequency.value = 8000;
+        filter2.frequency.value = 10000;
         noise.connect(filter);
         filter.connect(filter2);
         filter2.connect(gain);
@@ -118,11 +124,11 @@ export function useAmbientSound() {
           osc.type = 'sine';
           osc.frequency.value = freq;
           const oscGain = ctx.createGain();
-          oscGain.gain.value = 0.12 / (i + 1);
+          oscGain.gain.value = 0.25 / (i + 1);
           const lfo = ctx.createOscillator();
           const lfoGain = ctx.createGain();
           lfo.frequency.value = 0.2 + i * 0.1;
-          lfoGain.gain.value = 0.04 / (i + 1);
+          lfoGain.gain.value = 0.06 / (i + 1);
           lfo.connect(lfoGain);
           lfoGain.connect(oscGain.gain);
           lfo.start();
