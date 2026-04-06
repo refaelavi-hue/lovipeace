@@ -1,5 +1,7 @@
 import { useRef, useCallback } from 'react';
 
+type CueType = 'inhale' | 'exhale' | 'deep-breath' | 'thank-you';
+
 const CUE_FILES: Record<string, string[]> = {
   inhale: ['/audio/inhale.mp3'],
   exhale: ['/audio/exhale1.mp3', '/audio/exhale2.mp3'],
@@ -8,43 +10,60 @@ const CUE_FILES: Record<string, string[]> = {
 };
 
 export function useVoiceCues() {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const poolRef = useRef<Record<string, HTMLAudioElement[]>>({});
   const exhaleIndexRef = useRef(0);
+  const unlockedRef = useRef(false);
 
-  const playCue = useCallback((cue: 'inhale' | 'exhale' | 'deep-breath' | 'thank-you', volume = 0.9) => {
-    // Stop any current cue
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
+  // Call this once from a direct user click to unlock all audio elements
+  const unlock = useCallback(() => {
+    if (unlockedRef.current) return;
+    unlockedRef.current = true;
+
+    // Pre-create and "unlock" audio elements by playing silence
+    for (const [key, files] of Object.entries(CUE_FILES)) {
+      poolRef.current[key] = files.map(src => {
+        const audio = new Audio(src);
+        audio.preload = 'auto';
+        audio.volume = 0;
+        // Play briefly to unlock, then pause
+        audio.play().then(() => {
+          audio.pause();
+          audio.currentTime = 0;
+          audio.volume = 0.9;
+        }).catch(() => {
+          // Still set volume for later
+          audio.volume = 0.9;
+        });
+        return audio;
+      });
     }
+  }, []);
 
-    const files = CUE_FILES[cue];
-    if (!files) return;
+  const playCue = useCallback((cue: CueType, volume = 0.9) => {
+    const pool = poolRef.current[cue];
+    if (!pool || pool.length === 0) return;
 
-    let file: string;
+    let audio: HTMLAudioElement;
     if (cue === 'exhale') {
-      file = files[exhaleIndexRef.current % files.length];
+      audio = pool[exhaleIndexRef.current % pool.length];
       exhaleIndexRef.current += 1;
     } else {
-      file = files[0];
+      audio = pool[0];
     }
 
-    try {
-      const audio = new Audio(file);
-      audio.volume = Math.min(Math.max(volume, 0), 1);
-      audio.play().catch(e => console.warn('Voice cue failed:', e));
-      audioRef.current = audio;
-    } catch (e) {
-      console.warn('Voice cue init failed:', e);
-    }
+    audio.volume = Math.min(Math.max(volume, 0), 1);
+    audio.currentTime = 0;
+    audio.play().catch(e => console.warn('Voice cue failed:', e));
   }, []);
 
   const stopCue = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
+    for (const audios of Object.values(poolRef.current)) {
+      for (const a of audios) {
+        a.pause();
+        a.currentTime = 0;
+      }
     }
   }, []);
 
-  return { playCue, stopCue };
+  return { unlock, playCue, stopCue };
 }

@@ -19,7 +19,7 @@ const GuidedExercise: React.FC = () => {
   const navigate = useNavigate();
   const meditation = GUIDED_MEDITATIONS.find(m => m.id === id);
   const { play, stop, isPlaying: soundPlaying } = useAmbientSound();
-  const { playCue, stopCue } = useVoiceCues();
+  const { unlock, playCue, stopCue } = useVoiceCues();
 
   const [phase, setPhase] = useState<'intro' | 'active' | 'outro' | 'idle'>('idle');
   const [currentStep, setCurrentStep] = useState(0);
@@ -46,15 +46,16 @@ const GuidedExercise: React.FC = () => {
 
   const startMeditation = useCallback(() => {
     if (!meditation) return;
+    unlock(); // Unlock audio on user gesture
     setPhase('intro');
     setCurrentStep(0);
-    setTimeLeft(8); // intro duration
+    setTimeLeft(8);
     setIsPaused(false);
     playCue('deep-breath');
     if (soundOn) {
       play(meditation.soundType, 0.6);
     }
-  }, [meditation, play, playCue, soundOn]);
+  }, [meditation, play, playCue, soundOn, unlock]);
 
   const resetMeditation = useCallback(() => {
     clearTimer();
