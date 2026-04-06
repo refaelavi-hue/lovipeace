@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Wind, Mountain, MessageCircleHeart } from 'lucide-react';
+import { ArrowRight, Wind, Mountain, MessageCircleHeart, Phone } from 'lucide-react';
 import BreathingExercise from '@/components/BreathingExercise';
 
 const GROUNDING_STEPS = [
