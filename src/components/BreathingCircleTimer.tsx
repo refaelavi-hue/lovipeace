@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React from 'react';
 
 interface BreathingCircleTimerProps {
   type: 'inhale' | 'exhale' | 'hold' | 'pause' | 'text';
-  duration: number; // seconds
+  duration: number;
   timeLeft: number;
   label?: string;
 }
@@ -19,34 +19,32 @@ const BreathingCircleTimer: React.FC<BreathingCircleTimerProps> = ({ type, durat
   const isBreathing = type === 'inhale' || type === 'exhale' || type === 'hold';
   const progress = duration > 0 ? (duration - timeLeft) / duration : 0;
 
-  // Circle SVG params
   const size = 200;
   const strokeWidth = 4;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const dashOffset = circumference * (1 - progress);
 
-  // Breathing scale
   const getScale = () => {
     if (!isBreathing) return 1;
-    if (type === 'inhale') return 1 + progress * 0.6; // grow from 1 to 1.6
-    if (type === 'exhale') return 1.6 - progress * 0.6; // shrink from 1.6 to 1
-    if (type === 'hold') return 1.6; // stay big
+    if (type === 'inhale') return 1 + progress * 0.6;
+    if (type === 'exhale') return 1.6 - progress * 0.6;
+    if (type === 'hold') return 1.6;
     return 1;
   };
 
-  const getColor = () => {
-    if (type === 'inhale') return 'hsl(var(--primary))';
-    if (type === 'exhale') return 'hsl(var(--accent))';
-    if (type === 'hold') return 'hsl(var(--primary))';
-    return 'hsl(var(--muted-foreground))';
+  // Return HSL values for use in hsl() and hsla()
+  const getColorVals = () => {
+    if (type === 'inhale' || type === 'hold') return 'var(--primary)';
+    if (type === 'exhale') return 'var(--accent)';
+    return 'var(--muted-foreground)';
   };
 
   const scale = getScale();
-  const color = getColor();
+  const colorVals = getColorVals();
+  const solidColor = `hsl(${colorVals})`;
 
   if (!isBreathing) {
-    // Simple timer for text/pause steps
     return (
       <div className="flex flex-col items-center gap-4">
         <div className="relative w-24 h-24 flex items-center justify-center">
@@ -77,7 +75,6 @@ const BreathingCircleTimer: React.FC<BreathingCircleTimerProps> = ({ type, durat
   return (
     <div className="flex flex-col items-center gap-4">
       <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
-        {/* Progress ring */}
         <svg width={size} height={size} className="absolute rotate-[-90deg]">
           <circle
             cx={size / 2} cy={size / 2} r={radius}
@@ -89,7 +86,7 @@ const BreathingCircleTimer: React.FC<BreathingCircleTimerProps> = ({ type, durat
           <circle
             cx={size / 2} cy={size / 2} r={radius}
             fill="none"
-            stroke={color}
+            stroke={solidColor}
             strokeWidth={strokeWidth}
             strokeDasharray={circumference}
             strokeDashoffset={dashOffset}
@@ -98,7 +95,6 @@ const BreathingCircleTimer: React.FC<BreathingCircleTimerProps> = ({ type, durat
           />
         </svg>
 
-        {/* Breathing circle */}
         <div
           className="rounded-full flex items-center justify-center flex-col transition-transform ease-in-out"
           style={{
@@ -106,11 +102,11 @@ const BreathingCircleTimer: React.FC<BreathingCircleTimerProps> = ({ type, durat
             height: 100,
             transform: `scale(${scale})`,
             transitionDuration: '1000ms',
-            background: `radial-gradient(circle, ${color}33, ${color}11)`,
-            border: `2px solid ${color}55`,
+            background: `radial-gradient(circle, hsla(${colorVals} / 0.2), hsla(${colorVals} / 0.07))`,
+            border: `2px solid hsla(${colorVals} / 0.33)`,
           }}
         >
-          <span className="text-sm font-semibold" style={{ color }}>
+          <span className="text-sm font-semibold" style={{ color: solidColor }}>
             {label || TYPE_LABELS[type]}
           </span>
           <span className="text-xl font-bold text-foreground mt-1">{timeLeft}</span>
