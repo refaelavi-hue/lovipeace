@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Home, Calendar, Wrench, BookOpen, Settings } from 'lucide-react';
 
@@ -10,12 +10,12 @@ const tabs = [
   { path: '/settings', icon: Settings, label: 'הגדרות' },
 ];
 
-const BottomNav: React.FC = () => {
+const BottomNav = forwardRef<HTMLElement>((_, ref) => {
   const navigate = useNavigate();
   const location = useLocation();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-background/90 backdrop-blur-xl border-t border-border safe-bottom z-50">
+    <nav ref={ref} className="fixed bottom-0 left-0 right-0 bg-background/90 backdrop-blur-xl border-t border-border safe-bottom z-50">
       <div className="flex justify-around items-center h-16 max-w-lg mx-auto">
         {tabs.map((tab) => {
           const isActive = location.pathname === tab.path;
@@ -38,6 +38,8 @@ const BottomNav: React.FC = () => {
       </div>
     </nav>
   );
-};
+});
+
+BottomNav.displayName = 'BottomNav';
 
 export default BottomNav;
