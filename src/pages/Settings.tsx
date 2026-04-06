@@ -58,7 +58,7 @@ const Settings: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-24" dir="rtl">
+    <div className="min-h-screen bg-background pb-24 overflow-x-hidden" dir="rtl">
       {/* Header */}
       <div className="px-6 pt-12 pb-6">
         <h1 className="text-2xl font-semibold text-foreground animate-fade-up">הגדרות</h1>
@@ -75,25 +75,25 @@ const Settings: React.FC = () => {
           <div className="space-y-3">
             <div>
               <label className="text-sm text-muted-foreground mb-1 block">שם</label>
-              <div className="flex gap-2">
+              <div className="flex gap-2 min-w-0">
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="flex-1 bg-background border border-border rounded-xl px-4 py-3 text-foreground text-base focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  className="flex-1 min-w-0 bg-background border border-border rounded-xl px-4 py-3 text-foreground text-base focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
                 <button
                   onClick={handleSaveName}
                   disabled={name === profile.name}
-                  className="bg-primary text-primary-foreground px-5 py-3 rounded-xl text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-40"
+                  className="bg-primary text-primary-foreground px-5 py-3 rounded-xl text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-40 shrink-0"
                 >
                   שמור
                 </button>
               </div>
             </div>
-            <div className="flex items-center justify-between py-2">
-              <span className="text-sm text-muted-foreground">מה מביא אותך</span>
-              <span className="text-sm text-foreground">{profile.reason || '—'}</span>
+            <div className="flex items-center justify-between py-2 gap-2">
+              <span className="text-sm text-muted-foreground truncate">{profile.reason || '—'}</span>
+              <span className="text-sm text-foreground shrink-0">מה מביא אותך</span>
             </div>
           </div>
         </div>
@@ -168,14 +168,14 @@ const Settings: React.FC = () => {
               </button>
             </div>
           ) : (
-            <div className="flex gap-2">
+            <div className="flex gap-2 min-w-0">
               <input
                 type="password"
                 value={adminPassword}
                 onChange={(e) => { setAdminPassword(e.target.value); setAdminError(''); }}
                 onKeyDown={(e) => e.key === 'Enter' && handleAdminLogin()}
                 placeholder="סיסמה"
-                className="flex-1 bg-background border border-border rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                className="flex-1 min-w-0 bg-background border border-border rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
               />
               <button
                 onClick={handleAdminLogin}
