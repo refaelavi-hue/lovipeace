@@ -13,6 +13,7 @@ import Tools from "./pages/Tools.tsx";
 import Journal from "./pages/Journal.tsx";
 import Settings from "./pages/Settings.tsx";
 import GuidedExercise from "./pages/GuidedExercise.tsx";
+import Terms from "./pages/Terms.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/journal" element={<Journal />} />
           <Route path="/exercise/:id" element={<GuidedExercise />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/terms" element={<Terms />} />
           <Route path="/weeks" element={<Weeks />} />
           <Route path="/weeks/:weekNumber" element={<WeekDetail />} />
           <Route path="*" element={<NotFound />} />
