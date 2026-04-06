@@ -55,7 +55,7 @@ const GuidedExercise: React.FC = () => {
     if (soundOn) {
       play(meditation.soundType, 0.6);
     }
-  }, [meditation, play, playCue, soundOn]);
+  }, [meditation, play, playCue, soundOn, unlock]);
 
   const resetMeditation = useCallback(() => {
     clearTimer();
