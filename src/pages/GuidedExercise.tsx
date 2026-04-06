@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowRight, Play, Pause, Volume2, VolumeX, RotateCcw } from 'lucide-react';
 import { GUIDED_MEDITATIONS } from '@/data/guidedMeditations';
 import { useAmbientSound } from '@/hooks/useAmbientSound';
+import { useVoiceCues } from '@/hooks/useVoiceCues';
 import BreathingCircleTimer from '@/components/BreathingCircleTimer';
 
 const SOUND_LABELS: Record<string, string> = {
@@ -18,6 +19,7 @@ const GuidedExercise: React.FC = () => {
   const navigate = useNavigate();
   const meditation = GUIDED_MEDITATIONS.find(m => m.id === id);
   const { play, stop, isPlaying: soundPlaying } = useAmbientSound();
+  const { playCue, stopCue } = useVoiceCues();
 
   const [phase, setPhase] = useState<'intro' | 'active' | 'outro' | 'idle'>('idle');
   const [currentStep, setCurrentStep] = useState(0);
@@ -38,8 +40,9 @@ const GuidedExercise: React.FC = () => {
     return () => {
       clearTimer();
       stop();
+      stopCue();
     };
-  }, [clearTimer, stop]);
+  }, [clearTimer, stop, stopCue]);
 
   const startMeditation = useCallback(() => {
     if (!meditation) return;
@@ -47,19 +50,21 @@ const GuidedExercise: React.FC = () => {
     setCurrentStep(0);
     setTimeLeft(8); // intro duration
     setIsPaused(false);
+    playCue('deep-breath');
     if (soundOn) {
       play(meditation.soundType, 0.6);
     }
-  }, [meditation, play, soundOn]);
+  }, [meditation, play, playCue, soundOn]);
 
   const resetMeditation = useCallback(() => {
     clearTimer();
     stop();
+    stopCue();
     setPhase('idle');
     setCurrentStep(0);
     setTimeLeft(0);
     setIsPaused(false);
-  }, [clearTimer, stop]);
+  }, [clearTimer, stop, stopCue]);
 
   const handleBack = useCallback(() => {
     resetMeditation();
@@ -93,6 +98,11 @@ const GuidedExercise: React.FC = () => {
     }
   }, [soundOn, meditation, phase, play, stop]);
 
+  const playStepCue = useCallback((type: string) => {
+    if (type === 'inhale') playCue('inhale');
+    else if (type === 'exhale') playCue('exhale');
+  }, [playCue]);
+
   const advanceMeditation = useCallback(() => {
     if (!meditation) return;
 
@@ -100,6 +110,7 @@ const GuidedExercise: React.FC = () => {
       setPhase('active');
       setCurrentStep(0);
       setTimeLeft(meditation.steps[0].duration);
+      playStepCue(meditation.steps[0].type);
       return;
     }
 
@@ -109,9 +120,11 @@ const GuidedExercise: React.FC = () => {
       if (nextStep < meditation.steps.length) {
         setCurrentStep(nextStep);
         setTimeLeft(meditation.steps[nextStep].duration);
+        playStepCue(meditation.steps[nextStep].type);
       } else {
         setPhase('outro');
         setTimeLeft(8);
+        playCue('thank-you');
       }
 
       return;
@@ -123,7 +136,7 @@ const GuidedExercise: React.FC = () => {
       setPhase('idle');
       setTimeLeft(0);
     }
-  }, [clearTimer, currentStep, meditation, phase, stop]);
+  }, [clearTimer, currentStep, meditation, phase, playCue, playStepCue, stop]);
 
   // Timer logic
   useEffect(() => {
