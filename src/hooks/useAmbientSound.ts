@@ -24,8 +24,10 @@ export function useAmbientSound() {
 
     stop();
 
+    const soundFile = type === 'bowl' ? '/audio/tibetan-bowl.mp3' : '/audio/zen-echoes.mp3';
+
     try {
-      const audio = new Audio('/audio/zen-echoes.mp3');
+      const audio = new Audio(soundFile);
       audio.loop = true;
       audio.volume = Math.min(Math.max(volume, 0), 1);
       audio.play().catch((e) => {
