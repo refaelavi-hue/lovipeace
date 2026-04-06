@@ -72,7 +72,7 @@ const Dashboard: React.FC = () => {
         <WeekCard
           weekNumber={currentWeek}
           title={WEEKS_DATA[currentWeek - 1].title}
-          description={WEEKS_DATA[currentWeek - 1].description}
+          description={WEEKS_DATA[currentWeek - 1].subtitle}
           isActive={true}
         />
       </div>
