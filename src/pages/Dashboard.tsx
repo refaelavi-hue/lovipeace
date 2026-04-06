@@ -60,7 +60,7 @@ const Dashboard: React.FC = () => {
             <span className="text-accent font-medium text-sm">SOS</span>
           </button>
           <button
-            onClick={() => navigate('/exercise/breathing-calm')}
+            onClick={() => navigate('/exercise/breathing-basic')}}
             className="flex-1 rounded-2xl bg-card border border-border p-4 flex flex-col items-center gap-2 transition-all duration-300 hover:bg-muted active:scale-[0.98]"
           >
             <Wind size={24} className="text-primary" />
