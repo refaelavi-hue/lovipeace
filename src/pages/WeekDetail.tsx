@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowRight, Lock, ChevronDown, Check } from 'lucide-react';
+import { ArrowRight, Lock, ChevronDown, Check, Play } from 'lucide-react';
 import { WEEKS_DATA, CATEGORY_INFO } from '@/data/weeksData';
 import { useAdmin } from '@/hooks/useAdmin';
 import { useProgress } from '@/hooks/useProgress';
+import { GUIDED_MEDITATIONS } from '@/data/guidedMeditations';
 
 const WeekDetail: React.FC = () => {
   const { weekNumber } = useParams();
