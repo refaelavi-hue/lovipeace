@@ -2,12 +2,14 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowRight, Lock } from 'lucide-react';
 import { WEEKS_DATA, CATEGORY_INFO } from '@/data/weeksData';
+import { useAdmin } from '@/hooks/useAdmin';
 
 const currentWeek = 1; // Will be dynamic later
 
 const WeekDetail: React.FC = () => {
   const { weekNumber } = useParams();
   const navigate = useNavigate();
+  const { isAdmin } = useAdmin();
   const weekNum = Number(weekNumber);
   const week = WEEKS_DATA.find((w) => w.weekNumber === weekNum);
 
@@ -19,11 +21,11 @@ const WeekDetail: React.FC = () => {
     );
   }
 
-  const isLocked = weekNum > currentWeek;
+  const isLocked = !isAdmin && weekNum > currentWeek;
   const isCompleted = weekNum < currentWeek;
 
   return (
-    <div className="min-h-screen bg-background pb-12">
+    <div className="min-h-screen bg-background pb-12" dir="rtl">
       {/* Header */}
       <div className="px-6 pt-12 pb-6">
         <button
@@ -41,6 +43,8 @@ const WeekDetail: React.FC = () => {
                 ? 'bg-primary/20 text-primary'
                 : weekNum === currentWeek
                 ? 'bg-primary text-primary-foreground'
+                : isAdmin
+                ? 'bg-primary/10 text-primary'
                 : 'bg-muted text-muted-foreground'
             }`}
           >
@@ -121,7 +125,7 @@ const WeekDetail: React.FC = () => {
           )}
 
           {/* Start button */}
-          {weekNum === currentWeek && (
+          {(weekNum === currentWeek || isAdmin) && (
             <div className="px-6">
               <button className="w-full bg-primary text-primary-foreground font-semibold py-4 rounded-2xl text-base hover:opacity-90 transition-opacity">
                 להתחיל את התרגול היומי
