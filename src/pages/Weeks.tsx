@@ -3,16 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import BottomNav from '@/components/BottomNav';
 import { WEEKS_DATA, PHASES } from '@/data/weeksData';
 import { useAdmin } from '@/hooks/useAdmin';
-import { Shield, ShieldOff, Lock } from 'lucide-react';
-
-const currentWeek = 1; // Will be dynamic later
+import { useProgress } from '@/hooks/useProgress';
+import { Shield, ShieldOff, Lock, Check } from 'lucide-react';
 
 const Weeks: React.FC = () => {
   const navigate = useNavigate();
   const { isAdmin, login, logout } = useAdmin();
+  const { getWeekProgress, getUnlockedWeek } = useProgress();
   const [showPasswordInput, setShowPasswordInput] = useState(false);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+  const currentWeek = getUnlockedWeek();
 
   const handleLogin = () => {
     if (login(password)) {
@@ -33,7 +35,6 @@ const Weeks: React.FC = () => {
             <h1 className="text-2xl font-semibold text-foreground animate-fade-up">תוכנית 10 שבועות</h1>
             <p className="text-muted-foreground mt-1 animate-fade-up-delay-1">מסע של שינוי מדורג</p>
           </div>
-          {/* Admin Toggle */}
           <button
             onClick={() => {
               if (isAdmin) {
@@ -52,7 +53,6 @@ const Weeks: React.FC = () => {
           </button>
         </div>
 
-        {/* Admin Password Input */}
         {showPasswordInput && !isAdmin && (
           <div className="mt-3 bg-card rounded-2xl p-4 border border-border animate-fade-up">
             <p className="text-sm text-foreground font-medium mb-2">כניסת מנהל</p>
@@ -104,6 +104,8 @@ const Weeks: React.FC = () => {
         {WEEKS_DATA.map((week) => {
           const isActive = week.weekNumber === currentWeek;
           const isLocked = !isAdmin && week.weekNumber > currentWeek;
+          const wp = getWeekProgress(week.weekNumber, week.exercises.length);
+          const isCompleted = wp.ratio === 1;
 
           return (
             <button
@@ -121,21 +123,35 @@ const Weeks: React.FC = () => {
                 <div className="flex items-start gap-4">
                   <div
                     className={`w-11 h-11 rounded-full flex items-center justify-center text-sm font-semibold shrink-0 mt-0.5 ${
-                      isActive
-                        ? 'bg-primary text-primary-foreground'
-                        : week.weekNumber < currentWeek
+                      isCompleted
                         ? 'bg-primary/20 text-primary'
+                        : isActive
+                        ? 'bg-primary text-primary-foreground'
                         : isLocked
                         ? 'bg-muted text-muted-foreground'
                         : 'bg-primary/10 text-primary'
                     }`}
                   >
-                    {week.weekNumber < currentWeek ? '✓' : isLocked ? <Lock size={16} /> : week.weekNumber}
+                    {isCompleted ? <Check size={18} /> : isLocked ? <Lock size={16} /> : week.weekNumber}
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="text-foreground font-semibold text-base mb-1">{week.title}</h3>
                     <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2">{week.subtitle}</p>
-                    {isActive && (
+                    
+                    {/* Progress bar for unlocked weeks with some progress */}
+                    {!isLocked && wp.completed > 0 && !isCompleted && (
+                      <div className="mt-2.5">
+                        <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-primary rounded-full transition-all duration-500"
+                            style={{ width: `${wp.ratio * 100}%` }}
+                          />
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">{wp.completed}/{wp.total} תרגילים</p>
+                      </div>
+                    )}
+
+                    {isActive && wp.completed === 0 && (
                       <span className="inline-block mt-3 bg-primary/10 text-primary text-sm font-medium px-4 py-2 rounded-xl">
                         להתחיל את השבוע →
                       </span>

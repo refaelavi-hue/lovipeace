@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowRight, Lock, ChevronDown } from 'lucide-react';
+import { ArrowRight, Lock, ChevronDown, Check } from 'lucide-react';
 import { WEEKS_DATA, CATEGORY_INFO } from '@/data/weeksData';
 import { useAdmin } from '@/hooks/useAdmin';
-
-const currentWeek = 1;
+import { useProgress } from '@/hooks/useProgress';
 
 const WeekDetail: React.FC = () => {
   const { weekNumber } = useParams();
   const navigate = useNavigate();
   const { isAdmin } = useAdmin();
+  const { isExerciseComplete, toggleExerciseComplete, getWeekProgress, getUnlockedWeek } = useProgress();
   const weekNum = Number(weekNumber);
   const week = WEEKS_DATA.find((w) => w.weekNumber === weekNum);
   const [expandedExercise, setExpandedExercise] = useState<string | null>(null);
+
+  const currentWeek = getUnlockedWeek();
 
   if (!week) {
     return (
@@ -23,10 +25,15 @@ const WeekDetail: React.FC = () => {
   }
 
   const isLocked = !isAdmin && weekNum > currentWeek;
-  const isCompleted = weekNum < currentWeek;
+  const weekProgress = getWeekProgress(weekNum, week.exercises.length);
 
   const toggleExercise = (category: string) => {
     setExpandedExercise(prev => prev === category ? null : category);
+  };
+
+  const handleComplete = (e: React.MouseEvent, category: string) => {
+    e.stopPropagation();
+    toggleExerciseComplete(weekNum, category);
   };
 
   return (
@@ -44,7 +51,7 @@ const WeekDetail: React.FC = () => {
         <div className="flex items-center gap-3 mb-2">
           <div
             className={`w-12 h-12 rounded-full flex items-center justify-center text-base font-bold ${
-              isCompleted
+              weekProgress.ratio === 1
                 ? 'bg-primary/20 text-primary'
                 : weekNum === currentWeek
                 ? 'bg-primary text-primary-foreground'
@@ -53,7 +60,7 @@ const WeekDetail: React.FC = () => {
                 : 'bg-muted text-muted-foreground'
             }`}
           >
-            {isCompleted ? '✓' : weekNum}
+            {weekProgress.ratio === 1 ? '✓' : weekNum}
           </div>
           <div>
             <p className="text-xs text-muted-foreground font-medium">שלב {week.phase}</p>
@@ -61,6 +68,20 @@ const WeekDetail: React.FC = () => {
           </div>
         </div>
         <p className="text-muted-foreground text-sm mt-1">{week.subtitle}</p>
+
+        {/* Progress Bar */}
+        <div className="mt-4">
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-xs text-muted-foreground font-medium">התקדמות</span>
+            <span className="text-xs text-primary font-semibold">{weekProgress.completed}/{weekProgress.total}</span>
+          </div>
+          <div className="w-full h-2.5 bg-muted rounded-full overflow-hidden">
+            <div
+              className="h-full bg-primary rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${weekProgress.ratio * 100}%` }}
+            />
+          </div>
+        </div>
       </div>
 
       {isLocked ? (
@@ -69,7 +90,7 @@ const WeekDetail: React.FC = () => {
             <Lock className="w-10 h-10 text-muted-foreground/40 mb-3" />
             <h3 className="text-foreground font-semibold mb-1">השבוע נעול</h3>
             <p className="text-muted-foreground text-sm">
-              סיימו את שבוע {currentWeek} כדי לפתוח את השבוע הזה
+              סיימו 75% מהשבוע הקודם כדי לפתוח את השבוע הזה
             </p>
           </div>
         </div>
@@ -81,22 +102,25 @@ const WeekDetail: React.FC = () => {
             {week.exercises.map((exercise) => {
               const catInfo = CATEGORY_INFO[exercise.category];
               const isExpanded = expandedExercise === exercise.category;
+              const completed = isExerciseComplete(weekNum, exercise.category);
               return (
-                <button
+                <div
                   key={exercise.category}
-                  onClick={() => toggleExercise(exercise.category)}
                   className={`w-full text-right rounded-2xl border transition-all duration-300 ${catInfo.color} ${
                     isExpanded ? 'shadow-md' : ''
-                  }`}
+                  } ${completed ? 'opacity-75' : ''}`}
                 >
                   {/* Header - always visible */}
-                  <div className="p-4 flex items-center gap-3">
+                  <button
+                    onClick={() => toggleExercise(exercise.category)}
+                    className="w-full text-right p-4 flex items-center gap-3"
+                  >
                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0 ${catInfo.iconBg}`}>
                       {exercise.icon}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium opacity-60 mb-0.5">{catInfo.label}</p>
-                      <h3 className="font-semibold text-base">{exercise.title}</h3>
+                      <h3 className={`font-semibold text-base ${completed ? 'line-through opacity-60' : ''}`}>{exercise.title}</h3>
                       <p className="text-sm opacity-70 mt-0.5">{exercise.duration}</p>
                     </div>
                     <ChevronDown
@@ -104,23 +128,34 @@ const WeekDetail: React.FC = () => {
                         isExpanded ? 'rotate-180' : ''
                       }`}
                     />
-                  </div>
+                  </button>
 
                   {/* Expanded content */}
                   <div
                     className={`overflow-hidden transition-all duration-300 ${
-                      isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                      isExpanded ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
                     }`}
                   >
                     <div className="px-4 pb-5 pt-1">
                       <div className="border-t border-current/10 pt-4">
-                        <p className="text-base leading-relaxed opacity-85">
+                        <p className="text-base leading-relaxed opacity-85 mb-4">
                           {exercise.description}
                         </p>
+                        <button
+                          onClick={(e) => handleComplete(e, exercise.category)}
+                          className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
+                            completed
+                              ? 'bg-primary/20 text-primary'
+                              : 'bg-primary text-primary-foreground hover:opacity-90'
+                          }`}
+                        >
+                          <Check className="w-4 h-4" />
+                          {completed ? 'הושלם ✓' : 'סימון כהושלם'}
+                        </button>
                       </div>
                     </div>
                   </div>
-                </button>
+                </div>
               );
             })}
           </div>
@@ -149,12 +184,21 @@ const WeekDetail: React.FC = () => {
             </div>
           )}
 
-          {/* Start button */}
-          {(weekNum === currentWeek || isAdmin) && (
-            <div className="px-5">
-              <button className="w-full bg-primary text-primary-foreground font-semibold py-4 rounded-2xl text-base hover:opacity-90 transition-opacity">
-                להתחיל את התרגול היומי
-              </button>
+          {/* Completion message */}
+          {weekProgress.ratio === 1 && (
+            <div className="px-5 mb-6">
+              <div className="bg-primary/10 rounded-2xl p-5 border border-primary/20 text-center">
+                <span className="text-2xl mb-2 block">🎉</span>
+                <h3 className="font-semibold text-primary text-base">כל הכבוד! סיימת את השבוע</h3>
+                {weekNum < 10 && (
+                  <button
+                    onClick={() => navigate(`/weeks/${weekNum + 1}`)}
+                    className="mt-3 bg-primary text-primary-foreground px-6 py-2.5 rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity"
+                  >
+                    לשבוע {weekNum + 1} →
+                  </button>
+                )}
+              </div>
             </div>
           )}
         </>

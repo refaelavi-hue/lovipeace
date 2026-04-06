@@ -4,24 +4,15 @@ import { useOnboarding } from '@/hooks/useOnboarding';
 import WeekCard from '@/components/WeekCard';
 import BottomNav from '@/components/BottomNav';
 import { Heart, Wind, Sparkles } from 'lucide-react';
-
-const WEEKS_DATA = [
-  { weekNumber: 1, title: 'מיפוי חרדה + שגרה בטוחה', description: 'נשימה קלה, הליכה, דף פריקה. יצירת בסיס יציב ובטוח.' },
-  { weekNumber: 2, title: 'זיהוי התנהגויות ביטחון', description: 'PMR קצר, כתיבה, הפחתה מינימלית של דפוסי ביטחון.' },
-  { weekNumber: 3, title: 'גמישות אוטונומית', description: 'נשימה איטית, תנועת Zone 2, מיינדפולנס.' },
-  { weekNumber: 4, title: 'מרחב בין מחשבה לתגובה', description: 'דיפוזיה, דאגה מתוזמנת, ACT.' },
-  { weekNumber: 5, title: 'ביטחון חברתי וחמלה', description: 'חמלה עצמית, מפגשים חברתיים קטנים.' },
-  { weekNumber: 6, title: 'ערכים → פעולה', description: 'Behavioral Activation, פעולה מתוך ערכים.' },
-  { weekNumber: 7, title: 'חשיפה מתקדמת', description: 'חשיפות מובנות עם עיבוד רגשי.' },
-  { weekNumber: 8, title: 'אינטגרציה', description: 'שילוב כל הכלים, בניית פרוטוקול אישי.' },
-  { weekNumber: 9, title: 'מניעת הישנות', description: 'זיהוי טריגרים, תכנית תחזוקה.' },
-  { weekNumber: 10, title: 'סיום ועצמאות', description: 'חגיגת הדרך, תכנית לטווח ארוך.' },
-];
+import { useProgress } from '@/hooks/useProgress';
+import { WEEKS_DATA } from '@/data/weeksData';
 
 const Dashboard: React.FC = () => {
   const { profile } = useOnboarding();
   const navigate = useNavigate();
-  const currentWeek = 1; // Will be dynamic later
+  const { getUnlockedWeek, getWeekProgress } = useProgress();
+  const currentWeek = Math.min(getUnlockedWeek(), 10);
+  const weekProgress = getWeekProgress(currentWeek, WEEKS_DATA[currentWeek - 1]?.exercises.length || 4);
 
   const greeting = () => {
     const hour = new Date().getHours();
@@ -81,7 +72,7 @@ const Dashboard: React.FC = () => {
         <WeekCard
           weekNumber={currentWeek}
           title={WEEKS_DATA[currentWeek - 1].title}
-          description={WEEKS_DATA[currentWeek - 1].description}
+          description={WEEKS_DATA[currentWeek - 1].subtitle}
           isActive={true}
         />
       </div>
