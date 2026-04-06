@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BottomNav from '@/components/BottomNav';
 import { WEEKS_DATA, CATEGORY_INFO, Exercise } from '@/data/weeksData';
+import { GUIDED_MEDITATIONS } from '@/data/guidedMeditations';
 
 type Category = keyof typeof CATEGORY_INFO;
 
@@ -31,6 +32,9 @@ const Tools: React.FC = () => {
   });
 
   const categories: Category[] = ['breathing', 'movement', 'mind', 'creation'];
+
+  // Get guided meditations for current category
+  const guidedForCategory = GUIDED_MEDITATIONS.filter(m => m.category === activeCategory);
 
   return (
     <div className="min-h-screen bg-background pb-24" dir="rtl">
@@ -62,32 +66,69 @@ const Tools: React.FC = () => {
         })}
       </div>
 
-      {/* Exercises List */}
-      <div className="px-5 mt-2 space-y-3">
-        {exercisesByCategory[activeCategory].map((item, index) => (
-          <button
-            key={`${item.weekNumber}-${index}`}
-            onClick={() => navigate(`/weeks/${item.weekNumber}`)}
-            className="w-full bg-card rounded-2xl p-4 border border-border text-right transition-all duration-200 hover:shadow-md hover:border-primary/20 active:scale-[0.98]"
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded-full">
-                    שבוע {item.weekNumber}
-                  </span>
-                  <span className="text-xs text-muted-foreground">{item.exercise.duration}</span>
+      {/* Guided Meditations Section */}
+      {guidedForCategory.length > 0 && (
+        <div className="px-5 mt-2 mb-6">
+          <h2 className="text-base font-semibold text-foreground mb-3 flex items-center gap-2">
+            <span>🎧</span>
+            תרגולים מונחים
+          </h2>
+          <div className="space-y-3">
+            {guidedForCategory.map((med) => (
+              <button
+                key={med.id}
+                onClick={() => navigate(`/exercise/${med.id}`)}
+                className="w-full bg-primary/5 rounded-2xl p-4 border border-primary/15 text-right transition-all duration-200 hover:bg-primary/10 hover:shadow-md active:scale-[0.98]"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center text-2xl shrink-0">
+                    {med.icon}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-foreground text-sm">{med.title}</h3>
+                    <p className="text-xs text-muted-foreground mt-0.5">{med.subtitle}</p>
+                  </div>
+                  <span className="text-xs text-primary font-medium shrink-0">{med.totalDuration}</span>
                 </div>
-                <h3 className="font-semibold text-foreground text-sm">{item.exercise.title}</h3>
-                <p className="text-xs text-muted-foreground mt-1 leading-relaxed line-clamp-2">
-                  {item.exercise.description}
-                </p>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Exercises from Program */}
+      <div className="px-5 mt-2">
+        <h2 className="text-base font-semibold text-foreground mb-3">
+          מהתוכנית השבועית
+        </h2>
+        <div className="space-y-3">
+          {exercisesByCategory[activeCategory].map((item, index) => (
+            <button
+              key={`${item.weekNumber}-${index}`}
+              onClick={() => navigate(`/weeks/${item.weekNumber}`)}
+              className="w-full bg-card rounded-2xl p-4 border border-border text-right transition-all duration-200 hover:shadow-md hover:border-primary/20 active:scale-[0.98]"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded-full">
+                      שבוע {item.weekNumber}
+                    </span>
+                    <span className="text-xs text-muted-foreground">{item.exercise.duration}</span>
+                  </div>
+                  <h3 className="font-semibold text-foreground text-sm">{item.exercise.title}</h3>
+                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed line-clamp-2">
+                    {item.exercise.description}
+                  </p>
+                </div>
+                <div className="text-2xl mt-1">{item.exercise.icon}</div>
               </div>
-              <div className="text-2xl mt-1">{item.exercise.icon}</div>
-            </div>
-          </button>
-        ))}
+            </button>
+          ))}
+        </div>
       </div>
+
+      <BottomNav />
     </div>
   );
 };
