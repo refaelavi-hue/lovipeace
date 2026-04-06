@@ -48,7 +48,7 @@ const GuidedExercise: React.FC = () => {
     setTimeLeft(8); // intro duration
     setIsPaused(false);
     if (soundOn) {
-      play(meditation.soundType, 0.25);
+      play(meditation.soundType, 0.6);
     }
   }, [meditation, play, soundOn]);
 
@@ -87,7 +87,7 @@ const GuidedExercise: React.FC = () => {
       setSoundOn(false);
     } else {
       if (phase !== 'idle') {
-        play(meditation.soundType, 0.25);
+        play(meditation.soundType, 0.6);
       }
       setSoundOn(true);
     }
