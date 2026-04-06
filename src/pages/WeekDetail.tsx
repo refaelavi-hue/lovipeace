@@ -142,17 +142,34 @@ const WeekDetail: React.FC = () => {
                         <p className="text-base leading-relaxed opacity-85 mb-4">
                           {exercise.description}
                         </p>
-                        <button
-                          onClick={(e) => handleComplete(e, exercise.category)}
-                          className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
-                            completed
-                              ? 'bg-primary/20 text-primary'
-                              : 'bg-primary text-primary-foreground hover:opacity-90'
-                          }`}
-                        >
-                          <Check className="w-4 h-4" />
-                          {completed ? 'הושלם ✓' : 'סימון כהושלם'}
-                        </button>
+                        <div className="flex flex-wrap gap-2">
+                          <button
+                            onClick={(e) => handleComplete(e, exercise.category)}
+                            className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
+                              completed
+                                ? 'bg-primary/20 text-primary'
+                                : 'bg-primary text-primary-foreground hover:opacity-90'
+                            }`}
+                          >
+                            <Check className="w-4 h-4" />
+                            {completed ? 'הושלם ✓' : 'סימון כהושלם'}
+                          </button>
+                          {exercise.category === 'breathing' && (() => {
+                            const match = GUIDED_MEDITATIONS.find(m => m.category === 'breathing');
+                            return match ? (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(`/exercise/${match.id}`);
+                                }}
+                                className="flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold bg-accent/20 text-accent-foreground hover:bg-accent/30 transition-all duration-200"
+                              >
+                                <Play className="w-4 h-4" />
+                                תרגול מונחה
+                              </button>
+                            ) : null;
+                          })()}
+                        </div>
                       </div>
                     </div>
                   </div>
