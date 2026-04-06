@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowRight, Play, Pause, Volume2, VolumeX, RotateCcw } from 'lucide-react';
 import { GUIDED_MEDITATIONS } from '@/data/guidedMeditations';
 import { useAmbientSound } from '@/hooks/useAmbientSound';
+import BreathingCircleTimer from '@/components/BreathingCircleTimer';
 
 const SOUND_LABELS: Record<string, string> = {
   ocean: '🌊 גלי ים',
