@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowRight, Play, Pause, Volume2, VolumeX, RotateCcw } from 'lucide-react';
 import { GUIDED_MEDITATIONS } from '@/data/guidedMeditations';
 import { useAmbientSound } from '@/hooks/useAmbientSound';
+import { useVoiceCues } from '@/hooks/useVoiceCues';
 import BreathingCircleTimer from '@/components/BreathingCircleTimer';
 
 const SOUND_LABELS: Record<string, string> = {
@@ -18,6 +19,7 @@ const GuidedExercise: React.FC = () => {
   const navigate = useNavigate();
   const meditation = GUIDED_MEDITATIONS.find(m => m.id === id);
   const { play, stop, isPlaying: soundPlaying } = useAmbientSound();
+  const { playCue, stopCue } = useVoiceCues();
 
   const [phase, setPhase] = useState<'intro' | 'active' | 'outro' | 'idle'>('idle');
   const [currentStep, setCurrentStep] = useState(0);
@@ -38,8 +40,9 @@ const GuidedExercise: React.FC = () => {
     return () => {
       clearTimer();
       stop();
+      stopCue();
     };
-  }, [clearTimer, stop]);
+  }, [clearTimer, stop, stopCue]);
 
   const startMeditation = useCallback(() => {
     if (!meditation) return;
