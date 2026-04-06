@@ -19,7 +19,7 @@ const DEFAULT_PROFILE: UserProfile = {
 export function useOnboarding() {
   const [profile, setProfile] = useState<UserProfile>(() => {
     const stored = localStorage.getItem('user-profile');
-    return stored ? JSON.parse(stored) : DEFAULT_PROFILE;
+    return stored ? { ...DEFAULT_PROFILE, ...JSON.parse(stored) } : DEFAULT_PROFILE;
   });
 
   useEffect(() => {
