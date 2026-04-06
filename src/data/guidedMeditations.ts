@@ -1,0 +1,163 @@
+export interface MeditationStep {
+  instruction: string;
+  duration: number; // seconds
+  type: 'inhale' | 'exhale' | 'hold' | 'pause' | 'text';
+}
+
+export interface GuidedMeditation {
+  id: string;
+  title: string;
+  subtitle: string;
+  category: 'breathing' | 'movement' | 'mind' | 'creation';
+  totalDuration: string;
+  icon: string;
+  soundType: 'ocean' | 'rain' | 'bowl' | 'wind' | 'silence';
+  intro: string;
+  steps: MeditationStep[];
+  outro: string;
+}
+
+export const GUIDED_MEDITATIONS: GuidedMeditation[] = [
+  {
+    id: 'breathing-basic',
+    title: 'נשימה מרגיעה',
+    subtitle: 'נשיפה ארוכה — 4-6 שניות',
+    category: 'breathing',
+    totalDuration: '5 דק׳',
+    icon: '🌬️',
+    soundType: 'ocean',
+    intro: 'שבו בנוחות. עצמו את העיניים אם נעים לכם. אנחנו הולכים לנשום ביחד — לאט ובעדינות.',
+    steps: [
+      { instruction: 'שאפו דרך האף... 1... 2... 3... 4...', duration: 5, type: 'inhale' },
+      { instruction: 'עצרו רגע קטן...', duration: 2, type: 'hold' },
+      { instruction: 'נשפו לאט דרך הפה... 1... 2... 3... 4... 5... 6...', duration: 7, type: 'exhale' },
+      { instruction: 'הרגישו את הגוף נרגע...', duration: 3, type: 'pause' },
+      { instruction: 'שאפו שוב... עמוק ורך... 1... 2... 3... 4...', duration: 5, type: 'inhale' },
+      { instruction: 'עצרו...', duration: 2, type: 'hold' },
+      { instruction: 'נשפו... ארוך ואיטי... 1... 2... 3... 4... 5... 6...', duration: 7, type: 'exhale' },
+      { instruction: 'תנו לכתפיים לרדת...', duration: 3, type: 'pause' },
+      { instruction: 'שאפו... מרגישים את הבטן עולה... 1... 2... 3... 4...', duration: 5, type: 'inhale' },
+      { instruction: 'עצרו...', duration: 2, type: 'hold' },
+      { instruction: 'נשפו... משחררים הכל... 1... 2... 3... 4... 5... 6...', duration: 7, type: 'exhale' },
+      { instruction: 'נשימה טבעית... הגוף יודע מה לעשות...', duration: 5, type: 'pause' },
+      { instruction: 'סבב אחרון — שאפו עמוק... 1... 2... 3... 4...', duration: 5, type: 'inhale' },
+      { instruction: 'עצרו...', duration: 2, type: 'hold' },
+      { instruction: 'נשפו לאט... משחררים... 1... 2... 3... 4... 5... 6...', duration: 7, type: 'exhale' },
+      { instruction: 'יפה מאוד. נשימה חופשית...', duration: 5, type: 'pause' },
+    ],
+    outro: 'כל הכבוד. לקחתם כמה דקות לעצמכם. זה משנה.',
+  },
+  {
+    id: 'grounding-54321',
+    title: 'קרקוע 5-4-3-2-1',
+    subtitle: 'חיבור לחושים ולרגע הנוכחי',
+    category: 'mind',
+    totalDuration: '5 דק׳',
+    icon: '🧘',
+    soundType: 'rain',
+    intro: 'תרגיל קרקוע עוזר לנו לחזור לכאן ועכשיו. אין צורך לעצום עיניים — רק להאט.',
+    steps: [
+      { instruction: '5 דברים שאתם רואים עכשיו — הסתכלו סביב ושימו לב לפרטים קטנים', duration: 15, type: 'text' },
+      { instruction: 'נשימה עמוקה...', duration: 5, type: 'pause' },
+      { instruction: '4 דברים שאתם שומעים — הקשיבו... גם לצלילים הרחוקים', duration: 12, type: 'text' },
+      { instruction: 'נשימה...', duration: 5, type: 'pause' },
+      { instruction: '3 דברים שאתם נוגעים בהם — הרגישו את המרקם, הטמפרטורה', duration: 12, type: 'text' },
+      { instruction: 'נשימה...', duration: 5, type: 'pause' },
+      { instruction: '2 דברים שאתם מריחים — אולי אוויר, בגד, משהו קרוב', duration: 10, type: 'text' },
+      { instruction: 'נשימה...', duration: 5, type: 'pause' },
+      { instruction: '1 דבר שאתם טועמים — שימו לב לטעם בפה, גם אם הוא עדין', duration: 8, type: 'text' },
+      { instruction: 'נשימה עמוקה אחרונה...', duration: 5, type: 'pause' },
+    ],
+    outro: 'אתם כאן. אתם בטוחים. הרגע הזה הוא שלכם.',
+  },
+  {
+    id: 'compassion',
+    title: 'חמלה עצמית',
+    subtitle: 'דברו אל עצמכם בעדינות',
+    category: 'mind',
+    totalDuration: '7 דק׳',
+    icon: '💛',
+    soundType: 'bowl',
+    intro: 'שבו בנוחות ועצמו את העיניים. נתחיל עם כמה נשימות עמוקות.',
+    steps: [
+      { instruction: 'שלוש נשימות עמוקות... שאפו... ונשפו...', duration: 12, type: 'pause' },
+      { instruction: 'חשבו על משהו שקשה לכם עכשיו. לא צריך לפתור — רק לשים לב.', duration: 10, type: 'text' },
+      { instruction: 'שימו יד על הלב. הרגישו את החום.', duration: 8, type: 'text' },
+      { instruction: 'אמרו לעצמכם בשקט: "הרגע הזה קשה."', duration: 8, type: 'text' },
+      { instruction: 'נשימה...', duration: 5, type: 'pause' },
+      { instruction: '"קושי הוא חלק מהחיים. אני לא לבד בזה."', duration: 8, type: 'text' },
+      { instruction: 'נשימה...', duration: 5, type: 'pause' },
+      { instruction: '"שאני אהיה חביב/ה עם עצמי, כמו שהייתי עם חבר/ה."', duration: 10, type: 'text' },
+      { instruction: 'נשימה עמוקה... הרגישו את היד על הלב...', duration: 8, type: 'pause' },
+      { instruction: '"שאדע לתת לעצמי את מה שאני צריך/ה עכשיו."', duration: 10, type: 'text' },
+      { instruction: 'ישבו עם התחושה הזו עוד רגע...', duration: 10, type: 'pause' },
+    ],
+    outro: 'חמלה עצמית היא לא חולשה — היא אומץ. יפה שעשיתם את זה.',
+  },
+  {
+    id: 'mindfulness-basic',
+    title: 'מיינדפולנס',
+    subtitle: 'צפייה במחשבות בלי שיפוט',
+    category: 'mind',
+    totalDuration: '7 דק׳',
+    icon: '🌿',
+    soundType: 'wind',
+    intro: 'שבו בנוחות. עצמו עיניים. אין מטרה — רק להיות כאן.',
+    steps: [
+      { instruction: 'שימו לב לנשימה. לא צריך לשנות אותה — רק לצפות.', duration: 15, type: 'text' },
+      { instruction: 'כשמחשבה מגיעה — שימו לב אליה, ותנו לה ללכת. כמו ענן בשמיים.', duration: 15, type: 'text' },
+      { instruction: 'חזרו לנשימה... שאיפה... נשיפה...', duration: 10, type: 'pause' },
+      { instruction: 'הרגישו את הגוף יושב. את המגע עם הכיסא. את כפות הרגליים.', duration: 12, type: 'text' },
+      { instruction: 'אם המחשבה נודדת — זה בסדר גמור. פשוט חזרו בעדינות.', duration: 10, type: 'text' },
+      { instruction: 'נשימה...', duration: 10, type: 'pause' },
+      { instruction: 'שימו לב — מה הרגש העיקרי ברגע הזה? אין צורך לשנות. רק להכיר.', duration: 15, type: 'text' },
+      { instruction: 'חזרו לנשימה... שאיפה רכה... נשיפה ארוכה...', duration: 12, type: 'pause' },
+      { instruction: 'עוד רגע של שקט...', duration: 15, type: 'pause' },
+    ],
+    outro: 'פתחו עיניים לאט. שימו לב איך אתם מרגישים. הדקות האלה שלכם.',
+  },
+  {
+    id: 'pmr',
+    title: 'הרפיית שרירים (PMR)',
+    subtitle: 'כווצו ושחררו — שריר אחר שריר',
+    category: 'breathing',
+    totalDuration: '8 דק׳',
+    icon: '💪',
+    soundType: 'ocean',
+    intro: 'שכבו או שבו בנוחות. אנחנו הולכים לכווץ ולשחרר כל קבוצת שרירים.',
+    steps: [
+      { instruction: 'כווצו את כפות הידיים — חזק... 1... 2... 3... 4... 5...', duration: 6, type: 'inhale' },
+      { instruction: 'שחררו... הרגישו את ההבדל... נשמו...', duration: 10, type: 'exhale' },
+      { instruction: 'כווצו את הכתפיים — הרימו אותן לאוזניים... 1... 2... 3... 4... 5...', duration: 6, type: 'inhale' },
+      { instruction: 'שחררו... תנו לכתפיים ליפול... נשמו עמוק...', duration: 10, type: 'exhale' },
+      { instruction: 'כווצו את הפנים — עצמו עיניים חזק, קמטו מצח... 1... 2... 3... 4... 5...', duration: 6, type: 'inhale' },
+      { instruction: 'שחררו... החליקו את הפנים... נשמו...', duration: 10, type: 'exhale' },
+      { instruction: 'כווצו את הבטן — משכו פנימה... 1... 2... 3... 4... 5...', duration: 6, type: 'inhale' },
+      { instruction: 'שחררו... תנו לבטן להתרחב... נשמו...', duration: 10, type: 'exhale' },
+      { instruction: 'כווצו את הירכיים והשוקיים... 1... 2... 3... 4... 5...', duration: 6, type: 'inhale' },
+      { instruction: 'שחררו... הרגישו כבדות נעימה... נשמו...', duration: 10, type: 'exhale' },
+      { instruction: 'סרקו את הגוף... הכל רך ושחרור...', duration: 10, type: 'pause' },
+    ],
+    outro: 'הגוף שלכם זוכר את ההרפיה הזו. תוכלו לחזור לכאן בכל רגע.',
+  },
+  {
+    id: 'freewriting',
+    title: 'דף פריקה',
+    subtitle: 'כתיבה חופשית בלי סינון',
+    category: 'creation',
+    totalDuration: '10 דק׳',
+    icon: '✍️',
+    soundType: 'rain',
+    intro: 'קחו דף ועט (או פתחו אפליקציית כתיבה). אין כללים — שפכו הכל.',
+    steps: [
+      { instruction: 'התחילו לכתוב. מה שבא. בלי מחשבה. בלי עריכה.', duration: 20, type: 'text' },
+      { instruction: 'אם נתקעים — כתבו "אני נתקע/ת" ותמשיכו.', duration: 15, type: 'text' },
+      { instruction: 'תנו לעט לזרום... אין נכון ולא נכון פה...', duration: 20, type: 'text' },
+      { instruction: 'נשמו... ותמשיכו לכתוב...', duration: 20, type: 'text' },
+      { instruction: 'מה מרגיש דחוף? מה רוצה לצאת? כתבו.', duration: 20, type: 'text' },
+      { instruction: 'עוד כמה שורות... בלי שיפוט...', duration: 20, type: 'text' },
+      { instruction: 'סיימו את המשפט האחרון...', duration: 10, type: 'text' },
+    ],
+    outro: 'מעולה. לא צריך לקרוא מה כתבתם. העיקר שיצא החוצה.',
+  },
+];
