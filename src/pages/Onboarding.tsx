@@ -170,6 +170,13 @@ const Onboarding: React.FC = () => {
               <p><strong className="text-foreground/80">4. גיל מינימלי</strong> — מעל גיל 13. קטינים דורשים הסכמת הורה.</p>
             </div>
 
+            <button
+              onClick={() => navigate('/terms')}
+              className="text-primary text-xs underline underline-offset-2 hover:opacity-80 transition-opacity text-center"
+            >
+              קריאת התנאים המלאים →
+            </button>
+
             <div className="flex items-start gap-3 pt-1" dir="rtl">
               <Checkbox
                 id="terms"
