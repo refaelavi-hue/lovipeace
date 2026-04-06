@@ -61,6 +61,21 @@ const GuidedExercise: React.FC = () => {
     setIsPaused(false);
   }, [clearTimer, stop]);
 
+  const handleBack = useCallback(() => {
+    resetMeditation();
+
+    const historyIndex = typeof window !== 'undefined'
+      ? window.history.state?.idx ?? 0
+      : 0;
+
+    if (historyIndex > 0) {
+      navigate(-1);
+      return;
+    }
+
+    navigate('/tools', { replace: true });
+  }, [navigate, resetMeditation]);
+
   const togglePause = useCallback(() => {
     setIsPaused(prev => !prev);
   }, []);
@@ -78,41 +93,55 @@ const GuidedExercise: React.FC = () => {
     }
   }, [soundOn, meditation, phase, play, stop]);
 
+  const advanceMeditation = useCallback(() => {
+    if (!meditation) return;
+
+    if (phase === 'intro') {
+      setPhase('active');
+      setCurrentStep(0);
+      setTimeLeft(meditation.steps[0].duration);
+      return;
+    }
+
+    if (phase === 'active') {
+      const nextStep = currentStep + 1;
+
+      if (nextStep < meditation.steps.length) {
+        setCurrentStep(nextStep);
+        setTimeLeft(meditation.steps[nextStep].duration);
+      } else {
+        setPhase('outro');
+        setTimeLeft(8);
+      }
+
+      return;
+    }
+
+    if (phase === 'outro') {
+      clearTimer();
+      stop();
+      setPhase('idle');
+      setTimeLeft(0);
+    }
+  }, [clearTimer, currentStep, meditation, phase, stop]);
+
   // Timer logic
   useEffect(() => {
+    if (phase === 'idle' || isPaused || !meditation || timeLeft > 0) return;
+
+    advanceMeditation();
+  }, [advanceMeditation, isPaused, meditation, phase, timeLeft]);
+
+  useEffect(() => {
     clearTimer();
-    if (phase === 'idle' || isPaused || !meditation) return;
+    if (phase === 'idle' || isPaused || !meditation || timeLeft <= 0) return;
 
     timerRef.current = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev <= 1) {
-          // Move to next phase/step
-          if (phase === 'intro') {
-            setPhase('active');
-            setCurrentStep(0);
-            return meditation.steps[0].duration;
-          } else if (phase === 'active') {
-            const nextStep = currentStep + 1;
-            if (nextStep < meditation.steps.length) {
-              setCurrentStep(nextStep);
-              return meditation.steps[nextStep].duration;
-            } else {
-              setPhase('outro');
-              return 8;
-            }
-          } else if (phase === 'outro') {
-            clearTimer();
-            stop();
-            setPhase('idle');
-            return 0;
-          }
-        }
-        return prev - 1;
-      });
+      setTimeLeft(prev => Math.max(prev - 1, 0));
     }, 1000);
 
     return () => clearTimer();
-  }, [phase, isPaused, currentStep, meditation, clearTimer, stop]);
+  }, [phase, isPaused, meditation, timeLeft, clearTimer]);
 
   if (!meditation) {
     return (
@@ -143,7 +172,7 @@ const GuidedExercise: React.FC = () => {
       {/* Header */}
       <div className="px-5 pt-12 pb-4 flex items-center justify-between">
         <button
-          onClick={() => { resetMeditation(); navigate(-1); }}
+          onClick={handleBack}
           className="flex items-center gap-1 text-primary text-sm font-medium hover:opacity-80 transition-opacity"
         >
           <ArrowRight className="w-4 h-4" />
@@ -200,6 +229,7 @@ const GuidedExercise: React.FC = () => {
             {/* Breathing circle with timer */}
             <div className="mb-8">
               <BreathingCircleTimer
+                key={`${currentStep}-${step.type}-${step.duration}`}
                 type={step.type}
                 duration={step.duration}
                 timeLeft={timeLeft}

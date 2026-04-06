@@ -32,17 +32,20 @@ const BreathingExercise: React.FC<BreathingExerciseProps> = ({ onClose }) => {
   }, []);
 
   useEffect(() => {
+    if (timeLeft > 0) return;
+
+    nextPhase();
+  }, [nextPhase, timeLeft]);
+
+  useEffect(() => {
+    if (timeLeft <= 0) return;
+
     const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev <= 1) {
-          nextPhase();
-          return prev;
-        }
-        return prev - 1;
-      });
+      setTimeLeft(prev => Math.max(prev - 1, 0));
     }, 1000);
+
     return () => clearInterval(timer);
-  }, [phaseIndex, nextPhase]);
+  }, [phaseIndex, timeLeft]);
 
   return (
     <div className="fixed inset-0 bg-background z-50 flex flex-col items-center justify-center">
@@ -55,6 +58,7 @@ const BreathingExercise: React.FC<BreathingExerciseProps> = ({ onClose }) => {
 
       <div className="flex flex-col items-center gap-8">
         <BreathingCircleTimer
+          key={phaseIndex}
           type={currentPhase.type}
           duration={currentPhase.duration}
           timeLeft={timeLeft}
