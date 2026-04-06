@@ -168,14 +168,14 @@ const Settings: React.FC = () => {
               </button>
             </div>
           ) : (
-            <div className="flex gap-2">
+            <div className="flex gap-2 min-w-0">
               <input
                 type="password"
                 value={adminPassword}
                 onChange={(e) => { setAdminPassword(e.target.value); setAdminError(''); }}
                 onKeyDown={(e) => e.key === 'Enter' && handleAdminLogin()}
                 placeholder="סיסמה"
-                className="flex-1 bg-background border border-border rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                className="flex-1 min-w-0 bg-background border border-border rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
               />
               <button
                 onClick={handleAdminLogin}
