@@ -33,7 +33,7 @@ const SOS: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" dir="rtl">
       {/* Header */}
       <div className="px-6 pt-8 pb-4 flex items-center gap-4">
         <button

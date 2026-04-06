@@ -5,17 +5,17 @@ import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const MOOD_EMOJIS = ['😰', '😟', '😕', '😐', '🙂', '😊', '😄', '😁', '🤩', '✨', '🌟'];
 const MOOD_COLORS = [
-  'bg-red-100 border-red-300',
-  'bg-red-50 border-red-200',
-  'bg-orange-50 border-orange-200',
-  'bg-amber-50 border-amber-200',
-  'bg-yellow-50 border-yellow-200',
-  'bg-lime-50 border-lime-200',
-  'bg-green-50 border-green-200',
-  'bg-emerald-50 border-emerald-200',
-  'bg-teal-50 border-teal-200',
-  'bg-cyan-50 border-cyan-200',
-  'bg-sky-50 border-sky-200',
+  'bg-destructive/10 border-destructive/20',
+  'bg-destructive/5 border-destructive/15',
+  'bg-accent/10 border-accent/20',
+  'bg-accent/5 border-accent/15',
+  'bg-secondary border-border',
+  'bg-secondary border-border',
+  'bg-primary/5 border-primary/10',
+  'bg-primary/10 border-primary/15',
+  'bg-primary/15 border-primary/20',
+  'bg-primary/20 border-primary/25',
+  'bg-primary/25 border-primary/30',
 ];
 
 const Journal: React.FC = () => {

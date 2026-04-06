@@ -129,9 +129,9 @@ const GuidedExercise: React.FC = () => {
   const getBgClass = () => {
     if (!step) return 'bg-background';
     switch (step.type) {
-      case 'inhale': return 'bg-sky-50';
-      case 'exhale': return 'bg-emerald-50';
-      case 'hold': return 'bg-amber-50';
+      case 'inhale': return 'bg-primary/5';
+      case 'exhale': return 'bg-accent/5';
+      case 'hold': return 'bg-secondary';
       default: return 'bg-background';
     }
   };
