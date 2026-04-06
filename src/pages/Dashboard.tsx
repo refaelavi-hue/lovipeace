@@ -38,7 +38,7 @@ const Dashboard: React.FC = () => {
       <div className="px-6 mb-6 animate-fade-up-delay-2">
         <button
           className="w-full rounded-3xl bg-primary/15 border border-primary/20 p-6 text-right transition-all duration-300 hover:bg-primary/20 active:scale-[0.98]"
-          onClick={() => {}}
+          onClick={() => navigate(`/weeks/${currentWeek}`)}
         >
           <div className="flex items-center gap-3 mb-2">
             <Sparkles size={20} className="text-primary" />
@@ -59,7 +59,10 @@ const Dashboard: React.FC = () => {
             <Heart size={24} className="text-accent" />
             <span className="text-accent font-medium text-sm">SOS</span>
           </button>
-          <button className="flex-1 rounded-2xl bg-card border border-border p-4 flex flex-col items-center gap-2 transition-all duration-300 hover:bg-muted active:scale-[0.98]">
+          <button
+            onClick={() => navigate('/exercise/breathing-calm')}
+            className="flex-1 rounded-2xl bg-card border border-border p-4 flex flex-col items-center gap-2 transition-all duration-300 hover:bg-muted active:scale-[0.98]"
+          >
             <Wind size={24} className="text-primary" />
             <span className="text-foreground font-medium text-sm">נשימה מהירה</span>
           </button>
