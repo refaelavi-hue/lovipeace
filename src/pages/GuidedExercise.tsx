@@ -137,15 +137,6 @@ const GuidedExercise: React.FC = () => {
     }
   };
 
-  const getBreathingScale = () => {
-    if (!step) return 'scale-100';
-    switch (step.type) {
-      case 'inhale': return 'scale-150';
-      case 'exhale': return 'scale-75';
-      case 'hold': return 'scale-150';
-      default: return 'scale-100';
-    }
-  };
 
   return (
     <div className={`min-h-screen transition-colors duration-1000 ${getBgClass()} flex flex-col`} dir="rtl">
