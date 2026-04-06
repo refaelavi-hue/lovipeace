@@ -13,7 +13,7 @@ const Index = () => {
         return;
       }
     }
-    navigate('/onboarding', { replace: true });
+    navigate('/welcome', { replace: true });
   }, [navigate]);
 
   return null;
