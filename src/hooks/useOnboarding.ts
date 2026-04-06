@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 
 export interface UserProfile {
   name: string;
+  gender: 'female' | 'male' | '';
   reason: string;
   voicePreference: string;
   onboardingComplete: boolean;
@@ -9,6 +10,7 @@ export interface UserProfile {
 
 const DEFAULT_PROFILE: UserProfile = {
   name: '',
+  gender: '',
   reason: '',
   voicePreference: '',
   onboardingComplete: false,
