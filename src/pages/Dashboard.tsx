@@ -30,7 +30,8 @@ const Dashboard: React.FC = () => {
           {profile.name} 💛
         </h1>
         <p className="text-muted-foreground mt-2 animate-fade-up-delay-2">
-          מה בא לך לחקור היום?
+          מה {profile.gender === 'male' ? 'בא לך' : 'בא לך'} לחקור היום?
+        </p>
         </p>
       </div>
 

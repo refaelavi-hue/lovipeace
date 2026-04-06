@@ -2,28 +2,33 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Wind, Mountain, MessageCircleHeart, Phone } from 'lucide-react';
 import BreathingExercise from '@/components/BreathingExercise';
-
-const GROUNDING_STEPS = [
-  '5 דברים שאת רואה',
-  '4 דברים שאת שומעת',
-  '3 דברים שאת מרגישה במגע',
-  '2 דברים שאת מריחה',
-  'דבר 1 שאת טועמת',
-];
-
-const AFFIRMATIONS = [
-  'את בטוחה כאן ועכשיו.',
-  'הרגע הזה יעבור.',
-  'את לא לבד בזה.',
-  'הגוף שלך יודע לחזור לאיזון.',
-  'נשמי — את עושה את זה נכון.',
-  'את יותר חזקה ממה שנראה לך.',
-];
+import { useOnboarding } from '@/hooks/useOnboarding';
+import { g } from '@/lib/genderedText';
 
 const SOS: React.FC = () => {
   const navigate = useNavigate();
+  const { profile } = useOnboarding();
+  const gender = profile.gender;
   const [activeModule, setActiveModule] = useState<'menu' | 'breathing' | 'grounding' | 'affirmations'>('menu');
   const [groundingStep, setGroundingStep] = useState(0);
+
+  const GROUNDING_STEPS = [
+    `5 דברים ש${g(gender, 'את רואה', 'אתה רואה')}`,
+    `4 דברים ש${g(gender, 'את שומעת', 'אתה שומע')}`,
+    `3 דברים ש${g(gender, 'את מרגישה', 'אתה מרגיש')} במגע`,
+    `2 דברים ש${g(gender, 'את מריחה', 'אתה מריח')}`,
+    `דבר 1 ש${g(gender, 'את טועמת', 'אתה טועם')}`,
+  ];
+
+  const AFFIRMATIONS = [
+    `${g(gender, 'את בטוחה', 'אתה בטוח')} כאן ועכשיו.`,
+    'הרגע הזה יעבור.',
+    `${g(gender, 'את לא לבד', 'אתה לא לבד')} בזה.`,
+    `הגוף שלך יודע לחזור לאיזון.`,
+    `${g(gender, 'נשמי', 'נשום')} — ${g(gender, 'את עושה', 'אתה עושה')} את זה נכון.`,
+    `${g(gender, 'את יותר חזקה', 'אתה יותר חזק')} ממה שנראה לך.`,
+  ];
+
   const [affirmationIndex, setAffirmationIndex] = useState(
     () => Math.floor(Math.random() * AFFIRMATIONS.length)
   );
@@ -34,7 +39,6 @@ const SOS: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background" dir="rtl">
-      {/* Header */}
       <div className="px-6 pt-8 pb-4 flex items-center gap-4">
         <button
           onClick={() => activeModule === 'menu' ? navigate(-1) : setActiveModule('menu')}
@@ -52,7 +56,7 @@ const SOS: React.FC = () => {
       {activeModule === 'menu' && (
         <div className="px-6 pt-4 space-y-4 animate-fade-up">
           <p className="text-muted-foreground mb-6 leading-relaxed">
-            הכל בסדר. בחרי מה מרגיש לך נכון עכשיו.
+            הכל בסדר. {g(gender, 'בחרי', 'בחר')} מה {g(gender, 'מרגיש לך', 'מרגיש לך')} נכון עכשיו.
           </p>
 
           <button
@@ -64,7 +68,7 @@ const SOS: React.FC = () => {
             </div>
             <div>
               <h3 className="text-foreground text-lg font-semibold">נשימה מונחית</h3>
-              <p className="text-muted-foreground text-sm mt-1">4-4-6 — שאפי, החזיקי, נשפי</p>
+              <p className="text-muted-foreground text-sm mt-1">4-4-6 — {g(gender, 'שאפי, החזיקי, נשפי', 'שאף, החזק, נשוף')}</p>
             </div>
           </button>
 
@@ -94,7 +98,6 @@ const SOS: React.FC = () => {
             </div>
           </button>
 
-          {/* Emergency banner */}
           <a
             href="tel:1201"
             className="w-full flex items-center gap-3 rounded-2xl bg-destructive/10 border border-destructive/20 p-4 mt-2 transition-colors hover:bg-destructive/15 active:scale-[0.98]"
