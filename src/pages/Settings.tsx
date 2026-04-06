@@ -227,25 +227,17 @@ const Settings: React.FC = () => {
           )}
         </div>
 
-        {/* Links */}
-        <div className="bg-card rounded-2xl border border-border overflow-hidden">
-          <button
-            onClick={() => navigate('/terms')}
-            className="w-full flex items-center gap-3 p-4 text-right hover:bg-muted/50 transition-colors border-b border-border"
-          >
-            <Phone className="w-5 h-5 text-destructive" />
-            <span className="flex-1 text-foreground font-medium">קווים לסיוע נפשי</span>
-            <ChevronLeft className="w-4 h-4 text-muted-foreground" />
-          </button>
-          <button
-            onClick={() => navigate('/terms')}
-            className="w-full flex items-center gap-3 p-4 text-right hover:bg-muted/50 transition-colors"
-          >
-            <FileText className="w-5 h-5 text-muted-foreground" />
-            <span className="flex-1 text-foreground font-medium">תנאי שימוש והבהרות</span>
-            <ChevronLeft className="w-4 h-4 text-muted-foreground" />
-          </button>
-        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="px-6 py-6 flex justify-center gap-4 text-xs text-muted-foreground">
+        <button onClick={() => navigate('/terms')} className="hover:text-foreground transition-colors underline underline-offset-2">
+          תנאי שימוש והבהרות
+        </button>
+        <span>·</span>
+        <a href="tel:1201" className="hover:text-foreground transition-colors underline underline-offset-2">
+          קו חירום ער״ן 1201
+        </a>
       </div>
 
       <BottomNav />
