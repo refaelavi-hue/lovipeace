@@ -112,13 +112,13 @@ const Settings: React.FC = () => {
             <span className="text-foreground text-sm">תזכורת יומית לתרגול</span>
             <button
               onClick={handleToggleReminder}
-              className={`w-12 h-7 rounded-full transition-all duration-300 relative ${
+              className={`w-12 h-7 rounded-full transition-all duration-300 relative shrink-0 ${
                 reminder.enabled ? 'bg-primary' : 'bg-muted'
               }`}
             >
               <div
                 className={`w-5 h-5 bg-white rounded-full absolute top-1 transition-all duration-300 shadow-sm ${
-                  reminder.enabled ? 'left-1' : 'right-1'
+                  reminder.enabled ? 'right-1' : 'left-1'
                 }`}
               />
             </button>
