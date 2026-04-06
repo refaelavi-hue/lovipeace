@@ -98,6 +98,11 @@ const GuidedExercise: React.FC = () => {
     }
   }, [soundOn, meditation, phase, play, stop]);
 
+  const playStepCue = useCallback((type: string) => {
+    if (type === 'inhale') playCue('inhale');
+    else if (type === 'exhale') playCue('exhale');
+  }, [playCue]);
+
   const advanceMeditation = useCallback(() => {
     if (!meditation) return;
 
@@ -105,6 +110,7 @@ const GuidedExercise: React.FC = () => {
       setPhase('active');
       setCurrentStep(0);
       setTimeLeft(meditation.steps[0].duration);
+      playStepCue(meditation.steps[0].type);
       return;
     }
 
@@ -114,9 +120,11 @@ const GuidedExercise: React.FC = () => {
       if (nextStep < meditation.steps.length) {
         setCurrentStep(nextStep);
         setTimeLeft(meditation.steps[nextStep].duration);
+        playStepCue(meditation.steps[nextStep].type);
       } else {
         setPhase('outro');
         setTimeLeft(8);
+        playCue('thank-you');
       }
 
       return;
@@ -128,7 +136,7 @@ const GuidedExercise: React.FC = () => {
       setPhase('idle');
       setTimeLeft(0);
     }
-  }, [clearTimer, currentStep, meditation, phase, stop]);
+  }, [clearTimer, currentStep, meditation, phase, playCue, playStepCue, stop]);
 
   // Timer logic
   useEffect(() => {
