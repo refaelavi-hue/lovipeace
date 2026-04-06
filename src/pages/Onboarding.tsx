@@ -39,10 +39,10 @@ const Onboarding: React.FC = () => {
 
   const canProceed = () => {
     switch (step) {
-      case 0: return profile.gender.length > 0;
+      case 0: return (profile.gender || '').length > 0;
       case 1: return profile.name.trim().length > 0;
-      case 2: return profile.reason.length > 0;
-      case 3: return profile.voicePreference.length > 0;
+      case 2: return (profile.reason || '').length > 0;
+      case 3: return (profile.voicePreference || '').length > 0;
       case 4: return accepted;
       default: return false;
     }
