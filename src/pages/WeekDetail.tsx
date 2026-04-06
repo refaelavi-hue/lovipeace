@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowRight, Lock, ChevronDown, Check } from 'lucide-react';
+import { ArrowRight, Lock, ChevronDown, Check, Play } from 'lucide-react';
 import { WEEKS_DATA, CATEGORY_INFO } from '@/data/weeksData';
 import { useAdmin } from '@/hooks/useAdmin';
 import { useProgress } from '@/hooks/useProgress';
+import { GUIDED_MEDITATIONS } from '@/data/guidedMeditations';
 
 const WeekDetail: React.FC = () => {
   const { weekNumber } = useParams();
@@ -141,17 +142,34 @@ const WeekDetail: React.FC = () => {
                         <p className="text-base leading-relaxed opacity-85 mb-4">
                           {exercise.description}
                         </p>
-                        <button
-                          onClick={(e) => handleComplete(e, exercise.category)}
-                          className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
-                            completed
-                              ? 'bg-primary/20 text-primary'
-                              : 'bg-primary text-primary-foreground hover:opacity-90'
-                          }`}
-                        >
-                          <Check className="w-4 h-4" />
-                          {completed ? 'הושלם ✓' : 'סימון כהושלם'}
-                        </button>
+                        <div className="flex flex-wrap gap-2">
+                          <button
+                            onClick={(e) => handleComplete(e, exercise.category)}
+                            className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
+                              completed
+                                ? 'bg-primary/20 text-primary'
+                                : 'bg-primary text-primary-foreground hover:opacity-90'
+                            }`}
+                          >
+                            <Check className="w-4 h-4" />
+                            {completed ? 'הושלם ✓' : 'סימון כהושלם'}
+                          </button>
+                          {exercise.category === 'breathing' && (() => {
+                            const match = GUIDED_MEDITATIONS.find(m => m.category === 'breathing');
+                            return match ? (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(`/exercise/${match.id}`);
+                                }}
+                                className="flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold bg-accent/20 text-accent-foreground hover:bg-accent/30 transition-all duration-200"
+                              >
+                                <Play className="w-4 h-4" />
+                                תרגול מונחה
+                              </button>
+                            ) : null;
+                          })()}
+                        </div>
                       </div>
                     </div>
                   </div>
