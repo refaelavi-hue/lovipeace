@@ -5,7 +5,7 @@ import { useOnboarding } from '@/hooks/useOnboarding';
 import { useProgress } from '@/hooks/useProgress';
 import { useReminders } from '@/hooks/useReminders';
 import { useAdmin } from '@/hooks/useAdmin';
-import { User, RotateCcw, Bell, Shield, ShieldOff, ChevronLeft, Phone, FileText } from 'lucide-react';
+import { User, RotateCcw, Bell, Shield, ShieldOff } from 'lucide-react';
 import { toast } from 'sonner';
 
 const Settings: React.FC = () => {
