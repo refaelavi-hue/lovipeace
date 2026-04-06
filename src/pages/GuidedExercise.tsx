@@ -206,24 +206,18 @@ const GuidedExercise: React.FC = () => {
 
         {phase === 'active' && step && (
           <div className="animate-scale-fade-in max-w-sm">
-            {/* Breathing circle */}
-            {(step.type === 'inhale' || step.type === 'exhale' || step.type === 'hold') && (
-              <div className="mb-8 flex justify-center">
-                <div
-                  className={`w-28 h-28 rounded-full bg-primary/20 border-2 border-primary/40 flex items-center justify-center transition-transform duration-[3000ms] ease-in-out ${getBreathingScale()}`}
-                >
-                  <span className="text-primary font-semibold text-sm">
-                    {step.type === 'inhale' ? 'שאיפה' : step.type === 'exhale' ? 'נשיפה' : 'עצירה'}
-                  </span>
-                </div>
-              </div>
-            )}
+            {/* Breathing circle with timer */}
+            <div className="mb-8">
+              <BreathingCircleTimer
+                type={step.type}
+                duration={step.duration}
+                timeLeft={timeLeft}
+              />
+            </div>
 
-            <p className="text-xl text-foreground leading-relaxed font-medium mb-6">
+            <p className="text-xl text-foreground leading-relaxed font-medium mb-4">
               {step.instruction}
             </p>
-
-            <p className="text-3xl font-bold text-primary mb-4">{timeLeft}</p>
             
             {/* Step counter */}
             <p className="text-xs text-muted-foreground">
