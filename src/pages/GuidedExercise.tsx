@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowRight, Play, Pause, Volume2, VolumeX, RotateCcw } from 'lucide-react';
+import { ArrowRight, Play, Pause, Volume2, VolumeX, RotateCcw, Mic } from 'lucide-react';
 import { GUIDED_MEDITATIONS, type MeditationStep } from '@/data/guidedMeditations';
 import { useAmbientSound } from '@/hooks/useAmbientSound';
 import { useVoiceCues } from '@/hooks/useVoiceCues';
+import { useOnboarding } from '@/hooks/useOnboarding';
 import BreathingCircleTimer from '@/components/BreathingCircleTimer';
 
 const SOUND_LABELS: Record<string, string> = {
@@ -40,8 +41,22 @@ const GuidedExercise: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const meditation = GUIDED_MEDITATIONS.find(m => m.id === id);
-  const { play, stop, isPlaying: soundPlaying } = useAmbientSound();
+  const { play, stop } = useAmbientSound();
   const { unlock, playCue, stopCue } = useVoiceCues();
+  const { profile } = useOnboarding();
+
+  // Audio guide support
+  const voiceAudioRef = useRef<HTMLAudioElement | null>(null);
+  const [audioMode, setAudioMode] = useState(false);
+
+  const voiceUrl = useMemo(() => {
+    if (!meditation) return null;
+    return profile.voicePreference === 'male'
+      ? meditation.maleVoiceUrl
+      : meditation.femaleVoiceUrl;
+  }, [meditation, profile.voicePreference]);
+
+  const hasAudio = Boolean(voiceUrl);
 
   const [durationMode, setDurationMode] = useState<DurationMode>(
     () => (localStorage.getItem(DURATION_KEY) as DurationMode) || 'regular'
@@ -70,14 +85,23 @@ const GuidedExercise: React.FC = () => {
     }
   }, []);
 
+  const stopVoiceAudio = useCallback(() => {
+    if (voiceAudioRef.current) {
+      voiceAudioRef.current.pause();
+      voiceAudioRef.current.currentTime = 0;
+      voiceAudioRef.current = null;
+    }
+  }, []);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
       clearTimer();
       stop();
       stopCue();
+      stopVoiceAudio();
     };
-  }, [clearTimer, stop, stopCue]);
+  }, [clearTimer, stop, stopCue, stopVoiceAudio]);
 
   const startMeditation = useCallback(() => {
     if (!meditation) return;
@@ -92,15 +116,35 @@ const GuidedExercise: React.FC = () => {
     }
   }, [meditation, play, playCue, soundOn, unlock]);
 
+  const startAudioMeditation = useCallback(() => {
+    if (!meditation || !voiceUrl) return;
+    unlock();
+    setAudioMode(true);
+    setPhase('active');
+    setIsPaused(false);
+    if (soundOn) {
+      play(meditation.soundType, 0.3); // lower ambient for voice
+    }
+    const audio = new Audio(voiceUrl);
+    audio.play();
+    audio.onended = () => {
+      setPhase('outro');
+      setTimeLeft(8);
+    };
+    voiceAudioRef.current = audio;
+  }, [meditation, voiceUrl, play, soundOn, unlock]);
+
   const resetMeditation = useCallback(() => {
     clearTimer();
     stop();
     stopCue();
+    stopVoiceAudio();
     setPhase('idle');
     setCurrentStep(0);
     setTimeLeft(0);
     setIsPaused(false);
-  }, [clearTimer, stop, stopCue]);
+    setAudioMode(false);
+  }, [clearTimer, stop, stopCue, stopVoiceAudio]);
 
   const handleBack = useCallback(() => {
     resetMeditation();
@@ -118,7 +162,13 @@ const GuidedExercise: React.FC = () => {
   }, [navigate, resetMeditation]);
 
   const togglePause = useCallback(() => {
-    setIsPaused(prev => !prev);
+    setIsPaused(prev => {
+      const next = !prev;
+      if (voiceAudioRef.current) {
+        next ? voiceAudioRef.current.pause() : voiceAudioRef.current.play();
+      }
+      return next;
+    });
   }, []);
 
   const toggleSound = useCallback(() => {
@@ -276,12 +326,26 @@ const GuidedExercise: React.FC = () => {
 
             <p className="text-xs text-muted-foreground mb-6">{SOUND_LABELS[meditation.soundType]}</p>
             
-            <button
-              onClick={startMeditation}
-              className="bg-primary text-primary-foreground w-20 h-20 rounded-full flex items-center justify-center shadow-lg hover:opacity-90 transition-all active:scale-95 mx-auto"
-            >
-              <Play size={32} className="mr-[-2px]" />
-            </button>
+            <div className="flex items-center justify-center gap-4">
+              <button
+                onClick={startMeditation}
+                aria-label="התחל תרגול טקסט"
+                className="bg-primary text-primary-foreground w-20 h-20 rounded-full flex items-center justify-center shadow-lg hover:opacity-90 transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              >
+                <Play size={32} className="mr-[-2px]" />
+              </button>
+
+              {hasAudio && (
+                <button
+                  onClick={startAudioMeditation}
+                  aria-label="התחל תרגול עם הנחיה קולית"
+                  className="bg-accent/15 text-accent-foreground w-16 h-16 rounded-full flex flex-col items-center justify-center border-2 border-accent/25 hover:bg-accent/25 transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                >
+                  <Mic size={22} />
+                  <span className="text-[9px] font-medium mt-0.5">קולי</span>
+                </button>
+              )}
+            </div>
           </div>
         )}
 
@@ -294,7 +358,17 @@ const GuidedExercise: React.FC = () => {
           </div>
         )}
 
-        {phase === 'active' && step && (
+        {phase === 'active' && audioMode && (
+          <div className="animate-fade-up max-w-sm">
+            <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-8 mx-auto animate-pulse">
+              <Mic size={36} className="text-primary" />
+            </div>
+            <p className="text-lg text-foreground font-medium mb-2">הנחיה קולית פעילה</p>
+            <p className="text-muted-foreground text-sm">הקשיבו והירגעו</p>
+          </div>
+        )}
+
+        {phase === 'active' && !audioMode && step && (
           <div className="animate-scale-fade-in max-w-sm">
             {/* Breathing circle with timer */}
             <div className="mb-8">

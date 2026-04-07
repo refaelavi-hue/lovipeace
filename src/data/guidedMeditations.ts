@@ -15,6 +15,9 @@ export interface GuidedMeditation {
   intro: string;
   steps: MeditationStep[];
   outro: string;
+  /** Optional full-session voice audio URLs */
+  maleVoiceUrl?: string;
+  femaleVoiceUrl?: string;
 }
 
 export const GUIDED_MEDITATIONS: GuidedMeditation[] = [
