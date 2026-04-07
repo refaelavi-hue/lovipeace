@@ -377,6 +377,7 @@ const GuidedExercise: React.FC = () => {
                 type={step.type}
                 duration={step.duration}
                 timeLeft={timeLeft}
+                shape={meditation?.id === 'box-breathing' ? 'square' : 'circle'}
               />
             </div>
 
