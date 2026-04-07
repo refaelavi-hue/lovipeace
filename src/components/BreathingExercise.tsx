@@ -141,7 +141,7 @@ const BreathingExercise: React.FC<BreathingExerciseProps> = ({ onClose }) => {
         <X size={28} />
       </button>
 
-      <div className="flex flex-col items-center gap-8">
+      <div className="flex flex-col items-center gap-10">
         <BreathingCircleTimer
           key={phaseIndex}
           type={currentPhase.type}
@@ -149,13 +149,10 @@ const BreathingExercise: React.FC<BreathingExerciseProps> = ({ onClose }) => {
           timeLeft={timeLeft}
           label={currentPhase.label}
         />
-
-        <div className="text-center">
-          <p className="text-2xl font-light text-foreground mb-2">{currentPhase.label}</p>
-          <p className="text-muted-foreground text-sm">
-            סבב {cycles + 1} מתוך {maxCycles}
-          </p>
-        </div>
+        <p className="text-xl text-foreground font-light">{currentPhase.label}</p>
+        <p className="text-muted-foreground text-sm">
+          סבב {cycles + 1} מתוך {maxCycles}
+        </p>
       </div>
 
       <button

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { useOnboarding } from '@/hooks/useOnboarding';
@@ -25,6 +25,15 @@ function getFloodingAffirmation(gender: Gender): string[] {
     'הרגע הזה עובר.',
     g(gender, 'הגוף שלך יכול לחזור לאט לאיזון.', 'הגוף שלך יכול לחזור לאט לאיזון.'),
     'בינתיים, רק עוד נשימה אחת.',
+  ];
+}
+
+function getRestlessBreathing(gender: Gender) {
+  return [
+    { label: g(gender, 'הרגישי את האוויר נכנס...', 'הרגש את האוויר נכנס...'), duration: 4, scale: 1.3 },
+    { label: 'הבטן עולה...', duration: 2, scale: 1.3 },
+    { label: 'והאוויר יוצא...', duration: 5, scale: 1 },
+    { label: 'והבטן יורדת...', duration: 2, scale: 1 },
   ];
 }
 
@@ -69,12 +78,6 @@ const FLOODING_BREATHING = [
 ];
 const FLOODING_CYCLES = 4;
 
-const RESTLESS_BREATHING = [
-  { label: 'הרגש את האוויר נכנס...', duration: 4, scale: 1.3 },
-  { label: 'הבטן עולה...', duration: 2, scale: 1.3 },
-  { label: 'והאוויר יוצא...', duration: 5, scale: 1 },
-  { label: 'והבטן יורדת...', duration: 2, scale: 1 },
-];
 const RESTLESS_CYCLES = 3;
 
 const DEFAULT_BREATHING = [
@@ -144,9 +147,37 @@ const QuickRelief: React.FC = () => {
   const [breathCycle, setBreathCycle] = useState(0);
   const [breathTimer, setBreathTimer] = useState(0);
 
-  const breathingPhases = feeling === 'flooding' ? FLOODING_BREATHING : feeling === 'restless' ? RESTLESS_BREATHING : DEFAULT_BREATHING;
+  // Ambient sound
+  const ambientRef = useRef<HTMLAudioElement | null>(null);
+
+  const restlessBreathing = getRestlessBreathing(gender);
+  const breathingPhases = feeling === 'flooding' ? FLOODING_BREATHING : feeling === 'restless' ? restlessBreathing : DEFAULT_BREATHING;
   const maxCycles = feeling === 'flooding' ? FLOODING_CYCLES : feeling === 'restless' ? RESTLESS_CYCLES : DEFAULT_CYCLES;
   const currentBreath = breathingPhases[breathIndex];
+
+  // Start/stop ambient sound with exercise
+  useEffect(() => {
+    if (phase === 'grounding' || phase === 'breathing') {
+      if (!ambientRef.current) {
+        ambientRef.current = new Audio('/audio/tibetan-bowl.mp3');
+        ambientRef.current.loop = true;
+        ambientRef.current.volume = 0.3;
+      }
+      ambientRef.current.play().catch(() => {});
+    }
+    if (phase === 'choose' || phase === 'affirmation') {
+      if (ambientRef.current) {
+        ambientRef.current.pause();
+        ambientRef.current.currentTime = 0;
+      }
+    }
+    return () => {
+      if (ambientRef.current) {
+        ambientRef.current.pause();
+        ambientRef.current.currentTime = 0;
+      }
+    };
+  }, [phase]);
 
   const startExercise = (f: Feeling) => {
     setFeeling(f);
@@ -186,7 +217,13 @@ const QuickRelief: React.FC = () => {
     }
   }, [phase, breathTimer, breathIndex, breathCycle, breathingPhases, maxCycles]);
 
-  const handleClose = () => navigate(-1);
+  const handleClose = () => {
+    if (ambientRef.current) {
+      ambientRef.current.pause();
+      ambientRef.current.currentTime = 0;
+    }
+    navigate(-1);
+  };
 
   const questionText = g(gender, 'איך את מרגישה עכשיו?', 'איך אתה מרגיש עכשיו?');
 
@@ -235,7 +272,7 @@ const QuickRelief: React.FC = () => {
   /* ── Breathing ── */
   if (phase === 'breathing' && currentBreath) {
     const progress = 1 - breathTimer / currentBreath.duration;
-    const isExhale = currentBreath.label.includes('נשיפה');
+    const isExhale = currentBreath.label.includes('נשיפה') || currentBreath.label.includes('יוצא') || currentBreath.label.includes('יורדת');
 
     return (
       <div className="fixed inset-0 bg-background z-50 flex flex-col items-center justify-center" dir="rtl">
