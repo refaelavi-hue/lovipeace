@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import BottomNav from '@/components/BottomNav';
-import { useJournal, type MoodLabel } from '@/hooks/useJournal';
-import { Check, Trash2, BookOpen } from 'lucide-react';
+import { useJournal, type MoodLabel, type BodyMetrics } from '@/hooks/useJournal';
+import { Check, Trash2, BookOpen, Heart, Activity } from 'lucide-react';
 
 const MOOD_LABELS: { id: MoodLabel; emoji: string }[] = [
   { id: 'רגוע', emoji: '😌' },
@@ -11,11 +11,16 @@ const MOOD_LABELS: { id: MoodLabel; emoji: string }[] = [
   { id: 'לא בטוח', emoji: '🤷' },
 ];
 
+const STRESS_LABELS = ['נמוך', '', '', '', '', 'בינוני', '', '', '', '', 'גבוה'];
+
 const Journal: React.FC = () => {
   const { addEntry, deleteEntry, entries } = useJournal();
   const [selectedMood, setSelectedMood] = useState<MoodLabel | null>(null);
   const [note, setNote] = useState('');
   const [saved, setSaved] = useState(false);
+  const [heartRate, setHeartRate] = useState('');
+  const [stressLevel, setStressLevel] = useState<number | null>(null);
+  const [showMetrics, setShowMetrics] = useState(false);
 
   const moodToNumber = (label: MoodLabel): number => {
     switch (label) {
@@ -29,10 +34,20 @@ const Journal: React.FC = () => {
 
   const handleSave = () => {
     if (!selectedMood) return;
-    addEntry(moodToNumber(selectedMood), note.trim(), selectedMood);
+    const metrics: BodyMetrics | undefined =
+      (heartRate || stressLevel)
+        ? {
+            heartRate: heartRate ? Math.min(220, Math.max(30, parseInt(heartRate))) : undefined,
+            stressLevel: stressLevel ?? undefined,
+          }
+        : undefined;
+    addEntry(moodToNumber(selectedMood), note.trim(), selectedMood, metrics);
     setSaved(true);
     setNote('');
     setSelectedMood(null);
+    setHeartRate('');
+    setStressLevel(null);
+    setShowMetrics(false);
     setTimeout(() => setSaved(false), 2500);
   };
 
@@ -67,6 +82,7 @@ const Journal: React.FC = () => {
             <button
               key={m.id}
               onClick={() => setSelectedMood(m.id)}
+              aria-label={m.id}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-medium transition-all duration-200 ${
                 selectedMood === m.id
                   ? 'bg-primary/20 border-2 border-primary text-foreground'
@@ -79,6 +95,79 @@ const Journal: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* Body metrics toggle */}
+      <div className="px-6 mb-2">
+        <button
+          onClick={() => setShowMetrics(!showMetrics)}
+          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          aria-expanded={showMetrics}
+          aria-label="הוסף מדדי גוף"
+        >
+          <Activity size={16} />
+          <span>מדדי גוף (לא חובה)</span>
+          <span className="text-xs">{showMetrics ? '▲' : '▼'}</span>
+        </button>
+      </div>
+
+      {/* Body metrics inputs */}
+      {showMetrics && (
+        <div className="px-6 mb-4 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+          {/* Heart rate */}
+          <div className="bg-card rounded-2xl p-4 border border-border/50">
+            <div className="flex items-center gap-2 mb-3">
+              <Heart size={18} className="text-red-400" />
+              <span className="text-foreground text-sm font-medium">דופק</span>
+              <span className="text-muted-foreground/60 text-xs">(פעימות לדקה)</span>
+            </div>
+            <input
+              type="number"
+              inputMode="numeric"
+              min={30}
+              max={220}
+              value={heartRate}
+              onChange={(e) => setHeartRate(e.target.value)}
+              placeholder="לדוגמה: 72"
+              className="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground text-base placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
+              aria-label="דופק בפעימות לדקה"
+            />
+          </div>
+
+          {/* Stress level */}
+          <div className="bg-card rounded-2xl p-4 border border-border/50">
+            <div className="flex items-center gap-2 mb-3">
+              <Activity size={18} className="text-orange-400" />
+              <span className="text-foreground text-sm font-medium">רמת מתח</span>
+              <span className="text-muted-foreground/60 text-xs">(1-10)</span>
+            </div>
+            <div className="flex gap-1.5 flex-wrap">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((level) => (
+                <button
+                  key={level}
+                  onClick={() => setStressLevel(stressLevel === level ? null : level)}
+                  aria-label={`רמת מתח ${level}`}
+                  className={`w-9 h-9 rounded-xl text-sm font-medium transition-all duration-200 ${
+                    stressLevel === level
+                      ? level <= 3
+                        ? 'bg-green-500/20 border-2 border-green-500 text-green-700'
+                        : level <= 6
+                        ? 'bg-yellow-500/20 border-2 border-yellow-500 text-yellow-700'
+                        : 'bg-red-500/20 border-2 border-red-500 text-red-700'
+                      : 'bg-background border-2 border-border text-muted-foreground hover:border-primary/30'
+                  }`}
+                >
+                  {level}
+                </button>
+              ))}
+            </div>
+            <div className="flex justify-between mt-2 px-1">
+              <span className="text-xs text-muted-foreground/50">{STRESS_LABELS[1]}</span>
+              <span className="text-xs text-muted-foreground/50">{STRESS_LABELS[5]}</span>
+              <span className="text-xs text-muted-foreground/50">{STRESS_LABELS[10]}</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Text area */}
       <div className="px-6 mb-4">
@@ -147,10 +236,30 @@ const Journal: React.FC = () => {
                   <button
                     onClick={() => deleteEntry(entry.id)}
                     className="text-muted-foreground/40 hover:text-destructive transition-colors p-1"
+                    aria-label="מחק רשומה"
                   >
                     <Trash2 size={16} />
                   </button>
                 </div>
+
+                {/* Body metrics display */}
+                {entry.bodyMetrics && (entry.bodyMetrics.heartRate || entry.bodyMetrics.stressLevel) && (
+                  <div className="flex gap-3 mb-2 pr-8">
+                    {entry.bodyMetrics.heartRate && (
+                      <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                        <Heart size={12} className="text-red-400" />
+                        <span>{entry.bodyMetrics.heartRate} bpm</span>
+                      </div>
+                    )}
+                    {entry.bodyMetrics.stressLevel && (
+                      <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                        <Activity size={12} className="text-orange-400" />
+                        <span>מתח: {entry.bodyMetrics.stressLevel}/10</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {entry.note && (
                   <p className="text-foreground/80 text-sm leading-relaxed pr-8">
                     {entry.note}
