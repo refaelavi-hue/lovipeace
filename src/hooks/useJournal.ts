@@ -2,12 +2,18 @@ import { useState, useEffect, useCallback } from 'react';
 
 export type MoodLabel = 'רגוע' | 'לחוץ' | 'מוצף' | 'עייף' | 'לא בטוח';
 
+export interface BodyMetrics {
+  heartRate?: number; // beats per minute
+  stressLevel?: number; // 1-10
+}
+
 export interface JournalEntry {
   id: string;
   date: string; // ISO date string YYYY-MM-DD
   mood: number; // 0-10
   moodLabel?: MoodLabel;
   note: string;
+  bodyMetrics?: BodyMetrics;
   createdAt: string;
 }
 
@@ -25,13 +31,13 @@ export function useJournal() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
   }, [entries]);
 
-  const addEntry = useCallback((mood: number, note: string, moodLabel?: MoodLabel) => {
+  const addEntry = useCallback((mood: number, note: string, moodLabel?: MoodLabel, bodyMetrics?: BodyMetrics) => {
     const today = new Date().toISOString().split('T')[0];
     const existing = entries.findIndex(e => e.date === today);
     
     if (existing >= 0) {
       setEntries(prev => prev.map((e, i) => 
-        i === existing ? { ...e, mood, moodLabel, note, createdAt: new Date().toISOString() } : e
+        i === existing ? { ...e, mood, moodLabel, note, bodyMetrics, createdAt: new Date().toISOString() } : e
       ));
     } else {
       const entry: JournalEntry = {
@@ -40,6 +46,7 @@ export function useJournal() {
         mood,
         moodLabel,
         note,
+        bodyMetrics,
         createdAt: new Date().toISOString(),
       };
       setEntries(prev => [entry, ...prev]);
