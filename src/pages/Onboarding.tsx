@@ -15,11 +15,6 @@ const REASONS = [
   { id: 'growth', label: 'צמיחה אישית', icon: '🌱' },
 ];
 
-const VOICES = [
-  { id: 'female', label: 'קול נשי', icon: '🎵' },
-  { id: 'male', label: 'קול גברי', icon: '🎶' },
-];
-
 const Onboarding: React.FC = () => {
   const [step, setStep] = useState(0);
   const [accepted, setAccepted] = useState(false);
@@ -27,7 +22,7 @@ const Onboarding: React.FC = () => {
   const navigate = useNavigate();
   const t = getGenderedTexts(profile.gender);
 
-  const totalSteps = 4;
+  const totalSteps = 3;
 
   const handleNext = () => {
     if (step < totalSteps - 1) {
@@ -46,8 +41,7 @@ const Onboarding: React.FC = () => {
     switch (step) {
       case 0: return (profile.gender || '').length > 0 && profile.name.trim().length > 0;
       case 1: return (profile.reason || '').length > 0;
-      case 2: return (profile.voicePreference || '').length > 0;
-      case 3: return accepted;
+      case 2: return accepted;
       default: return false;
     }
   };
@@ -146,47 +140,12 @@ const Onboarding: React.FC = () => {
         </OnboardingStep>
       )}
 
-      {/* Step 2: Voice preference */}
+      {/* Step 2: Terms */}
       {step === 2 && (
-        <OnboardingStep
-          title="איזה קול מרגיע? 🎧"
-          subtitle={`${t.choose} קול להדרכות`}
-          step={2}
-          totalSteps={totalSteps}
-        >
-          <div className="space-y-3">
-            {backButton}
-            {VOICES.map((voice) => (
-              <button
-                key={voice.id}
-                onClick={() => updateProfile({ voicePreference: voice.id })}
-                className={`w-full p-5 rounded-2xl text-right flex items-center gap-4 transition-all duration-300 ${
-                  profile.voicePreference === voice.id
-                    ? 'bg-primary/20 border-2 border-primary'
-                    : 'bg-card border-2 border-transparent hover:border-primary/30'
-                }`}
-              >
-                <span className="text-2xl">{voice.icon}</span>
-                <span className="text-foreground text-lg">{voice.label}</span>
-              </button>
-            ))}
-            <Button
-              onClick={handleNext}
-              disabled={!canProceed()}
-              className="w-full h-14 rounded-2xl text-lg font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 disabled:opacity-30 mt-4"
-            >
-              המשך
-            </Button>
-          </div>
-        </OnboardingStep>
-      )}
-
-      {/* Step 3: Terms */}
-      {step === 3 && (
         <OnboardingStep
           title="לפני שמתחילים 📋"
           subtitle={`חשוב ש${g(profile.gender, 'תדעי', 'תדע')}`}
-          step={3}
+          step={2}
           totalSteps={totalSteps}
         >
           <div className="space-y-5">
