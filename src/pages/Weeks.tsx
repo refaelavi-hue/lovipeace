@@ -138,16 +138,18 @@ const Weeks: React.FC = () => {
                     <h3 className="text-foreground font-semibold text-base mb-1">{week.title}</h3>
                     <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2">{week.subtitle}</p>
                     
-                    {/* Progress bar for unlocked weeks with some progress */}
+                    {/* Soft progress indicator */}
                     {!isLocked && wp.completed > 0 && !isCompleted && (
                       <div className="mt-2.5">
-                        <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
+                        <div className="w-full h-1 bg-muted rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-primary rounded-full transition-all duration-500"
+                            className="h-full bg-primary/50 rounded-full transition-all duration-500"
                             style={{ width: `${wp.ratio * 100}%` }}
                           />
                         </div>
-                        <p className="text-xs text-muted-foreground mt-1">{wp.completed}/{wp.total} תרגילים</p>
+                        <p className="text-xs text-muted-foreground/70 mt-1.5">
+                          {wp.completed > 0 && wp.ratio < 1 ? 'גם מעט הוא משמעותי 💛' : `${wp.completed} מתוך ${wp.total}`}
+                        </p>
                       </div>
                     )}
 
