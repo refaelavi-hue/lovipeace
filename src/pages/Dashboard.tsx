@@ -101,6 +101,11 @@ const Dashboard: React.FC = () => {
         })}
       </div>
 
+      {/* Safety note */}
+      <p className="text-muted-foreground text-xs text-center px-8 mt-6 mb-4">
+        האפליקציה היא כלי עזר ואינה מחליפה טיפול מקצועי.
+      </p>
+
       <BottomNav />
     </div>
   );

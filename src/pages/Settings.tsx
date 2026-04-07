@@ -229,15 +229,38 @@ const Settings: React.FC = () => {
 
       </div>
 
+      {/* Emergency Support */}
+      <div className="px-6 mb-6">
+        <div className="bg-accent/5 rounded-3xl p-5 border border-accent/15">
+          <h3 className="text-foreground font-semibold text-base mb-2">עזרה במצוקה</h3>
+          <p className="text-muted-foreground text-sm leading-relaxed mb-3">
+            האפליקציה היא כלי עזר ואינה מחליפה טיפול מקצועי.
+            אם את/ה חש/ה מצוקה חריפה, אנא פנה/י לגורם מקצועי.
+          </p>
+          <div className="space-y-2">
+            <a
+              href="tel:1201"
+              className="flex items-center justify-between rounded-2xl bg-destructive/10 border border-destructive/15 px-4 py-3 hover:bg-destructive/15 transition-colors"
+            >
+              <span className="text-foreground text-sm font-medium">קו ער״ן — זמין 24/7</span>
+              <span className="text-destructive font-bold" dir="ltr">1201</span>
+            </a>
+            <a
+              href="tel:*2784"
+              className="flex items-center justify-between rounded-2xl bg-card border border-border px-4 py-3 hover:bg-muted transition-colors"
+            >
+              <span className="text-foreground text-sm font-medium">נט״ל — קו סיוע נפשי</span>
+              <span className="text-muted-foreground font-bold" dir="ltr">*2784</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
       {/* Footer */}
       <div className="px-6 py-6 flex justify-center gap-4 text-xs text-muted-foreground">
         <button onClick={() => navigate('/terms')} className="hover:text-foreground transition-colors underline underline-offset-2">
           תנאי שימוש והבהרות
         </button>
-        <span>·</span>
-        <a href="tel:1201" className="hover:text-foreground transition-colors underline underline-offset-2">
-          קו חירום ער״ן 1201
-        </a>
       </div>
 
       <BottomNav />
