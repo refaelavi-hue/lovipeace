@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowRight, Lock, ChevronDown, Check, Play } from 'lucide-react';
+import { ArrowRight, ChevronDown, Check, Play, Heart } from 'lucide-react';
 import { WEEKS_DATA, CATEGORY_INFO } from '@/data/weeksData';
 import { useAdmin } from '@/hooks/useAdmin';
 import { useProgress } from '@/hooks/useProgress';
@@ -14,6 +14,7 @@ const WeekDetail: React.FC = () => {
   const weekNum = Number(weekNumber);
   const week = WEEKS_DATA.find((w) => w.weekNumber === weekNum);
   const [expandedExercise, setExpandedExercise] = useState<string | null>(null);
+  const [bypassConfirmed, setBypassConfirmed] = useState(false);
 
   const currentWeek = getUnlockedWeek();
 
@@ -25,7 +26,8 @@ const WeekDetail: React.FC = () => {
     );
   }
 
-  const isLocked = !isAdmin && weekNum > currentWeek;
+  const isAhead = !isAdmin && weekNum > currentWeek;
+  const isLocked = isAhead && !bypassConfirmed;
   const weekProgress = getWeekProgress(weekNum, week.exercises.length);
 
   const toggleExercise = (category: string) => {
@@ -88,11 +90,20 @@ const WeekDetail: React.FC = () => {
       {isLocked ? (
         <div className="px-5">
           <div className="bg-card rounded-3xl p-8 flex flex-col items-center text-center border border-border/50">
-            <Lock className="w-10 h-10 text-muted-foreground/40 mb-3" />
-            <h3 className="text-foreground font-semibold mb-1">השבוע נעול</h3>
-            <p className="text-muted-foreground text-sm">
-              סיימו 75% מהשבוע הקודם כדי לפתוח את השבוע הזה
+            <Heart className="w-10 h-10 text-primary/40 mb-3" />
+            <h3 className="text-foreground font-semibold mb-2">עוד לא הגעת לכאן</h3>
+            <p className="text-muted-foreground text-sm leading-relaxed mb-1">
+              מומלץ לסיים קודם את השבוע הקודם, בקצב שלך.
             </p>
+            <p className="text-muted-foreground/60 text-xs mb-5">
+              אפשר גם להמשיך בעדינות אם זה מרגיש נכון.
+            </p>
+            <button
+              onClick={() => setBypassConfirmed(true)}
+              className="bg-primary/10 text-primary px-6 py-3 rounded-2xl text-sm font-medium hover:bg-primary/20 transition-all duration-200"
+            >
+              בכל זאת, אני רוצה להיכנס 💛
+            </button>
           </div>
         </div>
       ) : (
