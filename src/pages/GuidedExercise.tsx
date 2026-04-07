@@ -358,7 +358,17 @@ const GuidedExercise: React.FC = () => {
           </div>
         )}
 
-        {phase === 'active' && step && (
+        {phase === 'active' && audioMode && (
+          <div className="animate-fade-up max-w-sm">
+            <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-8 mx-auto animate-pulse">
+              <Mic size={36} className="text-primary" />
+            </div>
+            <p className="text-lg text-foreground font-medium mb-2">הנחיה קולית פעילה</p>
+            <p className="text-muted-foreground text-sm">הקשיבו והירגעו</p>
+          </div>
+        )}
+
+        {phase === 'active' && !audioMode && step && (
           <div className="animate-scale-fade-in max-w-sm">
             {/* Breathing circle with timer */}
             <div className="mb-8">
