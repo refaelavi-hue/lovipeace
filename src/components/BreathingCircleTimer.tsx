@@ -5,9 +5,10 @@ interface BreathingCircleTimerProps {
   duration: number;
   timeLeft: number;
   label?: string;
+  shape?: 'circle' | 'square';
 }
 
-const BreathingCircleTimer: React.FC<BreathingCircleTimerProps> = ({ type, duration, timeLeft, label }) => {
+const BreathingCircleTimer: React.FC<BreathingCircleTimerProps> = ({ type, duration, timeLeft, label, shape = 'circle' }) => {
   const isBreathing = type === 'inhale' || type === 'exhale' || type === 'hold';
   const progress = duration > 0 ? Math.min(1, Math.max(0, (duration - timeLeft) / duration)) : 0;
 
@@ -20,12 +21,13 @@ const BreathingCircleTimer: React.FC<BreathingCircleTimerProps> = ({ type, durat
   };
 
   const scale = getScale();
+  const shapeClass = shape === 'square' ? 'rounded-3xl' : 'rounded-full';
 
   if (!isBreathing) {
     return (
       <div className="flex flex-col items-center gap-4">
         <div
-          className="w-36 h-36 rounded-full bg-primary/15 border-2 border-primary/30 flex items-center justify-center"
+          className={`w-36 h-36 ${shapeClass} bg-primary/15 border-2 border-primary/30 flex items-center justify-center`}
         >
           <span className="text-primary/60 text-3xl font-light">{timeLeft}</span>
         </div>
@@ -36,7 +38,7 @@ const BreathingCircleTimer: React.FC<BreathingCircleTimerProps> = ({ type, durat
   return (
     <div className="flex flex-col items-center gap-4">
       <div
-        className="w-36 h-36 rounded-full bg-primary/15 border-2 border-primary/30 flex items-center justify-center transition-transform"
+        className={`w-36 h-36 ${shapeClass} bg-primary/15 border-2 border-primary/30 flex items-center justify-center transition-transform`}
         style={{
           transform: `scale(${scale})`,
           transitionDuration: '1s',

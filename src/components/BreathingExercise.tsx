@@ -148,6 +148,7 @@ const BreathingExercise: React.FC<BreathingExerciseProps> = ({ onClose }) => {
           duration={currentPhase.duration}
           timeLeft={timeLeft}
           label={currentPhase.label}
+          shape="square"
         />
         <p className="text-xl text-foreground font-light">{currentPhase.label}</p>
         <p className="text-muted-foreground text-sm">

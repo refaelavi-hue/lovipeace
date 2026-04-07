@@ -19,21 +19,14 @@ export function useVoiceCues() {
     if (unlockedRef.current) return;
     unlockedRef.current = true;
 
-    // Pre-create and "unlock" audio elements by playing silence
+    // Pre-create and preload audio elements without playing them
     for (const [key, files] of Object.entries(CUE_FILES)) {
       poolRef.current[key] = files.map(src => {
         const audio = new Audio(src);
         audio.preload = 'auto';
-        audio.volume = 0;
-        // Play briefly to unlock, then pause
-        audio.play().then(() => {
-          audio.pause();
-          audio.currentTime = 0;
-          audio.volume = 0.9;
-        }).catch(() => {
-          // Still set volume for later
-          audio.volume = 0.9;
-        });
+        audio.volume = 0.9;
+        // Just load, don't play — avoids duplicate sound on first cue
+        audio.load();
         return audio;
       });
     }
@@ -51,8 +44,10 @@ export function useVoiceCues() {
       audio = pool[0];
     }
 
-    audio.volume = Math.min(Math.max(volume, 0), 1);
+    // Stop any current playback before replaying
+    audio.pause();
     audio.currentTime = 0;
+    audio.volume = Math.min(Math.max(volume, 0), 1);
     audio.play().catch(e => console.warn('Voice cue failed:', e));
   }, []);
 
