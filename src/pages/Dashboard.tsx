@@ -1,18 +1,17 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOnboarding } from '@/hooks/useOnboarding';
-import WeekCard from '@/components/WeekCard';
 import BottomNav from '@/components/BottomNav';
-import { Heart, Wind, Sparkles } from 'lucide-react';
+import { Heart, Sparkles, Calendar } from 'lucide-react';
 import { useProgress } from '@/hooks/useProgress';
 import { WEEKS_DATA } from '@/data/weeksData';
+import { g } from '@/lib/genderedText';
 
 const Dashboard: React.FC = () => {
   const { profile } = useOnboarding();
   const navigate = useNavigate();
-  const { getUnlockedWeek, getWeekProgress } = useProgress();
+  const { getUnlockedWeek } = useProgress();
   const currentWeek = Math.min(getUnlockedWeek(), 10);
-  const weekProgress = getWeekProgress(currentWeek, WEEKS_DATA[currentWeek - 1]?.exercises.length || 4);
 
   const greeting = () => {
     const hour = new Date().getHours();
@@ -21,63 +20,85 @@ const Dashboard: React.FC = () => {
     return 'ערב טוב';
   };
 
+  const gender = profile.gender || 'female';
+  const question = g(gender, 'מה את צריכה עכשיו?', 'מה אתה צריך עכשיו?');
+
+  const actions = [
+    {
+      label: 'SOS',
+      subtitle: g(gender, 'אני צריכה עזרה עכשיו', 'אני צריך עזרה עכשיו'),
+      icon: Heart,
+      path: '/sos',
+      accent: true,
+    },
+    {
+      label: 'תרגול יומי',
+      subtitle: WEEKS_DATA[currentWeek - 1]?.title || 'נשימה + קרקוע',
+      icon: Sparkles,
+      path: `/weeks/${currentWeek}`,
+      accent: false,
+    },
+    {
+      label: 'השבוע שלי',
+      subtitle: `שבוע ${currentWeek}`,
+      icon: Calendar,
+      path: '/weeks',
+      accent: false,
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-background pb-24">
-      {/* Header */}
-      <div className="px-6 pt-12 pb-6">
-        <p className="text-muted-foreground text-sm animate-fade-up">{greeting()}</p>
-        <h1 className="text-2xl font-semibold text-foreground mt-1 animate-fade-up-delay-1">
+    <div className="min-h-screen bg-background pb-28" dir="rtl">
+      {/* Greeting */}
+      <div className="px-8 pt-14 pb-4">
+        <p className="text-muted-foreground text-sm">{greeting()}</p>
+        <h1 className="text-2xl font-semibold text-foreground mt-1">
           {profile.name} 💛
         </h1>
-        <p className="text-muted-foreground mt-2 animate-fade-up-delay-2">
-          מה בא לך לחקור היום?
-        </p>
       </div>
 
-      {/* Daily Practice Card */}
-      <div className="px-6 mb-6 animate-fade-up-delay-2">
-        <button
-          className="w-full rounded-3xl bg-primary/15 border border-primary/20 p-6 text-right transition-all duration-300 hover:bg-primary/20 active:scale-[0.98]"
-          onClick={() => navigate(`/weeks/${currentWeek}`)}
-        >
-          <div className="flex items-center gap-3 mb-2">
-            <Sparkles size={20} className="text-primary" />
-            <span className="text-primary font-medium">התרגול היומי שלך</span>
-          </div>
-          <p className="text-foreground text-lg font-semibold">נשימה + קרקוע</p>
-          <p className="text-muted-foreground text-sm mt-1">15 דקות · בוקר</p>
-        </button>
+      {/* Central question */}
+      <div className="px-8 pt-4 pb-8">
+        <p className="text-foreground/80 text-lg font-medium">{question}</p>
       </div>
 
-      {/* Quick Actions */}
-      <div className="px-6 mb-8 animate-fade-up-delay-3">
-        <div className="flex gap-3">
-          <button
-            onClick={() => navigate('/sos')}
-            className="flex-1 rounded-2xl bg-accent/15 border border-accent/20 p-4 flex flex-col items-center gap-2 transition-all duration-300 hover:bg-accent/25 active:scale-[0.98]"
-          >
-            <Heart size={24} className="text-accent" />
-            <span className="text-accent font-medium text-sm">SOS</span>
-          </button>
-          <button
-            onClick={() => navigate('/exercise/breathing-basic')}
-            className="flex-1 rounded-2xl bg-card border border-border p-4 flex flex-col items-center gap-2 transition-all duration-300 hover:bg-muted active:scale-[0.98]"
-          >
-            <Wind size={24} className="text-primary" />
-            <span className="text-foreground font-medium text-sm">נשימה מהירה</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Current Week */}
-      <div className="px-6">
-        <h2 className="text-muted-foreground text-sm font-medium mb-4">השבוע שלך</h2>
-        <WeekCard
-          weekNumber={currentWeek}
-          title={WEEKS_DATA[currentWeek - 1].title}
-          description={WEEKS_DATA[currentWeek - 1].subtitle}
-          isActive={true}
-        />
+      {/* 3 Action Cards */}
+      <div className="px-8 flex flex-col gap-4">
+        {actions.map((action) => {
+          const Icon = action.icon;
+          return (
+            <button
+              key={action.path}
+              onClick={() => navigate(action.path)}
+              className={`w-full rounded-3xl p-6 text-right transition-all duration-300 active:scale-[0.97] ${
+                action.accent
+                  ? 'bg-accent/15 border border-accent/25 hover:bg-accent/20'
+                  : 'bg-card border border-border hover:bg-muted'
+              }`}
+            >
+              <div className="flex items-center gap-4">
+                <div
+                  className={`rounded-2xl p-3 ${
+                    action.accent ? 'bg-accent/20' : 'bg-primary/10'
+                  }`}
+                >
+                  <Icon
+                    size={24}
+                    className={action.accent ? 'text-accent' : 'text-primary'}
+                  />
+                </div>
+                <div className="flex flex-col items-start">
+                  <span className="text-foreground text-lg font-semibold">
+                    {action.label}
+                  </span>
+                  <span className="text-muted-foreground text-sm mt-0.5">
+                    {action.subtitle}
+                  </span>
+                </div>
+              </div>
+            </button>
+          );
+        })}
       </div>
 
       <BottomNav />
