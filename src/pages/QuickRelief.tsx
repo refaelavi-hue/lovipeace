@@ -47,13 +47,16 @@ function getContent(gender: Gender): Record<Feeling, { grounding: string[]; affi
     },
     restless: {
       grounding: [
-        g(gender, 'הרגישי את הגב שלך נשען.', 'הרגש את הגב שלך נשען.'),
-        g(gender, 'את במקום בטוח.', 'אתה במקום בטוח.'),
-        'הכל בסדר.',
+        g(gender, 'הגוף שלך קצת חסר שקט עכשיו.', 'הגוף שלך קצת חסר שקט עכשיו.'),
+        'זה בסדר.',
+        g(gender, 'שימי לב לידיים שלך.', 'שים לב לידיים שלך.'),
+        g(gender, 'שימי לב לרגליים.', 'שים לב לרגליים.'),
+        g(gender, 'את בתוך הגוף שלך.', 'אתה בתוך הגוף שלך.'),
       ],
       affirmation: [
-        'גם חוסר שקט עובר.',
-        g(gender, 'את בסדר.', 'אתה בסדר.'),
+        g(gender, 'את לא צריכה להיות רגועה לגמרי.', 'אתה לא צריך להיות רגוע לגמרי.'),
+        g(gender, 'רק קצת יותר נוכחת.', 'רק קצת יותר נוכח.'),
+        'וזה כבר קורה עכשיו.',
       ],
     },
   };
@@ -65,6 +68,14 @@ const FLOODING_BREATHING = [
   { label: 'נשיפה...', duration: 6, scale: 1 },
 ];
 const FLOODING_CYCLES = 4;
+
+const RESTLESS_BREATHING = [
+  { label: 'הרגש את האוויר נכנס...', duration: 4, scale: 1.3 },
+  { label: 'הבטן עולה...', duration: 2, scale: 1.3 },
+  { label: 'והאוויר יוצא...', duration: 5, scale: 1 },
+  { label: 'והבטן יורדת...', duration: 2, scale: 1 },
+];
+const RESTLESS_CYCLES = 3;
 
 const DEFAULT_BREATHING = [
   { label: 'שאיפה...', duration: 4, scale: 1.35 },
@@ -133,8 +144,8 @@ const QuickRelief: React.FC = () => {
   const [breathCycle, setBreathCycle] = useState(0);
   const [breathTimer, setBreathTimer] = useState(0);
 
-  const breathingPhases = feeling === 'flooding' ? FLOODING_BREATHING : DEFAULT_BREATHING;
-  const maxCycles = feeling === 'flooding' ? FLOODING_CYCLES : DEFAULT_CYCLES;
+  const breathingPhases = feeling === 'flooding' ? FLOODING_BREATHING : feeling === 'restless' ? RESTLESS_BREATHING : DEFAULT_BREATHING;
+  const maxCycles = feeling === 'flooding' ? FLOODING_CYCLES : feeling === 'restless' ? RESTLESS_CYCLES : DEFAULT_CYCLES;
   const currentBreath = breathingPhases[breathIndex];
 
   const startExercise = (f: Feeling) => {
@@ -211,7 +222,7 @@ const QuickRelief: React.FC = () => {
   /* ── Grounding (line-by-line reveal) ── */
   if (phase === 'grounding' && feeling) {
     const lines = content[feeling].grounding;
-    const duration = feeling === 'flooding' ? 12 : 8;
+    const duration = feeling === 'flooding' ? 12 : 10;
 
     return (
       <div className="fixed inset-0 bg-background z-50 flex flex-col items-center justify-center px-10" dir="rtl">
