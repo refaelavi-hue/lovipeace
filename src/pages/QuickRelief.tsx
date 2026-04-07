@@ -45,13 +45,18 @@ function getContent(gender: Gender): Record<Feeling, { grounding: string[]; affi
     },
     pressure: {
       grounding: [
+        g(gender, 'עצרי לרגע.', 'עצור לרגע.'),
+        g(gender, 'את לא חייבת לרוץ עכשיו.', 'אתה לא חייב לרוץ עכשיו.'),
         g(gender, 'הרפי את הכתפיים.', 'הרפה את הכתפיים.'),
+        g(gender, 'הרפי את הלסת.', 'הרפה את הלסת.'),
         g(gender, 'קחי נשימה אחת איטית.', 'קח נשימה אחת איטית.'),
         g(gender, 'את בטוחה כאן.', 'אתה בטוח כאן.'),
       ],
       affirmation: [
         g(gender, 'את לא חייבת לפתור הכל עכשיו.', 'אתה לא חייב לפתור הכל עכשיו.'),
         g(gender, 'מותר לך לעצור.', 'מותר לך לעצור.'),
+        g(gender, 'את עושה מספיק.', 'אתה עושה מספיק.'),
+        g(gender, 'תני לגוף לנוח רגע.', 'תן לגוף לנוח רגע.'),
       ],
     },
     restless: {
@@ -77,6 +82,13 @@ const FLOODING_BREATHING = [
   { label: 'נשיפה...', duration: 6, scale: 1 },
 ];
 const FLOODING_CYCLES = 4;
+
+const PRESSURE_BREATHING = [
+  { label: 'שאיפה...', duration: 4, scale: 1.3 },
+  { label: 'החזקה...', duration: 7, scale: 1.3 },
+  { label: 'נשיפה...', duration: 8, scale: 1 },
+];
+const PRESSURE_CYCLES = 3;
 
 const RESTLESS_CYCLES = 3;
 
@@ -151,9 +163,47 @@ const QuickRelief: React.FC = () => {
   const ambientRef = useRef<HTMLAudioElement | null>(null);
 
   const restlessBreathing = getRestlessBreathing(gender);
-  const breathingPhases = feeling === 'flooding' ? FLOODING_BREATHING : feeling === 'restless' ? restlessBreathing : DEFAULT_BREATHING;
-  const maxCycles = feeling === 'flooding' ? FLOODING_CYCLES : feeling === 'restless' ? RESTLESS_CYCLES : DEFAULT_CYCLES;
+  const breathingPhases = feeling === 'flooding' ? FLOODING_BREATHING : feeling === 'restless' ? restlessBreathing : feeling === 'pressure' ? PRESSURE_BREATHING : DEFAULT_BREATHING;
+  const maxCycles = feeling === 'flooding' ? FLOODING_CYCLES : feeling === 'restless' ? RESTLESS_CYCLES : feeling === 'pressure' ? PRESSURE_CYCLES : DEFAULT_CYCLES;
   const currentBreath = breathingPhases[breathIndex];
+
+  // Voice cue sounds
+  const inhaleAudioRef = useRef<HTMLAudioElement | null>(null);
+  const exhaleAudioRef = useRef<HTMLAudioElement | null>(null);
+  const exhaleAltRef = useRef<HTMLAudioElement | null>(null);
+  const thankYouRef = useRef<HTMLAudioElement | null>(null);
+  const useAltExhale = useRef(false);
+
+  // Preload voice cues
+  useEffect(() => {
+    inhaleAudioRef.current = new Audio('/audio/inhale.mp3');
+    exhaleAudioRef.current = new Audio('/audio/exhale1.mp3');
+    exhaleAltRef.current = new Audio('/audio/exhale2.mp3');
+    thankYouRef.current = new Audio('/audio/thank-you.mp3');
+    [inhaleAudioRef, exhaleAudioRef, exhaleAltRef, thankYouRef].forEach(r => {
+      if (r.current) r.current.volume = 0.5;
+    });
+  }, []);
+
+  // Play voice cue on breathing phase change
+  useEffect(() => {
+    if (phase !== 'breathing') return;
+    const label = currentBreath?.label || '';
+    if (label.includes('שאיפה') || label.includes('נכנס')) {
+      inhaleAudioRef.current?.play().catch(() => {});
+    } else if (label.includes('נשיפה') || label.includes('יוצא')) {
+      const ref = useAltExhale.current ? exhaleAltRef : exhaleAudioRef;
+      ref.current?.play().catch(() => {});
+      useAltExhale.current = !useAltExhale.current;
+    }
+  }, [phase, breathIndex]);
+
+  // Play thank-you on affirmation
+  useEffect(() => {
+    if (phase === 'affirmation') {
+      setTimeout(() => thankYouRef.current?.play().catch(() => {}), 1000);
+    }
+  }, [phase]);
 
   // Start/stop ambient sound with exercise
   useEffect(() => {
