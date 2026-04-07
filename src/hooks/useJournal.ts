@@ -1,9 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 
+export type MoodLabel = 'רגוע' | 'לחוץ' | 'מוצף' | 'עייף' | 'לא בטוח';
+
 export interface JournalEntry {
   id: string;
   date: string; // ISO date string YYYY-MM-DD
   mood: number; // 0-10
+  moodLabel?: MoodLabel;
   note: string;
   createdAt: string;
 }
@@ -22,26 +25,30 @@ export function useJournal() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
   }, [entries]);
 
-  const addEntry = useCallback((mood: number, note: string) => {
+  const addEntry = useCallback((mood: number, note: string, moodLabel?: MoodLabel) => {
     const today = new Date().toISOString().split('T')[0];
     const existing = entries.findIndex(e => e.date === today);
     
     if (existing >= 0) {
-      // Update today's entry
       setEntries(prev => prev.map((e, i) => 
-        i === existing ? { ...e, mood, note, createdAt: new Date().toISOString() } : e
+        i === existing ? { ...e, mood, moodLabel, note, createdAt: new Date().toISOString() } : e
       ));
     } else {
       const entry: JournalEntry = {
         id: crypto.randomUUID(),
         date: today,
         mood,
+        moodLabel,
         note,
         createdAt: new Date().toISOString(),
       };
       setEntries(prev => [entry, ...prev]);
     }
   }, [entries]);
+
+  const deleteEntry = useCallback((id: string) => {
+    setEntries(prev => prev.filter(e => e.id !== id));
+  }, []);
 
   const getTodayEntry = useCallback(() => {
     const today = new Date().toISOString().split('T')[0];
@@ -79,5 +86,5 @@ export function useJournal() {
     return days;
   }, [entries]);
 
-  return { entries, addEntry, getTodayEntry, getWeekEntries, getLast7Days };
+  return { entries, addEntry, deleteEntry, getTodayEntry, getWeekEntries, getLast7Days };
 }

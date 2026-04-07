@@ -1,103 +1,102 @@
 import React, { useState } from 'react';
 import BottomNav from '@/components/BottomNav';
-import { useJournal } from '@/hooks/useJournal';
-import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useJournal, type MoodLabel } from '@/hooks/useJournal';
+import { Check, Trash2, BookOpen } from 'lucide-react';
 
-const MOOD_EMOJIS = ['😰', '😟', '😕', '😐', '🙂', '😊', '😄', '😁', '🤩', '✨', '🌟'];
-const MOOD_COLORS = [
-  'bg-destructive/10 border-destructive/20',
-  'bg-destructive/5 border-destructive/15',
-  'bg-accent/10 border-accent/20',
-  'bg-accent/5 border-accent/15',
-  'bg-secondary border-border',
-  'bg-secondary border-border',
-  'bg-primary/5 border-primary/10',
-  'bg-primary/10 border-primary/15',
-  'bg-primary/15 border-primary/20',
-  'bg-primary/20 border-primary/25',
-  'bg-primary/25 border-primary/30',
+const MOOD_LABELS: { id: MoodLabel; emoji: string }[] = [
+  { id: 'רגוע', emoji: '😌' },
+  { id: 'לחוץ', emoji: '😟' },
+  { id: 'מוצף', emoji: '😰' },
+  { id: 'עייף', emoji: '😴' },
+  { id: 'לא בטוח', emoji: '🤷' },
 ];
 
 const Journal: React.FC = () => {
-  const { addEntry, getTodayEntry, getLast7Days, entries } = useJournal();
-  const todayEntry = getTodayEntry();
-  const [mood, setMood] = useState<number>(todayEntry?.mood ?? 5);
-  const [note, setNote] = useState(todayEntry?.note ?? '');
+  const { addEntry, deleteEntry, entries } = useJournal();
+  const [selectedMood, setSelectedMood] = useState<MoodLabel | null>(null);
+  const [note, setNote] = useState('');
   const [saved, setSaved] = useState(false);
-  const [showHistory, setShowHistory] = useState(false);
 
-  const last7Days = getLast7Days();
+  const moodToNumber = (label: MoodLabel): number => {
+    switch (label) {
+      case 'רגוע': return 8;
+      case 'לחוץ': return 4;
+      case 'מוצף': return 2;
+      case 'עייף': return 5;
+      case 'לא בטוח': return 5;
+    }
+  };
 
   const handleSave = () => {
-    addEntry(mood, note);
+    if (!selectedMood) return;
+    addEntry(moodToNumber(selectedMood), note.trim(), selectedMood);
     setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    setNote('');
+    setSelectedMood(null);
+    setTimeout(() => setSaved(false), 2500);
   };
 
   const formatDate = (dateStr: string) => {
     const d = new Date(dateStr);
-    return d.toLocaleDateString('he-IL', { day: 'numeric', month: 'short' });
+    return d.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', weekday: 'short' });
+  };
+
+  const formatTime = (isoStr: string) => {
+    const d = new Date(isoStr);
+    return d.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const getMoodEmoji = (entry: { moodLabel?: MoodLabel }) => {
+    const found = MOOD_LABELS.find(m => m.id === entry.moodLabel);
+    return found?.emoji || '📝';
   };
 
   return (
     <div className="min-h-screen bg-background pb-24" dir="rtl">
       {/* Header */}
-      <div className="px-6 pt-12 pb-4">
-        <h1 className="text-2xl font-semibold text-foreground animate-fade-up">יומן</h1>
-        <p className="text-muted-foreground mt-1 animate-fade-up-delay-1">
-          איך את/ה מרגיש/ה היום?
-        </p>
+      <div className="px-6 pt-12 pb-2">
+        <h1 className="text-2xl font-semibold text-foreground">יומן</h1>
+        <p className="text-muted-foreground text-sm mt-1">מקום שקט לכתוב</p>
       </div>
 
-      {/* Mood Selector */}
-      <div className="px-6 mb-6 animate-fade-up-delay-1">
-        <div className="bg-card rounded-3xl p-6 border border-border/50">
-          {/* Emoji display */}
-          <div className="text-center mb-6">
-            <span className="text-6xl block mb-2">{MOOD_EMOJIS[mood]}</span>
-            <span className="text-foreground font-semibold text-lg">{mood}/10</span>
-          </div>
-
-          {/* Slider */}
-          <div className="relative mb-2">
-            <input
-              type="range"
-              min="0"
-              max="10"
-              value={mood}
-              onChange={(e) => setMood(Number(e.target.value))}
-              className="w-full h-2 bg-muted rounded-full appearance-none cursor-pointer accent-primary"
-              style={{
-                background: `linear-gradient(to left, hsl(var(--primary)) ${mood * 10}%, hsl(var(--muted)) ${mood * 10}%)`,
-              }}
-            />
-          </div>
-          <div className="flex justify-between text-xs text-muted-foreground px-1">
-            <span>קשה</span>
-            <span>מצוין</span>
-          </div>
+      {/* Mood selector */}
+      <div className="px-6 py-4">
+        <p className="text-foreground text-base mb-3">איך את/ה עכשיו?</p>
+        <div className="flex gap-2 flex-wrap">
+          {MOOD_LABELS.map((m) => (
+            <button
+              key={m.id}
+              onClick={() => setSelectedMood(m.id)}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-medium transition-all duration-200 ${
+                selectedMood === m.id
+                  ? 'bg-primary/20 border-2 border-primary text-foreground'
+                  : 'bg-card border-2 border-transparent text-muted-foreground hover:border-primary/20'
+              }`}
+            >
+              <span className="text-lg">{m.emoji}</span>
+              <span>{m.id}</span>
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Free Text */}
-      <div className="px-6 mb-6 animate-fade-up-delay-2">
-        <div className="bg-card rounded-3xl p-5 border border-border/50">
-          <h3 className="text-foreground font-semibold text-base mb-3">מה עובר עליך?</h3>
-          <textarea
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder="כתבו מה שבא לכם... (לא חובה)"
-            rows={4}
-            className="w-full bg-background border border-border rounded-2xl p-4 text-foreground text-base leading-relaxed placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
-          />
-        </div>
+      {/* Text area */}
+      <div className="px-6 mb-4">
+        <textarea
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          placeholder="מה עובר עליך? (לא חובה)"
+          rows={4}
+          className="w-full bg-card border border-border rounded-2xl p-4 text-foreground text-base leading-relaxed placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+        />
       </div>
 
-      {/* Save Button */}
-      <div className="px-6 mb-8 animate-fade-up-delay-3">
+      {/* Save */}
+      <div className="px-6 mb-8">
         <button
           onClick={handleSave}
-          className={`w-full py-4 rounded-2xl text-base font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+          disabled={!selectedMood}
+          className={`w-full py-4 rounded-2xl text-base font-semibold transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-30 ${
             saved
               ? 'bg-primary/20 text-primary'
               : 'bg-primary text-primary-foreground hover:opacity-90'
@@ -106,82 +105,62 @@ const Journal: React.FC = () => {
           {saved ? (
             <>
               <Check className="w-5 h-5" />
-              נשמר!
+              נשמר 💛
             </>
           ) : (
-            todayEntry ? 'עדכון הרשומה' : 'שמירה'
+            'שמירה'
           )}
         </button>
       </div>
 
-      {/* Weekly Chart */}
-      <div className="px-6 mb-6">
-        <div className="bg-card rounded-3xl p-5 border border-border/50">
-          <h3 className="text-foreground font-semibold text-base mb-4">7 הימים האחרונים</h3>
-          
-          {/* Bar chart */}
-          <div className="flex items-end justify-between gap-2 h-36 mb-3">
-            {last7Days.map((day) => {
-              const hasMood = day.entry !== undefined;
-              const barHeight = hasMood ? Math.max((day.entry!.mood / 10) * 100, 8) : 0;
-              return (
-                <div key={day.date} className="flex-1 flex flex-col items-center gap-1">
-                  {hasMood && (
-                    <span className="text-xs text-muted-foreground">{day.entry!.mood}</span>
-                  )}
-                  <div className="w-full flex items-end" style={{ height: '100%' }}>
-                    <div
-                      className={`w-full rounded-lg transition-all duration-500 ${
-                        hasMood ? 'bg-primary/70' : 'bg-muted/50'
-                      }`}
-                      style={{ height: hasMood ? `${barHeight}%` : '4px', minHeight: hasMood ? '8px' : '4px' }}
-                    />
-                  </div>
-                  <span className={`text-xs font-medium ${
-                    day.date === new Date().toISOString().split('T')[0]
-                      ? 'text-primary'
-                      : 'text-muted-foreground'
-                  }`}>
-                    {day.label}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
+      {/* Entries history */}
+      <div className="px-6">
+        <h2 className="text-foreground font-semibold text-base mb-4">רשומות קודמות</h2>
 
-      {/* History */}
-      {entries.length > 0 && (
-        <div className="px-6 mb-6">
-          <button
-            onClick={() => setShowHistory(!showHistory)}
-            className="flex items-center gap-2 text-primary text-sm font-medium mb-3 hover:opacity-80 transition-opacity"
-          >
-            {showHistory ? 'הסתר היסטוריה' : 'הצג היסטוריה'}
-            <ChevronLeft className={`w-4 h-4 transition-transform ${showHistory ? 'rotate-90' : '-rotate-90'}`} />
-          </button>
-
-          {showHistory && (
-            <div className="space-y-2">
-              {entries.slice(0, 14).map((entry) => (
-                <div
-                  key={entry.id}
-                  className={`rounded-2xl p-4 border ${MOOD_COLORS[entry.mood]}`}
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-medium text-foreground">{formatDate(entry.date)}</span>
-                    <span className="text-lg">{MOOD_EMOJIS[entry.mood]} {entry.mood}/10</span>
-                  </div>
-                  {entry.note && (
-                    <p className="text-sm text-muted-foreground leading-relaxed mt-1">{entry.note}</p>
-                  )}
-                </div>
-              ))}
+        {entries.length === 0 ? (
+          <div className="flex flex-col items-center py-12 text-center">
+            <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
+              <BookOpen size={28} className="text-muted-foreground/50" />
             </div>
-          )}
-        </div>
-      )}
+            <p className="text-muted-foreground text-sm">עוד אין רשומות.</p>
+            <p className="text-muted-foreground/60 text-xs mt-1">הרשומה הראשונה שלך מחכה 💛</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {entries.map((entry) => (
+              <div
+                key={entry.id}
+                className="bg-card rounded-2xl p-4 border border-border/50"
+              >
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl">{getMoodEmoji(entry)}</span>
+                    <div>
+                      <span className="text-foreground text-sm font-medium">
+                        {entry.moodLabel || 'רשומה'}
+                      </span>
+                      <p className="text-muted-foreground/60 text-xs">
+                        {formatDate(entry.date)} · {formatTime(entry.createdAt)}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => deleteEntry(entry.id)}
+                    className="text-muted-foreground/40 hover:text-destructive transition-colors p-1"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+                {entry.note && (
+                  <p className="text-foreground/80 text-sm leading-relaxed pr-8">
+                    {entry.note}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       <BottomNav />
     </div>
