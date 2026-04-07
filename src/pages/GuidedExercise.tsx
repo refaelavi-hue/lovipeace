@@ -162,7 +162,13 @@ const GuidedExercise: React.FC = () => {
   }, [navigate, resetMeditation]);
 
   const togglePause = useCallback(() => {
-    setIsPaused(prev => !prev);
+    setIsPaused(prev => {
+      const next = !prev;
+      if (voiceAudioRef.current) {
+        next ? voiceAudioRef.current.pause() : voiceAudioRef.current.play();
+      }
+      return next;
+    });
   }, []);
 
   const toggleSound = useCallback(() => {
