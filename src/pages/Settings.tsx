@@ -5,7 +5,7 @@ import { useOnboarding } from '@/hooks/useOnboarding';
 import { useProgress } from '@/hooks/useProgress';
 import { useReminders } from '@/hooks/useReminders';
 import { useAdmin } from '@/hooks/useAdmin';
-import { User, RotateCcw, Bell, Shield, ShieldOff } from 'lucide-react';
+import { User, RotateCcw, Bell, Shield, ShieldOff, Watch } from 'lucide-react';
 import { toast } from 'sonner';
 
 const Settings: React.FC = () => {
@@ -97,6 +97,22 @@ const Settings: React.FC = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Smartwatch */}
+      <div className="px-6 mb-4 animate-fade-up-delay-2">
+        <button
+          onClick={() => navigate('/smartwatch')}
+          className="w-full bg-card rounded-3xl p-5 border border-border/50 flex items-center gap-3 hover:border-primary/20 transition-colors text-right"
+          aria-label="חיבור שעון חכם"
+        >
+          <Watch className="w-5 h-5 text-primary shrink-0" />
+          <div className="flex-1">
+            <h3 className="text-foreground font-semibold text-base">שעון חכם</h3>
+            <p className="text-muted-foreground text-xs mt-0.5">מעקב מדדי גוף והזנה ידנית</p>
+          </div>
+          <span className="text-muted-foreground/40 text-lg">‹</span>
+        </button>
       </div>
 
       {/* Reminders */}
