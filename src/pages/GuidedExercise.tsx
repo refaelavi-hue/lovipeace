@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowRight, Play, Pause, Volume2, VolumeX, RotateCcw } from 'lucide-react';
-import { GUIDED_MEDITATIONS } from '@/data/guidedMeditations';
+import { GUIDED_MEDITATIONS, type MeditationStep } from '@/data/guidedMeditations';
 import { useAmbientSound } from '@/hooks/useAmbientSound';
 import { useVoiceCues } from '@/hooks/useVoiceCues';
 import BreathingCircleTimer from '@/components/BreathingCircleTimer';
@@ -14,6 +14,28 @@ const SOUND_LABELS: Record<string, string> = {
   silence: '🤫 שקט',
 };
 
+type DurationMode = 'short' | 'regular' | 'long';
+
+const DURATION_OPTIONS: { id: DurationMode; label: string; desc: string }[] = [
+  { id: 'short', label: 'קצר', desc: '~2 דק׳' },
+  { id: 'regular', label: 'רגיל', desc: '~5 דק׳' },
+  { id: 'long', label: 'ארוך', desc: '~8 דק׳' },
+];
+
+const DURATION_KEY = 'preferred-duration';
+
+function getStepsForDuration(steps: MeditationStep[], mode: DurationMode): MeditationStep[] {
+  if (mode === 'regular') return steps;
+  if (mode === 'short') {
+    // Take roughly first 40% of steps
+    const count = Math.max(4, Math.ceil(steps.length * 0.4));
+    return steps.slice(0, count);
+  }
+  // long — repeat the full set 1.5x by appending the first half again
+  const extra = steps.slice(0, Math.ceil(steps.length * 0.5));
+  return [...steps, ...extra];
+}
+
 const GuidedExercise: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -21,12 +43,25 @@ const GuidedExercise: React.FC = () => {
   const { play, stop, isPlaying: soundPlaying } = useAmbientSound();
   const { unlock, playCue, stopCue } = useVoiceCues();
 
+  const [durationMode, setDurationMode] = useState<DurationMode>(
+    () => (localStorage.getItem(DURATION_KEY) as DurationMode) || 'regular'
+  );
   const [phase, setPhase] = useState<'intro' | 'active' | 'outro' | 'idle'>('idle');
   const [currentStep, setCurrentStep] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [soundOn, setSoundOn] = useState(true);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const activeSteps = useMemo(
+    () => meditation ? getStepsForDuration(meditation.steps, durationMode) : [],
+    [meditation, durationMode]
+  );
+
+  const handleDurationChange = (mode: DurationMode) => {
+    setDurationMode(mode);
+    localStorage.setItem(DURATION_KEY, mode);
+  };
 
   const clearTimer = useCallback(() => {
     if (timerRef.current) {
@@ -46,7 +81,7 @@ const GuidedExercise: React.FC = () => {
 
   const startMeditation = useCallback(() => {
     if (!meditation) return;
-    unlock(); // Unlock audio on user gesture
+    unlock();
     setPhase('intro');
     setCurrentStep(0);
     setTimeLeft(8);
@@ -110,18 +145,18 @@ const GuidedExercise: React.FC = () => {
     if (phase === 'intro') {
       setPhase('active');
       setCurrentStep(0);
-      setTimeLeft(meditation.steps[0].duration);
-      playStepCue(meditation.steps[0].type);
+      setTimeLeft(activeSteps[0].duration);
+      playStepCue(activeSteps[0].type);
       return;
     }
 
     if (phase === 'active') {
       const nextStep = currentStep + 1;
 
-      if (nextStep < meditation.steps.length) {
+      if (nextStep < activeSteps.length) {
         setCurrentStep(nextStep);
-        setTimeLeft(meditation.steps[nextStep].duration);
-        playStepCue(meditation.steps[nextStep].type);
+        setTimeLeft(activeSteps[nextStep].duration);
+        playStepCue(activeSteps[nextStep].type);
       } else {
         setPhase('outro');
         setTimeLeft(8);
@@ -137,7 +172,7 @@ const GuidedExercise: React.FC = () => {
       setPhase('idle');
       setTimeLeft(0);
     }
-  }, [clearTimer, currentStep, meditation, phase, playCue, playStepCue, stop]);
+  }, [activeSteps, clearTimer, currentStep, meditation, phase, playCue, playStepCue, stop]);
 
   // Timer logic
   useEffect(() => {
@@ -165,9 +200,9 @@ const GuidedExercise: React.FC = () => {
     );
   }
 
-  const step = phase === 'active' ? meditation.steps[currentStep] : null;
+  const step = phase === 'active' ? activeSteps[currentStep] : null;
   const progress = phase === 'active' 
-    ? (currentStep + 1) / meditation.steps.length 
+    ? (currentStep + 1) / activeSteps.length 
     : phase === 'outro' ? 1 : 0;
 
   const getBgClass = () => {
@@ -216,13 +251,31 @@ const GuidedExercise: React.FC = () => {
           <div className="animate-fade-up">
             <span className="text-6xl mb-6 block">{meditation.icon}</span>
             <h1 className="text-2xl font-bold text-foreground mb-2">{meditation.title}</h1>
-            <p className="text-muted-foreground mb-2">{meditation.subtitle}</p>
-            <p className="text-sm text-muted-foreground mb-1">{meditation.totalDuration}</p>
-            <p className="text-xs text-muted-foreground mb-8">{SOUND_LABELS[meditation.soundType]}</p>
+            <p className="text-muted-foreground mb-6">{meditation.subtitle}</p>
+
+            {/* Duration selector */}
+            <div className="flex gap-2 mb-8 w-full max-w-xs mx-auto">
+              {DURATION_OPTIONS.map((opt) => (
+                <button
+                  key={opt.id}
+                  onClick={() => handleDurationChange(opt.id)}
+                  className={`flex-1 rounded-2xl py-3 px-2 text-center transition-all duration-200 ${
+                    durationMode === opt.id
+                      ? 'bg-primary/20 border-2 border-primary'
+                      : 'bg-card border-2 border-transparent hover:border-primary/20'
+                  }`}
+                >
+                  <span className="text-foreground text-sm font-semibold block">{opt.label}</span>
+                  <span className="text-muted-foreground text-xs">{opt.desc}</span>
+                </button>
+              ))}
+            </div>
+
+            <p className="text-xs text-muted-foreground mb-6">{SOUND_LABELS[meditation.soundType]}</p>
             
             <button
               onClick={startMeditation}
-              className="bg-primary text-primary-foreground w-20 h-20 rounded-full flex items-center justify-center shadow-lg hover:opacity-90 transition-all active:scale-95"
+              className="bg-primary text-primary-foreground w-20 h-20 rounded-full flex items-center justify-center shadow-lg hover:opacity-90 transition-all active:scale-95 mx-auto"
             >
               <Play size={32} className="mr-[-2px]" />
             </button>
@@ -256,7 +309,7 @@ const GuidedExercise: React.FC = () => {
             
             {/* Step counter */}
             <p className="text-xs text-muted-foreground">
-              {currentStep + 1} / {meditation.steps.length}
+              {currentStep + 1} / {activeSteps.length}
             </p>
           </div>
         )}
