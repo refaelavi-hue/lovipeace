@@ -111,7 +111,7 @@ const Weeks: React.FC = () => {
             <button
               key={week.weekNumber}
               onClick={() => navigate(`/weeks/${week.weekNumber}`)}
-              className={`w-full text-right ${isLocked ? 'opacity-40' : ''}`}
+              className={`w-full text-right ${isLocked ? 'opacity-60' : ''}`}
             >
               <div
                 className={`rounded-3xl p-5 transition-all duration-300 ${
@@ -132,7 +132,7 @@ const Weeks: React.FC = () => {
                         : 'bg-primary/10 text-primary'
                     }`}
                   >
-                    {isCompleted ? <Check size={18} /> : isLocked ? <Lock size={16} /> : week.weekNumber}
+                    {isCompleted ? <Check size={18} /> : isLocked ? week.weekNumber : week.weekNumber}
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="text-foreground font-semibold text-base mb-1">{week.title}</h3>
