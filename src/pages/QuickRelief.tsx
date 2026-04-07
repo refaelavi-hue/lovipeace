@@ -189,6 +189,15 @@ const QuickRelief: React.FC = () => {
   useEffect(() => {
     if (phase !== 'breathing') return;
     const label = currentBreath?.label || '';
+
+    // Stop all voice cues before playing a new one
+    [inhaleAudioRef, exhaleAudioRef, exhaleAltRef].forEach(r => {
+      if (r.current) {
+        r.current.pause();
+        r.current.currentTime = 0;
+      }
+    });
+
     if (label.includes('שאיפה') || label.includes('נכנס')) {
       inhaleAudioRef.current?.play().catch(() => {});
     } else if (label.includes('נשיפה') || label.includes('יוצא')) {
