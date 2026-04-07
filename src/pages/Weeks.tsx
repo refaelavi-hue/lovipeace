@@ -4,7 +4,7 @@ import BottomNav from '@/components/BottomNav';
 import { WEEKS_DATA, PHASES } from '@/data/weeksData';
 import { useAdmin } from '@/hooks/useAdmin';
 import { useProgress } from '@/hooks/useProgress';
-import { Shield, ShieldOff, Lock, Check } from 'lucide-react';
+import { Shield, ShieldOff, Check } from 'lucide-react';
 
 const Weeks: React.FC = () => {
   const navigate = useNavigate();
