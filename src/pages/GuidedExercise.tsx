@@ -85,14 +85,23 @@ const GuidedExercise: React.FC = () => {
     }
   }, []);
 
+  const stopVoiceAudio = useCallback(() => {
+    if (voiceAudioRef.current) {
+      voiceAudioRef.current.pause();
+      voiceAudioRef.current.currentTime = 0;
+      voiceAudioRef.current = null;
+    }
+  }, []);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
       clearTimer();
       stop();
       stopCue();
+      stopVoiceAudio();
     };
-  }, [clearTimer, stop, stopCue]);
+  }, [clearTimer, stop, stopCue, stopVoiceAudio]);
 
   const startMeditation = useCallback(() => {
     if (!meditation) return;
@@ -107,10 +116,29 @@ const GuidedExercise: React.FC = () => {
     }
   }, [meditation, play, playCue, soundOn, unlock]);
 
+  const startAudioMeditation = useCallback(() => {
+    if (!meditation || !voiceUrl) return;
+    unlock();
+    setAudioMode(true);
+    setPhase('active');
+    setIsPaused(false);
+    if (soundOn) {
+      play(meditation.soundType, 0.3); // lower ambient for voice
+    }
+    const audio = new Audio(voiceUrl);
+    audio.play();
+    audio.onended = () => {
+      setPhase('outro');
+      setTimeLeft(8);
+    };
+    voiceAudioRef.current = audio;
+  }, [meditation, voiceUrl, play, soundOn, unlock]);
+
   const resetMeditation = useCallback(() => {
     clearTimer();
     stop();
     stopCue();
+    stopVoiceAudio();
     setPhase('idle');
     setCurrentStep(0);
     setTimeLeft(0);
