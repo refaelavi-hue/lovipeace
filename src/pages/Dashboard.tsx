@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOnboarding } from '@/hooks/useOnboarding';
 import BottomNav from '@/components/BottomNav';
-import { Heart, Sparkles, Calendar } from 'lucide-react';
+import { Heart, Sparkles, Calendar, Wind } from 'lucide-react';
 import { useProgress } from '@/hooks/useProgress';
 import { WEEKS_DATA } from '@/data/weeksData';
 import { g } from '@/lib/genderedText';
@@ -25,11 +25,18 @@ const Dashboard: React.FC = () => {
 
   const actions = [
     {
+      label: 'הרגעה מהירה',
+      subtitle: g(gender, 'עזרה מיידית ברגע של חרדה', 'עזרה מיידית ברגע של חרדה'),
+      icon: Wind,
+      path: '/quick',
+      accent: true,
+    },
+    {
       label: 'SOS',
       subtitle: g(gender, 'אני צריכה עזרה עכשיו', 'אני צריך עזרה עכשיו'),
       icon: Heart,
       path: '/sos',
-      accent: true,
+      accent: false,
     },
     {
       label: 'תרגול יומי',
