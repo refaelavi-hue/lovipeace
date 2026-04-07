@@ -143,7 +143,8 @@ const GuidedExercise: React.FC = () => {
     setCurrentStep(0);
     setTimeLeft(0);
     setIsPaused(false);
-  }, [clearTimer, stop, stopCue]);
+    setAudioMode(false);
+  }, [clearTimer, stop, stopCue, stopVoiceAudio]);
 
   const handleBack = useCallback(() => {
     resetMeditation();
