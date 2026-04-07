@@ -1,44 +1,65 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { X } from 'lucide-react';
+import { useOnboarding } from '@/hooks/useOnboarding';
+import { g, Gender } from '@/lib/genderedText';
 
 type Feeling = 'flooding' | 'pressure' | 'restless';
 type Phase = 'choose' | 'grounding' | 'breathing' | 'affirmation';
 
-/* ── Flooding-specific content ── */
-const FLOODING_GROUNDING_LINES = [
-  'עצור רגע.',
-  'אתה כאן.',
-  'שים לב לשתי כפות הרגליים שלך.',
-  'הרגש את המגע שלהן עם הרצפה.',
-  'אין לך מה לפתור עכשיו.',
-  'רק להיות כאן לעוד רגע אחד.',
-];
+/* ── Gendered content builders ── */
+function getFloodingGrounding(gender: Gender): string[] {
+  return [
+    g(gender, 'עצרי רגע.', 'עצור רגע.'),
+    g(gender, 'את כאן.', 'אתה כאן.'),
+    g(gender, 'שימי לב לשתי כפות הרגליים שלך.', 'שים לב לשתי כפות הרגליים שלך.'),
+    g(gender, 'הרגישי את המגע שלהן עם הרצפה.', 'הרגש את המגע שלהן עם הרצפה.'),
+    g(gender, 'אין לך מה לפתור עכשיו.', 'אין לך מה לפתור עכשיו.'),
+    'רק להיות כאן לעוד רגע אחד.',
+  ];
+}
 
-const FLOODING_AFFIRMATION_LINES = [
-  'אתה לא חייב להחזיק את הכל עכשיו.',
-  'הרגע הזה עובר.',
-  'הגוף שלך יכול לחזור לאט לאיזון.',
-  'בינתיים, רק עוד נשימה אחת.',
-];
+function getFloodingAffirmation(gender: Gender): string[] {
+  return [
+    g(gender, 'את לא חייבת להחזיק את הכל עכשיו.', 'אתה לא חייב להחזיק את הכל עכשיו.'),
+    'הרגע הזה עובר.',
+    g(gender, 'הגוף שלך יכול לחזור לאט לאיזון.', 'הגוף שלך יכול לחזור לאט לאיזון.'),
+    'בינתיים, רק עוד נשימה אחת.',
+  ];
+}
 
-/* ── Generic fallback content for other feelings ── */
-const CONTENT: Record<Feeling, { grounding: string[]; affirmation: string[] }> = {
-  flooding: {
-    grounding: FLOODING_GROUNDING_LINES,
-    affirmation: FLOODING_AFFIRMATION_LINES,
-  },
-  pressure: {
-    grounding: ['הרפה את הכתפיים.', 'קח נשימה אחת איטית.', 'אתה בטוח כאן.'],
-    affirmation: ['אתה לא חייב לפתור הכל עכשיו.', 'מותר לך לעצור.'],
-  },
-  restless: {
-    grounding: ['הרגש את הגב שלך נשען.', 'אתה במקום בטוח.', 'הכל בסדר.'],
-    affirmation: ['גם חוסר שקט עובר.', 'אתה בסדר.'],
-  },
-};
+function getContent(gender: Gender): Record<Feeling, { grounding: string[]; affirmation: string[] }> {
+  return {
+    flooding: {
+      grounding: getFloodingGrounding(gender),
+      affirmation: getFloodingAffirmation(gender),
+    },
+    pressure: {
+      grounding: [
+        g(gender, 'הרפי את הכתפיים.', 'הרפה את הכתפיים.'),
+        g(gender, 'קחי נשימה אחת איטית.', 'קח נשימה אחת איטית.'),
+        g(gender, 'את בטוחה כאן.', 'אתה בטוח כאן.'),
+      ],
+      affirmation: [
+        g(gender, 'את לא חייבת לפתור הכל עכשיו.', 'אתה לא חייב לפתור הכל עכשיו.'),
+        g(gender, 'מותר לך לעצור.', 'מותר לך לעצור.'),
+      ],
+    },
+    restless: {
+      grounding: [
+        g(gender, 'הרגישי את הגב שלך נשען.', 'הרגש את הגב שלך נשען.'),
+        g(gender, 'את במקום בטוח.', 'אתה במקום בטוח.'),
+        'הכל בסדר.',
+      ],
+      affirmation: [
+        'גם חוסר שקט עובר.',
+        g(gender, 'את בסדר.', 'אתה בסדר.'),
+      ],
+    },
+  };
+}
 
-/* ── Breathing config (flooding: no hold, 4 cycles) ── */
+/* ── Breathing config ── */
 const FLOODING_BREATHING = [
   { label: 'שאיפה...', duration: 4, scale: 1.35 },
   { label: 'נשיפה...', duration: 6, scale: 1 },
@@ -100,6 +121,10 @@ const CloseBtn: React.FC<{ onClick: () => void }> = ({ onClick }) => (
 /* ── Main component ── */
 const QuickRelief: React.FC = () => {
   const navigate = useNavigate();
+  const { profile } = useOnboarding();
+  const gender = profile.gender || '';
+  const content = getContent(gender);
+
   const [phase, setPhase] = useState<Phase>('choose');
   const [feeling, setFeeling] = useState<Feeling | null>(null);
 
@@ -152,6 +177,8 @@ const QuickRelief: React.FC = () => {
 
   const handleClose = () => navigate(-1);
 
+  const questionText = g(gender, 'איך את מרגישה עכשיו?', 'איך אתה מרגיש עכשיו?');
+
   /* ── Choose ── */
   if (phase === 'choose') {
     const buttons: { id: Feeling; label: string }[] = [
@@ -164,7 +191,7 @@ const QuickRelief: React.FC = () => {
       <div className="fixed inset-0 bg-background z-50 flex flex-col items-center justify-center px-8" dir="rtl">
         <CloseBtn onClick={handleClose} />
         <h1 className="text-2xl font-semibold text-foreground mb-12 text-center">
-          איך אתה מרגיש עכשיו?
+          {questionText}
         </h1>
         <div className="flex flex-col gap-5 w-full max-w-sm">
           {buttons.map((b) => (
@@ -183,7 +210,7 @@ const QuickRelief: React.FC = () => {
 
   /* ── Grounding (line-by-line reveal) ── */
   if (phase === 'grounding' && feeling) {
-    const lines = CONTENT[feeling].grounding;
+    const lines = content[feeling].grounding;
     const duration = feeling === 'flooding' ? 12 : 8;
 
     return (
@@ -223,7 +250,7 @@ const QuickRelief: React.FC = () => {
 
   /* ── Affirmation (line-by-line reveal + finish button) ── */
   if (phase === 'affirmation' && feeling) {
-    const lines = CONTENT[feeling].affirmation;
+    const lines = content[feeling].affirmation;
 
     return (
       <div className="fixed inset-0 bg-background z-50 flex flex-col items-center justify-center px-10" dir="rtl">
