@@ -72,9 +72,10 @@ const SOS: React.FC = () => {
       <div className="px-6 pt-8 pb-2 flex items-center gap-4">
         <button
           onClick={() => activeModule === 'menu' ? navigate(-1) : setActiveModule('menu')}
-          className="text-muted-foreground hover:text-foreground transition-colors"
+          aria-label="חזרה"
+          className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-lg p-1"
         >
-          <ArrowRight size={24} />
+          <ArrowRight size={24} aria-hidden="true" />
         </button>
         <h1 className="text-xl font-semibold text-foreground">
           {activeModule === 'menu' && 'רגע של הרגעה'}
@@ -86,7 +87,7 @@ const SOS: React.FC = () => {
       {activeModule === 'menu' && (
         <div className="px-6 pt-2 space-y-5 animate-fade-up">
           {/* Safety line */}
-          <p className="text-muted-foreground/70 text-xs text-center">
+          <p className="text-muted-foreground text-xs text-center" role="note">
             כלי עזר בלבד · אינו מחליף טיפול מקצועי
           </p>
 
