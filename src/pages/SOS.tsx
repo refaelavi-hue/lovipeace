@@ -1,14 +1,22 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Wind, Mountain, MessageCircleHeart, Phone } from 'lucide-react';
+import { ArrowRight, Wind, Mountain, MessageCircleHeart, Phone, Home } from 'lucide-react';
 import BreathingExercise from '@/components/BreathingExercise';
 import { useOnboarding } from '@/hooks/useOnboarding';
 import { g } from '@/lib/genderedText';
 
+const GROUNDING_ENCOURAGEMENTS = [
+  'יופי. לאט לאט.',
+  'מצוין. ממשיכים.',
+  'נהדר. עוד קצת.',
+  'כמעט שם.',
+  'סיימת. כל הכבוד. 💛',
+];
+
 const SOS: React.FC = () => {
   const navigate = useNavigate();
   const { profile } = useOnboarding();
-  const gender = profile.gender;
+  const gender = profile.gender || 'female';
   const [activeModule, setActiveModule] = useState<'menu' | 'breathing' | 'grounding' | 'affirmations'>('menu');
   const [groundingStep, setGroundingStep] = useState(0);
 
@@ -24,7 +32,7 @@ const SOS: React.FC = () => {
     `${g(gender, 'את בטוחה', 'אתה בטוח')} כאן ועכשיו.`,
     'הרגע הזה יעבור.',
     `${g(gender, 'את לא לבד', 'אתה לא לבד')} בזה.`,
-    `הגוף שלך יודע לחזור לאיזון.`,
+    'הגוף שלך יודע לחזור לאיזון.',
     `${g(gender, 'נשמי', 'נשום')} — ${g(gender, 'את עושה', 'אתה עושה')} את זה נכון.`,
     `${g(gender, 'את יותר חזקה', 'אתה יותר חזק')} ממה שנראה לך.`,
   ];
@@ -37,9 +45,31 @@ const SOS: React.FC = () => {
     return <BreathingExercise onClose={() => setActiveModule('menu')} />;
   }
 
+  const bottomBar = (
+    <div className="fixed bottom-0 left-0 right-0 bg-background/90 backdrop-blur-xl border-t border-border safe-bottom z-50">
+      <div className="flex justify-around items-center h-16 max-w-lg mx-auto px-6 gap-3">
+        <a
+          href="tel:1201"
+          className="flex-1 flex items-center justify-center gap-2 rounded-2xl bg-destructive/10 border border-destructive/20 py-3 transition-colors hover:bg-destructive/15 active:scale-[0.97]"
+        >
+          <Phone size={16} className="text-destructive" />
+          <span className="text-destructive font-semibold text-sm" dir="ltr">ער״ן 1201</span>
+        </a>
+        <button
+          onClick={() => navigate('/dashboard')}
+          className="flex-1 flex items-center justify-center gap-2 rounded-2xl bg-card border border-border py-3 transition-colors hover:bg-muted active:scale-[0.97]"
+        >
+          <Home size={16} className="text-muted-foreground" />
+          <span className="text-foreground text-sm font-medium">חזרה הביתה</span>
+        </button>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="min-h-screen bg-background" dir="rtl">
-      <div className="px-6 pt-8 pb-4 flex items-center gap-4">
+    <div className="min-h-screen bg-background pb-28" dir="rtl">
+      {/* Header */}
+      <div className="px-6 pt-8 pb-2 flex items-center gap-4">
         <button
           onClick={() => activeModule === 'menu' ? navigate(-1) : setActiveModule('menu')}
           className="text-muted-foreground hover:text-foreground transition-colors"
@@ -54,72 +84,75 @@ const SOS: React.FC = () => {
       </div>
 
       {activeModule === 'menu' && (
-        <div className="px-6 pt-4 space-y-4 animate-fade-up">
-          <p className="text-muted-foreground mb-6 leading-relaxed">
-            הכל בסדר. {g(gender, 'בחרי', 'בחר')} מה {g(gender, 'מרגיש לך', 'מרגיש לך')} נכון עכשיו.
+        <div className="px-6 pt-2 space-y-5 animate-fade-up">
+          {/* Safety line */}
+          <p className="text-muted-foreground/70 text-xs text-center">
+            כלי עזר בלבד · אינו מחליף טיפול מקצועי
           </p>
 
+          <p className="text-muted-foreground text-center mb-2">
+            {g(gender, 'בחרי', 'בחר')} מה מתאים לך עכשיו
+          </p>
+
+          {/* 3 large action cards */}
           <button
             onClick={() => setActiveModule('breathing')}
-            className="w-full rounded-3xl bg-card border-2 border-transparent hover:border-primary/30 p-6 text-right flex items-center gap-5 transition-all duration-300 active:scale-[0.98]"
+            className="w-full rounded-3xl bg-primary/10 border-2 border-primary/20 hover:border-primary/40 p-7 text-right flex items-center gap-5 transition-all duration-300 active:scale-[0.97]"
           >
-            <div className="w-14 h-14 rounded-2xl bg-primary/15 flex items-center justify-center shrink-0">
-              <Wind size={28} className="text-primary" />
+            <div className="w-16 h-16 rounded-2xl bg-primary/15 flex items-center justify-center shrink-0">
+              <Wind size={32} className="text-primary" />
             </div>
             <div>
-              <h3 className="text-foreground text-lg font-semibold">נשימה מונחית</h3>
-              <p className="text-muted-foreground text-sm mt-1">4-4-6 — {g(gender, 'שאפי, החזיקי, נשפי', 'שאף, החזק, נשוף')}</p>
+              <h3 className="text-foreground text-xl font-semibold">נשימה מונחית</h3>
+              <p className="text-muted-foreground text-sm mt-1">שאיפה, החזקה, נשיפה</p>
             </div>
           </button>
 
           <button
             onClick={() => setActiveModule('grounding')}
-            className="w-full rounded-3xl bg-card border-2 border-transparent hover:border-primary/30 p-6 text-right flex items-center gap-5 transition-all duration-300 active:scale-[0.98]"
+            className="w-full rounded-3xl bg-primary/10 border-2 border-primary/20 hover:border-primary/40 p-7 text-right flex items-center gap-5 transition-all duration-300 active:scale-[0.97]"
           >
-            <div className="w-14 h-14 rounded-2xl bg-primary/15 flex items-center justify-center shrink-0">
-              <Mountain size={28} className="text-primary" />
+            <div className="w-16 h-16 rounded-2xl bg-primary/15 flex items-center justify-center shrink-0">
+              <Mountain size={32} className="text-primary" />
             </div>
             <div>
-              <h3 className="text-foreground text-lg font-semibold">הארקה (Grounding)</h3>
-              <p className="text-muted-foreground text-sm mt-1">תרגיל 5-4-3-2-1 לחזרה להווה</p>
+              <h3 className="text-foreground text-xl font-semibold">הארקה</h3>
+              <p className="text-muted-foreground text-sm mt-1">5-4-3-2-1 לחזרה להווה</p>
             </div>
           </button>
 
           <button
             onClick={() => setActiveModule('affirmations')}
-            className="w-full rounded-3xl bg-card border-2 border-transparent hover:border-primary/30 p-6 text-right flex items-center gap-5 transition-all duration-300 active:scale-[0.98]"
+            className="w-full rounded-3xl bg-accent/10 border-2 border-accent/20 hover:border-accent/40 p-7 text-right flex items-center gap-5 transition-all duration-300 active:scale-[0.97]"
           >
-            <div className="w-14 h-14 rounded-2xl bg-accent/15 flex items-center justify-center shrink-0">
-              <MessageCircleHeart size={28} className="text-accent" />
+            <div className="w-16 h-16 rounded-2xl bg-accent/15 flex items-center justify-center shrink-0">
+              <MessageCircleHeart size={32} className="text-accent" />
             </div>
             <div>
-              <h3 className="text-foreground text-lg font-semibold">משפטי הרגעה</h3>
-              <p className="text-muted-foreground text-sm mt-1">תזכורות חמות שהכל בסדר</p>
+              <h3 className="text-foreground text-xl font-semibold">משפטי הרגעה</h3>
+              <p className="text-muted-foreground text-sm mt-1">תזכורות שהכל בסדר</p>
             </div>
           </button>
-
-          <a
-            href="tel:1201"
-            className="w-full flex items-center gap-3 rounded-2xl bg-destructive/10 border border-destructive/20 p-4 mt-2 transition-colors hover:bg-destructive/15 active:scale-[0.98]"
-          >
-            <Phone size={18} className="text-destructive shrink-0" />
-            <span className="text-sm text-foreground/80 flex-1">במצוקה חריפה? קו ער״ן זמין 24/7</span>
-            <span className="text-destructive font-bold text-base" dir="ltr">1201</span>
-          </a>
         </div>
       )}
 
       {activeModule === 'grounding' && (
         <div className="px-6 pt-8 flex flex-col items-center animate-fade-up">
-          <div className="w-24 h-24 rounded-full bg-primary/15 flex items-center justify-center mb-10">
-            <Mountain size={40} className="text-primary" />
+          {/* Step number - large and clear */}
+          <div className="w-20 h-20 rounded-full bg-primary/15 flex items-center justify-center mb-6">
+            <span className="text-primary text-3xl font-bold">{groundingStep + 1}</span>
           </div>
 
-          <p className="text-foreground text-2xl font-light text-center leading-relaxed mb-4">
+          <p className="text-foreground text-2xl font-light text-center leading-relaxed mb-3">
             {GROUNDING_STEPS[groundingStep]}
           </p>
 
-          <p className="text-muted-foreground text-sm mb-10">
+          {/* Encouragement line */}
+          <p className="text-primary/70 text-sm mb-8">
+            {GROUNDING_ENCOURAGEMENTS[groundingStep]}
+          </p>
+
+          <p className="text-muted-foreground text-xs mb-6">
             שלב {groundingStep + 1} מתוך 5
           </p>
 
@@ -127,8 +160,8 @@ const SOS: React.FC = () => {
             {GROUNDING_STEPS.map((_, i) => (
               <div
                 key={i}
-                className={`h-1.5 rounded-full transition-all duration-500 ${
-                  i <= groundingStep ? 'w-8 bg-primary' : 'w-4 bg-muted'
+                className={`h-2 rounded-full transition-all duration-500 ${
+                  i <= groundingStep ? 'w-10 bg-primary' : 'w-5 bg-muted'
                 }`}
               />
             ))}
@@ -143,7 +176,7 @@ const SOS: React.FC = () => {
                 setActiveModule('menu');
               }
             }}
-            className="w-full max-w-sm h-14 rounded-2xl text-lg font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300"
+            className="w-full max-w-sm h-14 rounded-2xl text-lg font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 active:scale-[0.97]"
           >
             {groundingStep < 4 ? 'הבא' : 'סיום ✨'}
           </button>
@@ -168,6 +201,8 @@ const SOS: React.FC = () => {
           </button>
         </div>
       )}
+
+      {bottomBar}
     </div>
   );
 };
