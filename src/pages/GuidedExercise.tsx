@@ -222,24 +222,27 @@ const GuidedExercise: React.FC = () => {
       <div className="px-5 pt-12 pb-4 flex items-center justify-between">
         <button
           onClick={handleBack}
-          className="flex items-center gap-1 text-primary text-sm font-medium hover:opacity-80 transition-opacity"
+          aria-label="חזרה"
+          className="flex items-center gap-1 text-primary text-sm font-medium hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-lg"
         >
-          <ArrowRight className="w-4 h-4" />
+          <ArrowRight className="w-4 h-4" aria-hidden="true" />
           חזרה
         </button>
         <div className="flex items-center gap-2">
           <button
             onClick={toggleSound}
-            className="p-2 rounded-xl text-muted-foreground hover:text-foreground transition-colors"
+            aria-label={soundOn ? 'השתק סאונד' : 'הפעל סאונד'}
+            className="p-2 rounded-xl text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
-            {soundOn ? <Volume2 size={20} /> : <VolumeX size={20} />}
+            {soundOn ? <Volume2 size={20} aria-hidden="true" /> : <VolumeX size={20} aria-hidden="true" />}
           </button>
           {phase !== 'idle' && (
             <button
               onClick={resetMeditation}
-              className="p-2 rounded-xl text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="אתחול תרגול"
+              className="p-2 rounded-xl text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
-              <RotateCcw size={18} />
+              <RotateCcw size={18} aria-hidden="true" />
             </button>
           )}
         </div>

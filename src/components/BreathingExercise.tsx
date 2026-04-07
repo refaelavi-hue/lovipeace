@@ -86,7 +86,8 @@ const BreathingExercise: React.FC<BreathingExerciseProps> = ({ onClose }) => {
       <div className="fixed inset-0 bg-background z-50 flex flex-col items-center justify-center px-8" dir="rtl">
         <button
           onClick={onClose}
-          className="absolute top-6 left-6 text-muted-foreground hover:text-foreground transition-colors"
+          aria-label="סגירה"
+          className="absolute top-6 left-6 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-lg p-1"
         >
           <X size={28} />
         </button>
@@ -134,7 +135,8 @@ const BreathingExercise: React.FC<BreathingExerciseProps> = ({ onClose }) => {
     <div className="fixed inset-0 bg-background z-50 flex flex-col items-center justify-center">
       <button
         onClick={onClose}
-        className="absolute top-6 left-6 text-muted-foreground hover:text-foreground transition-colors"
+        aria-label="סגירה"
+        className="absolute top-6 left-6 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-lg p-1"
       >
         <X size={28} />
       </button>

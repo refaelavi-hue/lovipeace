@@ -83,7 +83,14 @@
   100% { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes slide-up {
+/* Global focus-visible for accessibility */
+*:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+  border-radius: 0.5rem;
+}
+
+
   0% { opacity: 0; transform: translateY(40px); }
   100% { opacity: 1; transform: translateY(0); }
 }
