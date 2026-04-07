@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowRight, Play, Pause, Volume2, VolumeX, RotateCcw } from 'lucide-react';
+import { ArrowRight, Play, Pause, Volume2, VolumeX, RotateCcw, Mic } from 'lucide-react';
 import { GUIDED_MEDITATIONS, type MeditationStep } from '@/data/guidedMeditations';
 import { useAmbientSound } from '@/hooks/useAmbientSound';
 import { useVoiceCues } from '@/hooks/useVoiceCues';
+import { useOnboarding } from '@/hooks/useOnboarding';
 import BreathingCircleTimer from '@/components/BreathingCircleTimer';
 
 const SOUND_LABELS: Record<string, string> = {
@@ -40,8 +41,22 @@ const GuidedExercise: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const meditation = GUIDED_MEDITATIONS.find(m => m.id === id);
-  const { play, stop, isPlaying: soundPlaying } = useAmbientSound();
+  const { play, stop } = useAmbientSound();
   const { unlock, playCue, stopCue } = useVoiceCues();
+  const { profile } = useOnboarding();
+
+  // Audio guide support
+  const voiceAudioRef = useRef<HTMLAudioElement | null>(null);
+  const [audioMode, setAudioMode] = useState(false);
+
+  const voiceUrl = useMemo(() => {
+    if (!meditation) return null;
+    return profile.voicePreference === 'male'
+      ? meditation.maleVoiceUrl
+      : meditation.femaleVoiceUrl;
+  }, [meditation, profile.voicePreference]);
+
+  const hasAudio = Boolean(voiceUrl);
 
   const [durationMode, setDurationMode] = useState<DurationMode>(
     () => (localStorage.getItem(DURATION_KEY) as DurationMode) || 'regular'
