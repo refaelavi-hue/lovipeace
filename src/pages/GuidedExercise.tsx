@@ -319,12 +319,26 @@ const GuidedExercise: React.FC = () => {
 
             <p className="text-xs text-muted-foreground mb-6">{SOUND_LABELS[meditation.soundType]}</p>
             
-            <button
-              onClick={startMeditation}
-              className="bg-primary text-primary-foreground w-20 h-20 rounded-full flex items-center justify-center shadow-lg hover:opacity-90 transition-all active:scale-95 mx-auto"
-            >
-              <Play size={32} className="mr-[-2px]" />
-            </button>
+            <div className="flex items-center justify-center gap-4">
+              <button
+                onClick={startMeditation}
+                aria-label="התחל תרגול טקסט"
+                className="bg-primary text-primary-foreground w-20 h-20 rounded-full flex items-center justify-center shadow-lg hover:opacity-90 transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              >
+                <Play size={32} className="mr-[-2px]" />
+              </button>
+
+              {hasAudio && (
+                <button
+                  onClick={startAudioMeditation}
+                  aria-label="התחל תרגול עם הנחיה קולית"
+                  className="bg-accent/15 text-accent-foreground w-16 h-16 rounded-full flex flex-col items-center justify-center border-2 border-accent/25 hover:bg-accent/25 transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                >
+                  <Mic size={22} />
+                  <span className="text-[9px] font-medium mt-0.5">קולי</span>
+                </button>
+              )}
+            </div>
           </div>
         )}
 
