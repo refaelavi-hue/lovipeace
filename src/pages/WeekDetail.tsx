@@ -72,18 +72,21 @@ const WeekDetail: React.FC = () => {
         </div>
         <p className="text-muted-foreground text-sm mt-1">{week.subtitle}</p>
 
-        {/* Progress Bar */}
+        {/* Progress */}
         <div className="mt-4">
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs text-muted-foreground font-medium">התקדמות</span>
-            <span className="text-xs text-primary font-semibold">{weekProgress.completed}/{weekProgress.total}</span>
+            <span className="text-xs text-muted-foreground">הדרך שלך</span>
+            <span className="text-xs text-muted-foreground">{weekProgress.completed} מתוך {weekProgress.total}</span>
           </div>
-          <div className="w-full h-2.5 bg-muted rounded-full overflow-hidden">
+          <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
             <div
-              className="h-full bg-primary rounded-full transition-all duration-500 ease-out"
+              className="h-full bg-primary/60 rounded-full transition-all duration-500 ease-out"
               style={{ width: `${weekProgress.ratio * 100}%` }}
             />
           </div>
+          {weekProgress.completed > 0 && weekProgress.ratio < 1 && (
+            <p className="text-xs text-muted-foreground/70 mt-2">גם מעט הוא משמעותי.</p>
+          )}
         </div>
       </div>
 
@@ -216,15 +219,16 @@ const WeekDetail: React.FC = () => {
           {/* Completion message */}
           {weekProgress.ratio === 1 && (
             <div className="px-5 mb-6">
-              <div className="bg-primary/10 rounded-2xl p-5 border border-primary/20 text-center">
-                <span className="text-2xl mb-2 block">🎉</span>
-                <h3 className="font-semibold text-primary text-base">כל הכבוד! סיימת את השבוע</h3>
+              <div className="bg-primary/5 rounded-2xl p-5 border border-primary/15 text-center">
+                <span className="text-2xl mb-2 block">💛</span>
+                <h3 className="font-medium text-foreground text-base">עברת את כל מה שהשבוע הזה הציע</h3>
+                <p className="text-muted-foreground text-sm mt-1">זה צעד יפה.</p>
                 {weekNum < 10 && (
                   <button
                     onClick={() => navigate(`/weeks/${weekNum + 1}`)}
-                    className="mt-3 bg-primary text-primary-foreground px-6 py-2.5 rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity"
+                    className="mt-3 bg-primary/10 text-primary px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-primary/20 transition-all"
                   >
-                    לשבוע {weekNum + 1} →
+                    להמשיך לשבוע {weekNum + 1} →
                   </button>
                 )}
               </div>
