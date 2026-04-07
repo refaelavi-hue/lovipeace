@@ -16,6 +16,7 @@ import Settings from "./pages/Settings.tsx";
 import GuidedExercise from "./pages/GuidedExercise.tsx";
 import Terms from "./pages/Terms.tsx";
 import QuickRelief from "./pages/QuickRelief.tsx";
+import Smartwatch from "./pages/Smartwatch.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/settings" element={<Settings />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/quick" element={<QuickRelief />} />
+          <Route path="/smartwatch" element={<Smartwatch />} />
           <Route path="/weeks" element={<Weeks />} />
           <Route path="/weeks/:weekNumber" element={<WeekDetail />} />
           <Route path="*" element={<NotFound />} />
