@@ -66,9 +66,9 @@ const Smartwatch: React.FC = () => {
             <span className="text-foreground font-medium text-sm">לא מחובר</span>
           </div>
           <p className="text-muted-foreground text-sm leading-relaxed">
-            {g('בקרוב תוכל לחבר את השעון החכם שלך ולעקוב אחרי דופק, רמת מתח ואיכות שינה — ישירות מהאפליקציה.',
+            {g(gender,
               'בקרוב תוכלי לחבר את השעון החכם שלך ולעקוב אחרי דופק, רמת מתח ואיכות שינה — ישירות מהאפליקציה.',
-              gender)}
+              'בקרוב תוכל לחבר את השעון החכם שלך ולעקוב אחרי דופק, רמת מתח ואיכות שינה — ישירות מהאפליקציה.')}
           </p>
         </div>
       </div>
@@ -132,7 +132,7 @@ const Smartwatch: React.FC = () => {
             <div className="text-right">
               <p className="text-foreground text-sm font-medium">הזנה ידנית</p>
               <p className="text-muted-foreground text-xs">
-                {g('הזן מדדים בעצמך', 'הזיני מדדים בעצמך', gender)}
+                {g(gender, 'הזיני מדדים בעצמך', 'הזן מדדים בעצמך')}
               </p>
             </div>
           </div>
