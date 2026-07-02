@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { useOnboarding } from '@/hooks/useOnboarding';
 import { g, Gender } from '@/lib/genderedText';
+import { useWakeLock } from '@/hooks/useWakeLock';
 
 type Feeling = 'flooding' | 'pressure' | 'restless';
 type Phase = 'choose' | 'grounding' | 'breathing' | 'affirmation';
@@ -152,6 +153,7 @@ const QuickRelief: React.FC = () => {
   const content = getContent(gender);
 
   const [phase, setPhase] = useState<Phase>('choose');
+  useWakeLock(phase !== 'choose');
   const [feeling, setFeeling] = useState<Feeling | null>(null);
 
   // Breathing state

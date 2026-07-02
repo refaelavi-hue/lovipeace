@@ -6,6 +6,7 @@ import { useAmbientSound } from '@/hooks/useAmbientSound';
 import { useVoiceCues } from '@/hooks/useVoiceCues';
 import { useOnboarding } from '@/hooks/useOnboarding';
 import BreathingCircleTimer from '@/components/BreathingCircleTimer';
+import { useWakeLock } from '@/hooks/useWakeLock';
 
 const SOUND_LABELS: Record<string, string> = {
   ocean: '🌊 גלי ים',
@@ -62,6 +63,7 @@ const GuidedExercise: React.FC = () => {
     () => (localStorage.getItem(DURATION_KEY) as DurationMode) || 'regular'
   );
   const [phase, setPhase] = useState<'intro' | 'active' | 'outro' | 'idle'>('idle');
+  useWakeLock(phase !== 'idle');
   const [currentStep, setCurrentStep] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
