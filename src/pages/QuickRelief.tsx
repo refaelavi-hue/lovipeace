@@ -152,6 +152,7 @@ const QuickRelief: React.FC = () => {
   const content = getContent(gender);
 
   const [phase, setPhase] = useState<Phase>('choose');
+  useWakeLock(phase !== 'choose');
   const [feeling, setFeeling] = useState<Feeling | null>(null);
 
   // Breathing state
