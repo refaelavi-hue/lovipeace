@@ -96,6 +96,24 @@ const GuidedExercise: React.FC = () => {
     }
   }, []);
 
+  const playBell = useCallback(() => {
+    try {
+      const bell = new Audio('/audio/tibetan-bowl.mp3');
+      bell.volume = 0.7;
+      bell.play().catch(() => {});
+      bellAudioRef.current = bell;
+    } catch {
+      /* noop */
+    }
+  }, []);
+
+  const stopBell = useCallback(() => {
+    if (bellAudioRef.current) {
+      bellAudioRef.current.pause();
+      bellAudioRef.current = null;
+    }
+  }, []);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -103,12 +121,23 @@ const GuidedExercise: React.FC = () => {
       stop();
       stopCue();
       stopVoiceAudio();
+      stopBell();
     };
-  }, [clearTimer, stop, stopCue, stopVoiceAudio]);
+  }, [clearTimer, stop, stopCue, stopVoiceAudio, stopBell]);
 
   const startMeditation = useCallback(() => {
     if (!meditation) return;
     unlock();
+
+    if (isSilent) {
+      setPhase('active');
+      setCurrentStep(0);
+      setTimeLeft(SILENT_DURATION);
+      setIsPaused(false);
+      playBell();
+      return;
+    }
+
     setPhase('intro');
     setCurrentStep(0);
     setTimeLeft(8);
@@ -117,7 +146,7 @@ const GuidedExercise: React.FC = () => {
     if (soundOn) {
       play(meditation.soundType, 0.6);
     }
-  }, [meditation, play, playCue, soundOn, unlock]);
+  }, [meditation, play, playCue, soundOn, unlock, isSilent, playBell]);
 
   const startAudioMeditation = useCallback(() => {
     if (!meditation || !voiceUrl) return;
