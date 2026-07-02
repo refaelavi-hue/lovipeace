@@ -248,4 +248,16 @@ export const GUIDED_MEDITATIONS: GuidedMeditation[] = [
     ],
     outro: 'המקום הבטוח הזה תמיד שם בשבילכם. אפשר לחזור אליו בכל רגע.',
   },
+  {
+    id: 'silent-16',
+    title: 'מדיטציית שקט 16 דק׳',
+    subtitle: 'צליל קערה טיבטית בהתחלה ובסוף — ובאמצע, שקט',
+    category: 'mind',
+    totalDuration: '16 דק׳',
+    icon: '🔔',
+    soundType: 'silence',
+    intro: 'שבו בנוחות. עצמו עיניים אם נעים לכם. הפעמון יסמן את תחילת התרגול — ואת סופו.',
+    steps: [],
+    outro: 'הפעמון סגר את המעגל. קחו רגע לפני שאתם ממשיכים ביום.',
+  },
 ];

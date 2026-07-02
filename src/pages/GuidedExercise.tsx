@@ -67,6 +67,9 @@ const GuidedExercise: React.FC = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [soundOn, setSoundOn] = useState(true);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const bellAudioRef = useRef<HTMLAudioElement | null>(null);
+  const isSilent = meditation?.id === 'silent-16';
+  const SILENT_DURATION = 16 * 60;
 
   const activeSteps = useMemo(
     () => meditation ? getStepsForDuration(meditation.steps, durationMode) : [],
@@ -93,6 +96,24 @@ const GuidedExercise: React.FC = () => {
     }
   }, []);
 
+  const playBell = useCallback(() => {
+    try {
+      const bell = new Audio('/audio/tibetan-bowl.mp3');
+      bell.volume = 0.7;
+      bell.play().catch(() => {});
+      bellAudioRef.current = bell;
+    } catch {
+      /* noop */
+    }
+  }, []);
+
+  const stopBell = useCallback(() => {
+    if (bellAudioRef.current) {
+      bellAudioRef.current.pause();
+      bellAudioRef.current = null;
+    }
+  }, []);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -100,12 +121,23 @@ const GuidedExercise: React.FC = () => {
       stop();
       stopCue();
       stopVoiceAudio();
+      stopBell();
     };
-  }, [clearTimer, stop, stopCue, stopVoiceAudio]);
+  }, [clearTimer, stop, stopCue, stopVoiceAudio, stopBell]);
 
   const startMeditation = useCallback(() => {
     if (!meditation) return;
     unlock();
+
+    if (isSilent) {
+      setPhase('active');
+      setCurrentStep(0);
+      setTimeLeft(SILENT_DURATION);
+      setIsPaused(false);
+      playBell();
+      return;
+    }
+
     setPhase('intro');
     setCurrentStep(0);
     setTimeLeft(8);
@@ -114,7 +146,7 @@ const GuidedExercise: React.FC = () => {
     if (soundOn) {
       play(meditation.soundType, 0.6);
     }
-  }, [meditation, play, playCue, soundOn, unlock]);
+  }, [meditation, play, playCue, soundOn, unlock, isSilent, playBell]);
 
   const startAudioMeditation = useCallback(() => {
     if (!meditation || !voiceUrl) return;
@@ -139,12 +171,13 @@ const GuidedExercise: React.FC = () => {
     stop();
     stopCue();
     stopVoiceAudio();
+    stopBell();
     setPhase('idle');
     setCurrentStep(0);
     setTimeLeft(0);
     setIsPaused(false);
     setAudioMode(false);
-  }, [clearTimer, stop, stopCue, stopVoiceAudio]);
+  }, [clearTimer, stop, stopCue, stopVoiceAudio, stopBell]);
 
   const handleBack = useCallback(() => {
     resetMeditation();
@@ -201,6 +234,13 @@ const GuidedExercise: React.FC = () => {
     }
 
     if (phase === 'active') {
+      if (isSilent) {
+        playBell();
+        setPhase('outro');
+        setTimeLeft(10);
+        return;
+      }
+
       const nextStep = currentStep + 1;
 
       if (nextStep < activeSteps.length) {
@@ -222,7 +262,7 @@ const GuidedExercise: React.FC = () => {
       setPhase('idle');
       setTimeLeft(0);
     }
-  }, [activeSteps, clearTimer, currentStep, meditation, phase, playCue, playStepCue, stop]);
+  }, [activeSteps, clearTimer, currentStep, meditation, phase, playCue, playStepCue, stop, isSilent, playBell]);
 
   // Timer logic
   useEffect(() => {
@@ -306,23 +346,25 @@ const GuidedExercise: React.FC = () => {
             <h1 className="text-2xl font-bold text-foreground mb-2">{meditation.title}</h1>
             <p className="text-muted-foreground mb-6">{meditation.subtitle}</p>
 
-            {/* Duration selector */}
-            <div className="flex gap-2 mb-8 w-full max-w-xs mx-auto">
-              {DURATION_OPTIONS.map((opt) => (
-                <button
-                  key={opt.id}
-                  onClick={() => handleDurationChange(opt.id)}
-                  className={`flex-1 rounded-2xl py-3 px-2 text-center transition-all duration-200 ${
-                    durationMode === opt.id
-                      ? 'bg-primary/20 border-2 border-primary'
-                      : 'bg-card border-2 border-transparent hover:border-primary/20'
-                  }`}
-                >
-                  <span className="text-foreground text-sm font-semibold block">{opt.label}</span>
-                  <span className="text-muted-foreground text-xs">{opt.desc}</span>
-                </button>
-              ))}
-            </div>
+            {/* Duration selector (hidden for silent meditation) */}
+            {!isSilent && (
+              <div className="flex gap-2 mb-8 w-full max-w-xs mx-auto">
+                {DURATION_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.id}
+                    onClick={() => handleDurationChange(opt.id)}
+                    className={`flex-1 rounded-2xl py-3 px-2 text-center transition-all duration-200 ${
+                      durationMode === opt.id
+                        ? 'bg-primary/20 border-2 border-primary'
+                        : 'bg-card border-2 border-transparent hover:border-primary/20'
+                    }`}
+                  >
+                    <span className="text-foreground text-sm font-semibold block">{opt.label}</span>
+                    <span className="text-muted-foreground text-xs">{opt.desc}</span>
+                  </button>
+                ))}
+              </div>
+            )}
 
             <p className="text-xs text-muted-foreground mb-6">{SOUND_LABELS[meditation.soundType]}</p>
             
@@ -358,7 +400,19 @@ const GuidedExercise: React.FC = () => {
           </div>
         )}
 
-        {phase === 'active' && audioMode && (
+        {phase === 'active' && isSilent && (
+          <div className="animate-fade-up max-w-sm">
+            <span className="text-6xl mb-8 block">🔔</span>
+            <p className="text-5xl font-light text-foreground tabular-nums mb-4">
+              {Math.floor(timeLeft / 60).toString().padStart(2, '0')}
+              :
+              {(timeLeft % 60).toString().padStart(2, '0')}
+            </p>
+            <p className="text-muted-foreground text-sm">שקט. רק את הנשימה שלכם.</p>
+          </div>
+        )}
+
+        {phase === 'active' && !isSilent && audioMode && (
           <div className="animate-fade-up max-w-sm">
             <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-8 mx-auto animate-pulse">
               <Mic size={36} className="text-primary" />
@@ -368,7 +422,7 @@ const GuidedExercise: React.FC = () => {
           </div>
         )}
 
-        {phase === 'active' && !audioMode && step && (
+        {phase === 'active' && !isSilent && !audioMode && step && (
           <div className="animate-scale-fade-in max-w-sm">
             {/* Breathing circle with timer */}
             <div className="mb-8">
