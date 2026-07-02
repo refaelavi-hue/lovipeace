@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { useOnboarding } from '@/hooks/useOnboarding';
 import { g, Gender } from '@/lib/genderedText';
+import { useWakeLock } from '@/hooks/useWakeLock';
 
 type Feeling = 'flooding' | 'pressure' | 'restless';
 type Phase = 'choose' | 'grounding' | 'breathing' | 'affirmation';
