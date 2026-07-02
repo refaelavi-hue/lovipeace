@@ -98,12 +98,32 @@ const GuidedExercise: React.FC = () => {
     }
   }, []);
 
-  const playBell = useCallback(() => {
+  // Preload bell so playback at the end of a long silent meditation
+  // doesn't get blocked by autoplay policies (no user gesture at that moment).
+  const preloadBell = useCallback(() => {
+    if (bellAudioRef.current) return;
     try {
       const bell = new Audio('/audio/tibetan-bowl.mp3');
       bell.volume = 0.7;
-      bell.play().catch(() => {});
+      bell.preload = 'auto';
+      bell.load();
       bellAudioRef.current = bell;
+    } catch {
+      /* noop */
+    }
+  }, []);
+
+  const playBell = useCallback(() => {
+    try {
+      let bell = bellAudioRef.current;
+      if (!bell) {
+        bell = new Audio('/audio/tibetan-bowl.mp3');
+        bell.volume = 0.7;
+        bellAudioRef.current = bell;
+      }
+      bell.currentTime = 0;
+      const p = bell.play();
+      if (p && typeof p.catch === 'function') p.catch(() => {});
     } catch {
       /* noop */
     }
