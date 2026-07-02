@@ -152,6 +152,7 @@ const GuidedExercise: React.FC = () => {
     unlock();
 
     if (isSilent) {
+      preloadBell();
       setPhase('active');
       setCurrentStep(0);
       setTimeLeft(SILENT_DURATION);
