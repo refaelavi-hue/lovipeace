@@ -67,6 +67,9 @@ const GuidedExercise: React.FC = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [soundOn, setSoundOn] = useState(true);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const bellAudioRef = useRef<HTMLAudioElement | null>(null);
+  const isSilent = meditation?.id === 'silent-16';
+  const SILENT_DURATION = 16 * 60;
 
   const activeSteps = useMemo(
     () => meditation ? getStepsForDuration(meditation.steps, durationMode) : [],
