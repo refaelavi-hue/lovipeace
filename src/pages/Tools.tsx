@@ -44,6 +44,32 @@ const Tools: React.FC = () => {
         <p className="text-sm text-muted-foreground mt-1">כל התרגילים מהתוכנית, במקום אחד</p>
       </div>
 
+      {/* Silent Meditation — always available */}
+      {(() => {
+        const silent = GUIDED_MEDITATIONS.find(m => m.id === 'silent-16');
+        if (!silent) return null;
+        return (
+          <div className="px-5 mb-6">
+            <button
+              onClick={() => navigate(`/exercise/${silent.id}`)}
+              className="w-full bg-gradient-to-l from-primary/10 to-primary/5 rounded-2xl p-4 border border-primary/20 text-right transition-all duration-200 hover:shadow-md active:scale-[0.98]"
+              aria-label={`התחלת ${silent.title}`}
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center text-2xl shrink-0">
+                  {silent.icon}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-foreground text-sm">{silent.title}</h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">{silent.subtitle}</p>
+                </div>
+                <span className="text-xs text-primary font-medium shrink-0">{silent.totalDuration}</span>
+              </div>
+            </button>
+          </div>
+        );
+      })()}
+
       {/* Category Tabs */}
       <div className="px-5 flex gap-2 overflow-x-auto pb-4 scrollbar-hide">
         {categories.map((cat) => {
