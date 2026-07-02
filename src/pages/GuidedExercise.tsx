@@ -234,6 +234,13 @@ const GuidedExercise: React.FC = () => {
     }
 
     if (phase === 'active') {
+      if (isSilent) {
+        playBell();
+        setPhase('outro');
+        setTimeLeft(10);
+        return;
+      }
+
       const nextStep = currentStep + 1;
 
       if (nextStep < activeSteps.length) {
@@ -255,7 +262,7 @@ const GuidedExercise: React.FC = () => {
       setPhase('idle');
       setTimeLeft(0);
     }
-  }, [activeSteps, clearTimer, currentStep, meditation, phase, playCue, playStepCue, stop]);
+  }, [activeSteps, clearTimer, currentStep, meditation, phase, playCue, playStepCue, stop, isSilent, playBell]);
 
   // Timer logic
   useEffect(() => {
