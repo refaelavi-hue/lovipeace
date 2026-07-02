@@ -34,7 +34,7 @@ const Tools: React.FC = () => {
   const categories: Category[] = ['breathing', 'movement', 'mind', 'creation'];
 
   // Get guided meditations for current category
-  const guidedForCategory = GUIDED_MEDITATIONS.filter(m => m.category === activeCategory);
+  const guidedForCategory = GUIDED_MEDITATIONS.filter(m => m.category === activeCategory && m.id !== 'silent-16');
 
   return (
     <div className="min-h-screen bg-background pb-24" dir="rtl">
