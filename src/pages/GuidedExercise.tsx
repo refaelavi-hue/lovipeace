@@ -400,7 +400,19 @@ const GuidedExercise: React.FC = () => {
           </div>
         )}
 
-        {phase === 'active' && audioMode && (
+        {phase === 'active' && isSilent && (
+          <div className="animate-fade-up max-w-sm">
+            <span className="text-6xl mb-8 block">🔔</span>
+            <p className="text-5xl font-light text-foreground tabular-nums mb-4">
+              {Math.floor(timeLeft / 60).toString().padStart(2, '0')}
+              :
+              {(timeLeft % 60).toString().padStart(2, '0')}
+            </p>
+            <p className="text-muted-foreground text-sm">שקט. רק את הנשימה שלכם.</p>
+          </div>
+        )}
+
+        {phase === 'active' && !isSilent && audioMode && (
           <div className="animate-fade-up max-w-sm">
             <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-8 mx-auto animate-pulse">
               <Mic size={36} className="text-primary" />
@@ -410,7 +422,7 @@ const GuidedExercise: React.FC = () => {
           </div>
         )}
 
-        {phase === 'active' && !audioMode && step && (
+        {phase === 'active' && !isSilent && !audioMode && step && (
           <div className="animate-scale-fade-in max-w-sm">
             {/* Breathing circle with timer */}
             <div className="mb-8">
