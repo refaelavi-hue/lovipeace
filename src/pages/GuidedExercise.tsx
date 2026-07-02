@@ -346,23 +346,25 @@ const GuidedExercise: React.FC = () => {
             <h1 className="text-2xl font-bold text-foreground mb-2">{meditation.title}</h1>
             <p className="text-muted-foreground mb-6">{meditation.subtitle}</p>
 
-            {/* Duration selector */}
-            <div className="flex gap-2 mb-8 w-full max-w-xs mx-auto">
-              {DURATION_OPTIONS.map((opt) => (
-                <button
-                  key={opt.id}
-                  onClick={() => handleDurationChange(opt.id)}
-                  className={`flex-1 rounded-2xl py-3 px-2 text-center transition-all duration-200 ${
-                    durationMode === opt.id
-                      ? 'bg-primary/20 border-2 border-primary'
-                      : 'bg-card border-2 border-transparent hover:border-primary/20'
-                  }`}
-                >
-                  <span className="text-foreground text-sm font-semibold block">{opt.label}</span>
-                  <span className="text-muted-foreground text-xs">{opt.desc}</span>
-                </button>
-              ))}
-            </div>
+            {/* Duration selector (hidden for silent meditation) */}
+            {!isSilent && (
+              <div className="flex gap-2 mb-8 w-full max-w-xs mx-auto">
+                {DURATION_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.id}
+                    onClick={() => handleDurationChange(opt.id)}
+                    className={`flex-1 rounded-2xl py-3 px-2 text-center transition-all duration-200 ${
+                      durationMode === opt.id
+                        ? 'bg-primary/20 border-2 border-primary'
+                        : 'bg-card border-2 border-transparent hover:border-primary/20'
+                    }`}
+                  >
+                    <span className="text-foreground text-sm font-semibold block">{opt.label}</span>
+                    <span className="text-muted-foreground text-xs">{opt.desc}</span>
+                  </button>
+                ))}
+              </div>
+            )}
 
             <p className="text-xs text-muted-foreground mb-6">{SOUND_LABELS[meditation.soundType]}</p>
             
