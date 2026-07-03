@@ -7,6 +7,9 @@ import { useVoiceCues } from '@/hooks/useVoiceCues';
 import { useOnboarding } from '@/hooks/useOnboarding';
 import BreathingCircleTimer from '@/components/BreathingCircleTimer';
 import { useWakeLock } from '@/hooks/useWakeLock';
+import tibetanBellAsset from '@/assets/tibetan-bell.m4a.asset.json';
+
+const BELL_URL = tibetanBellAsset.url;
 
 const SOUND_LABELS: Record<string, string> = {
   ocean: '🌊 גלי ים',
