@@ -7,6 +7,9 @@ import { useVoiceCues } from '@/hooks/useVoiceCues';
 import { useOnboarding } from '@/hooks/useOnboarding';
 import BreathingCircleTimer from '@/components/BreathingCircleTimer';
 import { useWakeLock } from '@/hooks/useWakeLock';
+import tibetanBellAsset from '@/assets/tibetan-bell.m4a.asset.json';
+
+const BELL_URL = tibetanBellAsset.url;
 
 const SOUND_LABELS: Record<string, string> = {
   ocean: '🌊 גלי ים',
@@ -103,7 +106,7 @@ const GuidedExercise: React.FC = () => {
   const preloadBell = useCallback(() => {
     if (bellAudioRef.current) return;
     try {
-      const bell = new Audio('/audio/tibetan-bowl.mp3');
+      const bell = new Audio(BELL_URL);
       bell.volume = 0.7;
       bell.preload = 'auto';
       bell.load();
@@ -117,7 +120,7 @@ const GuidedExercise: React.FC = () => {
     try {
       let bell = bellAudioRef.current;
       if (!bell) {
-        bell = new Audio('/audio/tibetan-bowl.mp3');
+        bell = new Audio(BELL_URL);
         bell.volume = 0.7;
         bellAudioRef.current = bell;
       }
