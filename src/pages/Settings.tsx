@@ -209,7 +209,7 @@ const Settings: React.FC = () => {
       <div className="px-6 mb-6">
         <div className="bg-card rounded-3xl p-5 border border-destructive/20">
           <div className="flex items-center gap-3 mb-3">
-            <RotateCcw className="w-5 h-5 text-destructive" />
+            <AppIcon name="reset" size={32} alt="איפוס" />
             <h3 className="text-foreground font-semibold text-base">איפוס</h3>
           </div>
 
