@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowRight, Play, Pause, Volume2, VolumeX, RotateCcw, Mic } from 'lucide-react';
+import { ArrowRight, Play, Pause, Volume2, VolumeX, RotateCcw, Mic, ChevronUp } from 'lucide-react';
 import { GUIDED_MEDITATIONS, type MeditationStep } from '@/data/guidedMeditations';
 import { useAmbientSound } from '@/hooks/useAmbientSound';
 import { useVoiceCues } from '@/hooks/useVoiceCues';
 import { useOnboarding } from '@/hooks/useOnboarding';
+import { useRecentMeditations } from '@/hooks/useRecentMeditations';
 import BreathingCircleTimer from '@/components/BreathingCircleTimer';
 import { useWakeLock } from '@/hooks/useWakeLock';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import tibetanBellAsset from '@/assets/tibetan-bell.m4a.asset.json';
 
 const BELL_URL = tibetanBellAsset.url;
@@ -47,7 +49,9 @@ const GuidedExercise: React.FC = () => {
   const meditation = GUIDED_MEDITATIONS.find(m => m.id === id);
   const { play, stop } = useAmbientSound();
   const { unlock, playCue, stopCue } = useVoiceCues();
-  const { profile } = useOnboarding();
+  const { profile, updateProfile } = useOnboarding();
+  const { record: recordRecent } = useRecentMeditations();
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   // Audio guide support
   const voiceAudioRef = useRef<HTMLAudioElement | null>(null);
