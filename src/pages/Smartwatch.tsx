@@ -49,9 +49,7 @@ const Smartwatch: React.FC = () => {
           <span>חזרה</span>
         </button>
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-            <Watch size={24} className="text-primary" />
-          </div>
+          <AppIcon name="watch-device" size={56} alt="שעון" />
           <div>
             <h1 className="text-2xl font-semibold text-foreground">שעון חכם</h1>
             <p className="text-muted-foreground text-sm">מעקב מדדי גוף</p>
