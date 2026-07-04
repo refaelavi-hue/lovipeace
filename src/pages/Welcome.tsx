@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Heart, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import heroBreath from '@/assets/meditations/hero-breath.png.asset.json';
 
 const Welcome = () => {
   const navigate = useNavigate();
@@ -28,11 +29,15 @@ const Welcome = () => {
       <div className="absolute top-[-120px] right-[-80px] w-[300px] h-[300px] rounded-full bg-primary/5 blur-3xl" />
       <div className="absolute bottom-[-100px] left-[-60px] w-[250px] h-[250px] rounded-full bg-accent/5 blur-3xl" />
 
-      {/* Logo / Icon */}
-      <div className="animate-fade-up mb-8">
-        <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center">
-          <Heart className="w-12 h-12 text-primary" strokeWidth={1.5} />
-        </div>
+      {/* Hero illustration */}
+      <div className="animate-fade-up mb-6">
+        <img
+          src={heroBreath.url}
+          alt=""
+          width={240}
+          height={240}
+          className="w-56 h-56 object-contain"
+        />
       </div>
 
       {/* Title */}
