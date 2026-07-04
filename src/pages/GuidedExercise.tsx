@@ -157,6 +157,8 @@ const GuidedExercise: React.FC = () => {
   const startMeditation = useCallback(() => {
     if (!meditation) return;
     unlock();
+    recordRecent(meditation.id);
+    setSheetOpen(false);
 
     if (isSilent) {
       preloadBell();
@@ -176,11 +178,13 @@ const GuidedExercise: React.FC = () => {
     if (soundOn) {
       play(meditation.soundType, 0.6);
     }
-  }, [meditation, play, playCue, soundOn, unlock, isSilent, playBell]);
+  }, [meditation, play, playCue, soundOn, unlock, isSilent, playBell, preloadBell, recordRecent]);
 
   const startAudioMeditation = useCallback(() => {
     if (!meditation || !voiceUrl) return;
     unlock();
+    recordRecent(meditation.id);
+    setSheetOpen(false);
     setAudioMode(true);
     setPhase('active');
     setIsPaused(false);
@@ -194,7 +198,7 @@ const GuidedExercise: React.FC = () => {
       setTimeLeft(8);
     };
     voiceAudioRef.current = audio;
-  }, [meditation, voiceUrl, play, soundOn, unlock]);
+  }, [meditation, voiceUrl, play, soundOn, unlock, recordRecent]);
 
   const resetMeditation = useCallback(() => {
     clearTimer();
