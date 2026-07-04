@@ -322,12 +322,16 @@ const GuidedExercise: React.FC = () => {
     : phase === 'outro' ? 1 : 0;
 
   const getBgClass = () => {
-    if (!step) return 'bg-background';
+    if (phase === 'idle') return 'bg-phase-idle';
+    if (phase === 'intro') return 'bg-phase-inhale';
+    if (phase === 'outro') return 'bg-phase-outro';
+    if (phase === 'active' && isSilent) return 'bg-phase-silent';
+    if (!step) return 'bg-phase-idle';
     switch (step.type) {
-      case 'inhale': return 'bg-primary/5';
-      case 'exhale': return 'bg-accent/5';
-      case 'hold': return 'bg-secondary';
-      default: return 'bg-background';
+      case 'inhale': return 'bg-phase-inhale';
+      case 'exhale': return 'bg-phase-exhale';
+      case 'hold': return 'bg-phase-hold';
+      default: return 'bg-phase-idle';
     }
   };
 
@@ -486,9 +490,9 @@ const GuidedExercise: React.FC = () => {
       {phase !== 'idle' && (
         <div className="px-8 pb-12">
           {/* Progress bar */}
-          <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden mb-6">
+          <div className="progress-bar-track w-full h-2 mb-6">
             <div
-              className="h-full bg-primary rounded-full transition-all duration-500"
+              className="progress-bar-fill"
               style={{ width: `${progress * 100}%` }}
             />
           </div>
