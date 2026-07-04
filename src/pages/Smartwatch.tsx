@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Watch, Heart, Activity, ArrowRight, Check, ChevronDown, ChevronUp } from 'lucide-react';
+import { Heart, Activity, ArrowRight, Check, ChevronDown, ChevronUp } from 'lucide-react';
+import { AppIcon } from '@/components/AppIcon';
 import BottomNav from '@/components/BottomNav';
 import { useOnboarding } from '@/hooks/useOnboarding';
 import { useJournal, type BodyMetrics } from '@/hooks/useJournal';
