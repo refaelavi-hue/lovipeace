@@ -94,7 +94,6 @@ const Dashboard: React.FC = () => {
       {/* 3 Action Cards */}
       <div className="px-8 flex flex-col gap-4">
         {actions.map((action) => {
-          const Icon = action.icon;
           return (
             <button
               key={action.path}
@@ -106,16 +105,7 @@ const Dashboard: React.FC = () => {
               }`}
             >
               <div className="flex items-center gap-4">
-                <div
-                  className={`rounded-2xl p-3 ${
-                    action.accent ? 'bg-accent/20' : 'bg-primary/10'
-                  }`}
-                >
-                  <Icon
-                    size={24}
-                    className={action.accent ? 'text-accent' : 'text-primary'}
-                  />
-                </div>
+                <AppIcon name={action.icon} size={56} alt={action.label} />
                 <div className="flex flex-col items-start">
                   <span className="text-foreground text-lg font-semibold">
                     {action.label}
