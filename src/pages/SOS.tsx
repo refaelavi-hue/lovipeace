@@ -181,8 +181,8 @@ const SOS: React.FC = () => {
 
       {activeModule === 'affirmations' && (
         <div className="px-6 pt-16 flex flex-col items-center animate-fade-up">
-          <div className="w-20 h-20 rounded-full bg-accent/15 flex items-center justify-center mb-12">
-            <MessageCircleHeart size={36} className="text-accent" />
+          <div className="mb-12">
+            <AppIcon name="self-compassion" size={80} alt="חמלה עצמית" />
           </div>
 
           <p className="text-foreground text-3xl font-light text-center leading-relaxed max-w-sm mb-16">
