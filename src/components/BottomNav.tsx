@@ -1,14 +1,15 @@
 import React, { forwardRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, Calendar, Wrench, BookOpen, Settings } from 'lucide-react';
+import { AppIcon, type AppIconName } from '@/components/AppIcon';
 
-const tabs = [
-  { path: '/dashboard', icon: Home, label: 'בית' },
-  { path: '/weeks', icon: Calendar, label: 'שבועות' },
-  { path: '/tools', icon: Wrench, label: 'כלים' },
-  { path: '/journal', icon: BookOpen, label: 'יומן' },
-  { path: '/settings', icon: Settings, label: 'הגדרות' },
+const tabs: { path: string; icon: AppIconName; label: string }[] = [
+  { path: '/dashboard', icon: 'home', label: 'בית' },
+  { path: '/weeks', icon: 'weeks-nav', label: 'שבועות' },
+  { path: '/tools', icon: 'tools', label: 'כלים' },
+  { path: '/journal', icon: 'journal-nav', label: 'יומן' },
+  { path: '/settings', icon: 'settings-nav', label: 'הגדרות' },
 ];
+
 
 const BottomNav = forwardRef<HTMLElement>((_, ref) => {
   const navigate = useNavigate();
