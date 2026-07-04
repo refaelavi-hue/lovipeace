@@ -106,7 +106,7 @@ const Settings: React.FC = () => {
           className="w-full bg-card rounded-3xl p-5 border border-border/50 flex items-center gap-3 hover:border-primary/20 transition-colors text-right"
           aria-label="חיבור שעון חכם"
         >
-          <Watch className="w-5 h-5 text-primary shrink-0" />
+          <AppIcon name="watch" size={32} alt="שעון חכם" />
           <div className="flex-1">
             <h3 className="text-foreground font-semibold text-base">שעון חכם</h3>
             <p className="text-muted-foreground text-xs mt-0.5">מעקב מדדי גוף והזנה ידנית</p>
