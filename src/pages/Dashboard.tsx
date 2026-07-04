@@ -32,39 +32,39 @@ const Dashboard: React.FC = () => {
   const gender = profile.gender || 'female';
   const question = g(gender, 'מה את צריכה עכשיו?', 'מה אתה צריך עכשיו?');
 
-  const actions = [
+  const actions: { label: string; subtitle: string; icon: AppIconName; path: string; accent: boolean }[] = [
     {
       label: 'מדיטציית שקט 16 דק׳',
       subtitle: 'צליל קערה טיבטית בהתחלה ובסוף — ובאמצע, שקט',
-      icon: Volume2,
+      icon: 'meditation',
       path: '/exercise/silent-16',
       accent: true,
     },
     {
       label: 'הרגעה מהירה',
       subtitle: g(gender, 'עזרה מיידית ברגע של חרדה', 'עזרה מיידית ברגע של חרדה'),
-      icon: Wind,
+      icon: 'quick-relief',
       path: '/quick',
       accent: false,
     },
     {
       label: 'SOS',
       subtitle: g(gender, 'אני צריכה עזרה עכשיו', 'אני צריך עזרה עכשיו'),
-      icon: Heart,
+      icon: 'sos',
       path: '/sos',
       accent: false,
     },
     {
       label: 'תרגול יומי',
       subtitle: WEEKS_DATA[currentWeek - 1]?.title || 'נשימה + קרקוע',
-      icon: Sparkles,
+      icon: 'daily-practice',
       path: `/weeks/${currentWeek}`,
       accent: false,
     },
     {
       label: 'השבוע שלי',
       subtitle: `שבוע ${currentWeek}`,
-      icon: Calendar,
+      icon: 'my-week',
       path: '/weeks',
       accent: false,
     },
