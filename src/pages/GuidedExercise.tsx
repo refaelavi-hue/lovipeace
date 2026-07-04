@@ -527,8 +527,8 @@ const GuidedExercise: React.FC = () => {
 
         {phase === 'active' && !isSilent && audioMode && (
           <div className="animate-fade-up max-w-sm">
-            <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-8 mx-auto animate-pulse">
-              <Mic size={36} className="text-primary" />
+            <div className="mb-8 mx-auto flex justify-center animate-pulse">
+              <AppIcon name="mic" size={96} alt="מיקרופון" />
             </div>
             <p className="text-lg text-foreground font-medium mb-2">הנחיה קולית פעילה</p>
             <p className="text-muted-foreground text-sm">הקשיבו והירגעו</p>
