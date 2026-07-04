@@ -7,6 +7,7 @@ import { useProgress } from '@/hooks/useProgress';
 import { useRecentMeditations } from '@/hooks/useRecentMeditations';
 import { WEEKS_DATA } from '@/data/weeksData';
 import { GUIDED_MEDITATIONS } from '@/data/guidedMeditations';
+import { getIllustration } from '@/data/meditationIllustrations';
 import { g } from '@/lib/genderedText';
 
 const Dashboard: React.FC = () => {

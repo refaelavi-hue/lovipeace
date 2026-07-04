@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowRight, Play, Pause, Volume2, VolumeX, RotateCcw, Mic, ChevronUp } from 'lucide-react';
 import { GUIDED_MEDITATIONS, type MeditationStep } from '@/data/guidedMeditations';
+import { getIllustration } from '@/data/meditationIllustrations';
 import { useAmbientSound } from '@/hooks/useAmbientSound';
 import { useVoiceCues } from '@/hooks/useVoiceCues';
 import { useOnboarding } from '@/hooks/useOnboarding';
@@ -380,7 +381,17 @@ const GuidedExercise: React.FC = () => {
       <div className="flex-1 flex flex-col items-center justify-center px-8 text-center">
         {phase === 'idle' && (
           <div className="animate-fade-up flex flex-col items-center">
-            <span className="text-7xl mb-6 block">{meditation.icon}</span>
+            {getIllustration(meditation.id) ? (
+              <img
+                src={getIllustration(meditation.id)}
+                alt=""
+                width={192}
+                height={192}
+                className="w-48 h-48 object-contain mb-4 rounded-3xl"
+              />
+            ) : (
+              <span className="text-7xl mb-6 block">{meditation.icon}</span>
+            )}
             <h1 className="text-3xl font-bold text-foreground mb-2">{meditation.title}</h1>
             <p className="text-muted-foreground mb-8 max-w-xs">{meditation.subtitle}</p>
 
