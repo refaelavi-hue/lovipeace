@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Wind, Mountain, MessageCircleHeart, Phone, Home } from 'lucide-react';
+import { ArrowRight, Phone, Home } from 'lucide-react';
+import { AppIcon } from '@/components/AppIcon';
 import BreathingExercise from '@/components/BreathingExercise';
 import { useOnboarding } from '@/hooks/useOnboarding';
 import { g } from '@/lib/genderedText';
