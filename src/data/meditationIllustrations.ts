@@ -1,13 +1,13 @@
-import breathingBasic from '@/assets/meditations/breathing-basic.jpg.asset.json';
-import grounding from '@/assets/meditations/grounding-54321.jpg.asset.json';
-import compassion from '@/assets/meditations/compassion.jpg.asset.json';
-import mindfulness from '@/assets/meditations/mindfulness-basic.jpg.asset.json';
-import pmr from '@/assets/meditations/pmr.jpg.asset.json';
-import freewriting from '@/assets/meditations/freewriting.jpg.asset.json';
-import boxBreathing from '@/assets/meditations/box-breathing.jpg.asset.json';
-import bodyScan from '@/assets/meditations/body-scan.jpg.asset.json';
-import guidedImagery from '@/assets/meditations/guided-imagery.jpg.asset.json';
-import silent16 from '@/assets/meditations/silent-16.jpg.asset.json';
+import breathingBasic from '@/assets/meditations/breathing-basic.png.asset.json';
+import grounding from '@/assets/meditations/grounding-54321.png.asset.json';
+import compassion from '@/assets/meditations/compassion.png.asset.json';
+import mindfulness from '@/assets/meditations/mindfulness-basic.png.asset.json';
+import pmr from '@/assets/meditations/pmr.png.asset.json';
+import freewriting from '@/assets/meditations/freewriting.png.asset.json';
+import boxBreathing from '@/assets/meditations/box-breathing.png.asset.json';
+import bodyScan from '@/assets/meditations/body-scan.png.asset.json';
+import guidedImagery from '@/assets/meditations/guided-imagery.png.asset.json';
+import silent16 from '@/assets/meditations/silent-16.png.asset.json';
 
 export const MEDITATION_ILLUSTRATIONS: Record<string, string> = {
   'breathing-basic': breathingBasic.url,
