@@ -169,7 +169,7 @@ const Settings: React.FC = () => {
       <div className="px-6 mb-4 animate-fade-up-delay-3">
         <div className="bg-card rounded-3xl p-5 border border-border/50">
           <div className="flex items-center gap-3 mb-4">
-            {isAdmin ? <ShieldOff className="w-5 h-5 text-primary" /> : <Shield className="w-5 h-5 text-muted-foreground" />}
+            <AppIcon name="privacy" size={32} alt="מנהל" />
             <h3 className="text-foreground font-semibold text-base">מנהל</h3>
           </div>
 
