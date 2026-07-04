@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import BottomNav from '@/components/BottomNav';
 import { WEEKS_DATA, CATEGORY_INFO, Exercise } from '@/data/weeksData';
 import { GUIDED_MEDITATIONS } from '@/data/guidedMeditations';
+import { getIllustration } from '@/data/meditationIllustrations';
 
 type Category = keyof typeof CATEGORY_INFO;
 
@@ -56,8 +57,12 @@ const Tools: React.FC = () => {
               aria-label={`התחלת ${silent.title}`}
             >
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center text-2xl shrink-0">
-                  {silent.icon}
+                <div className="w-14 h-14 rounded-xl bg-primary/10 overflow-hidden flex items-center justify-center shrink-0">
+                  {getIllustration(silent.id) ? (
+                    <img src={getIllustration(silent.id)} alt="" width={56} height={56} loading="lazy" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-2xl">{silent.icon}</span>
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-foreground text-sm">{silent.title}</h3>
@@ -107,8 +112,12 @@ const Tools: React.FC = () => {
                 className="w-full bg-primary/5 rounded-2xl p-4 border border-primary/15 text-right transition-all duration-200 hover:bg-primary/10 hover:shadow-md active:scale-[0.98]"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center text-2xl shrink-0">
-                    {med.icon}
+                  <div className="w-14 h-14 rounded-xl bg-primary/10 overflow-hidden flex items-center justify-center shrink-0">
+                    {getIllustration(med.id) ? (
+                      <img src={getIllustration(med.id)} alt="" width={56} height={56} loading="lazy" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-2xl">{med.icon}</span>
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-foreground text-sm">{med.title}</h3>
