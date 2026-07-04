@@ -85,12 +85,12 @@ const Smartwatch: React.FC = () => {
         {showInfo && (
           <div className="space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
             {[
-              { icon: <Heart size={18} className="text-red-400" />, title: 'דופק', desc: 'מעקב אחרי קצב הלב במנוחה ובזמן תרגול' },
-              { icon: <Activity size={18} className="text-orange-400" />, title: 'רמת מתח', desc: 'זיהוי רגעי לחץ וחרדה על פי מדדי גוף' },
-              { icon: <Watch size={18} className="text-primary" />, title: 'שינה', desc: 'הבנה טובה יותר של איכות השינה שלך' },
+              { icon: <AppIcon name="heart-rate" size={32} alt="דופק" />, title: 'דופק', desc: 'מעקב אחרי קצב הלב במנוחה ובזמן תרגול' },
+              { icon: <AppIcon name="activity" size={32} alt="רמת מתח" />, title: 'רמת מתח', desc: 'זיהוי רגעי לחץ וחרדה על פי מדדי גוף' },
+              { icon: <AppIcon name="watch-device" size={32} alt="שינה" />, title: 'שינה', desc: 'הבנה טובה יותר של איכות השינה שלך' },
             ].map((item) => (
               <div key={item.title} className="bg-card rounded-2xl p-4 border border-border/50 flex items-start gap-3">
-                <div className="w-9 h-9 rounded-xl bg-background flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="flex-shrink-0 mt-0.5">
                   {item.icon}
                 </div>
                 <div>
