@@ -9,6 +9,7 @@ import { WEEKS_DATA } from '@/data/weeksData';
 import { GUIDED_MEDITATIONS } from '@/data/guidedMeditations';
 import { getIllustration } from '@/data/meditationIllustrations';
 import { g } from '@/lib/genderedText';
+import heroBreath from '@/assets/meditations/hero-breath.png.asset.json';
 
 const Dashboard: React.FC = () => {
   const { profile } = useOnboarding();
@@ -71,17 +72,23 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background pb-28" dir="rtl">
-      {/* Greeting */}
-      <div className="px-8 pt-14 pb-4">
-        <p className="text-muted-foreground text-sm">{greeting()}</p>
-        <h1 className="text-2xl font-semibold text-foreground mt-1">
-          {profile.name} 💛
-        </h1>
-      </div>
-
-      {/* Central question */}
-      <div className="px-8 pt-4 pb-8">
-        <p className="text-foreground/80 text-lg font-medium">{question}</p>
+      {/* Hero header with illustration */}
+      <div className="relative px-8 pt-10 pb-6 overflow-hidden">
+        <img
+          src={heroBreath.url}
+          alt=""
+          aria-hidden="true"
+          className="absolute -top-6 -left-10 w-56 h-56 object-contain opacity-90 pointer-events-none select-none"
+        />
+        <div className="relative">
+          <p className="text-muted-foreground text-sm">{greeting()}</p>
+          <h1 className="text-2xl font-semibold text-foreground mt-1">
+            {profile.name} 💛
+          </h1>
+          <p className="text-foreground/80 text-lg font-medium mt-6 max-w-[60%]">
+            {question}
+          </p>
+        </div>
       </div>
 
       {/* 3 Action Cards */}
