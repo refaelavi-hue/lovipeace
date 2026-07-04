@@ -5,7 +5,7 @@ import { useOnboarding } from '@/hooks/useOnboarding';
 import { useProgress } from '@/hooks/useProgress';
 import { useReminders } from '@/hooks/useReminders';
 import { useAdmin } from '@/hooks/useAdmin';
-import { User, RotateCcw, Bell, Shield, ShieldOff, Watch } from 'lucide-react';
+import { AppIcon } from '@/components/AppIcon';
 import { toast } from 'sonner';
 
 const Settings: React.FC = () => {
@@ -69,7 +69,7 @@ const Settings: React.FC = () => {
       <div className="px-6 mb-4 animate-fade-up-delay-1">
         <div className="bg-card rounded-3xl p-5 border border-border/50">
           <div className="flex items-center gap-3 mb-4">
-            <User className="w-5 h-5 text-primary" />
+            <AppIcon name="profile" size={32} alt="פרופיל" />
             <h3 className="text-foreground font-semibold text-base">פרופיל</h3>
           </div>
           <div className="space-y-3">
@@ -106,7 +106,7 @@ const Settings: React.FC = () => {
           className="w-full bg-card rounded-3xl p-5 border border-border/50 flex items-center gap-3 hover:border-primary/20 transition-colors text-right"
           aria-label="חיבור שעון חכם"
         >
-          <Watch className="w-5 h-5 text-primary shrink-0" />
+          <AppIcon name="watch" size={32} alt="שעון חכם" />
           <div className="flex-1">
             <h3 className="text-foreground font-semibold text-base">שעון חכם</h3>
             <p className="text-muted-foreground text-xs mt-0.5">מעקב מדדי גוף והזנה ידנית</p>
@@ -119,7 +119,7 @@ const Settings: React.FC = () => {
       <div className="px-6 mb-4 animate-fade-up-delay-2">
         <div className="bg-card rounded-3xl p-5 border border-border/50">
           <div className="flex items-center gap-3 mb-4">
-            <Bell className="w-5 h-5 text-primary" />
+            <AppIcon name="notifications" size={32} alt="תזכורות" />
             <h3 className="text-foreground font-semibold text-base">תזכורות</h3>
           </div>
 
@@ -169,7 +169,7 @@ const Settings: React.FC = () => {
       <div className="px-6 mb-4 animate-fade-up-delay-3">
         <div className="bg-card rounded-3xl p-5 border border-border/50">
           <div className="flex items-center gap-3 mb-4">
-            {isAdmin ? <ShieldOff className="w-5 h-5 text-primary" /> : <Shield className="w-5 h-5 text-muted-foreground" />}
+            <AppIcon name="privacy" size={32} alt="מנהל" />
             <h3 className="text-foreground font-semibold text-base">מנהל</h3>
           </div>
 
@@ -209,7 +209,7 @@ const Settings: React.FC = () => {
       <div className="px-6 mb-6">
         <div className="bg-card rounded-3xl p-5 border border-destructive/20">
           <div className="flex items-center gap-3 mb-3">
-            <RotateCcw className="w-5 h-5 text-destructive" />
+            <AppIcon name="reset" size={32} alt="איפוס" />
             <h3 className="text-foreground font-semibold text-base">איפוס</h3>
           </div>
 

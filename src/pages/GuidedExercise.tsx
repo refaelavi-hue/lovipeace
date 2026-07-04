@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowRight, Play, Pause, Volume2, VolumeX, RotateCcw, Mic, ChevronUp } from 'lucide-react';
+import { AppIcon } from '@/components/AppIcon';
 import { GUIDED_MEDITATIONS, type MeditationStep } from '@/data/guidedMeditations';
 import { getIllustration } from '@/data/meditationIllustrations';
 import { useAmbientSound } from '@/hooks/useAmbientSound';
@@ -526,8 +527,8 @@ const GuidedExercise: React.FC = () => {
 
         {phase === 'active' && !isSilent && audioMode && (
           <div className="animate-fade-up max-w-sm">
-            <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-8 mx-auto animate-pulse">
-              <Mic size={36} className="text-primary" />
+            <div className="mb-8 mx-auto flex justify-center animate-pulse">
+              <AppIcon name="mic" size={96} alt="מיקרופון" />
             </div>
             <p className="text-lg text-foreground font-medium mb-2">הנחיה קולית פעילה</p>
             <p className="text-muted-foreground text-sm">הקשיבו והירגעו</p>

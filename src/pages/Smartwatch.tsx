@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Watch, Heart, Activity, ArrowRight, Check, ChevronDown, ChevronUp } from 'lucide-react';
+import { Heart, Activity, ArrowRight, Check, ChevronDown, ChevronUp } from 'lucide-react';
+import { AppIcon } from '@/components/AppIcon';
 import BottomNav from '@/components/BottomNav';
 import { useOnboarding } from '@/hooks/useOnboarding';
 import { useJournal, type BodyMetrics } from '@/hooks/useJournal';
@@ -48,9 +49,7 @@ const Smartwatch: React.FC = () => {
           <span>חזרה</span>
         </button>
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-            <Watch size={24} className="text-primary" />
-          </div>
+          <AppIcon name="watch-device" size={56} alt="שעון" />
           <div>
             <h1 className="text-2xl font-semibold text-foreground">שעון חכם</h1>
             <p className="text-muted-foreground text-sm">מעקב מדדי גוף</p>
@@ -86,12 +85,12 @@ const Smartwatch: React.FC = () => {
         {showInfo && (
           <div className="space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
             {[
-              { icon: <Heart size={18} className="text-red-400" />, title: 'דופק', desc: 'מעקב אחרי קצב הלב במנוחה ובזמן תרגול' },
-              { icon: <Activity size={18} className="text-orange-400" />, title: 'רמת מתח', desc: 'זיהוי רגעי לחץ וחרדה על פי מדדי גוף' },
-              { icon: <Watch size={18} className="text-primary" />, title: 'שינה', desc: 'הבנה טובה יותר של איכות השינה שלך' },
+              { icon: <AppIcon name="heart-rate" size={32} alt="דופק" />, title: 'דופק', desc: 'מעקב אחרי קצב הלב במנוחה ובזמן תרגול' },
+              { icon: <AppIcon name="activity" size={32} alt="רמת מתח" />, title: 'רמת מתח', desc: 'זיהוי רגעי לחץ וחרדה על פי מדדי גוף' },
+              { icon: <AppIcon name="watch-device" size={32} alt="שינה" />, title: 'שינה', desc: 'הבנה טובה יותר של איכות השינה שלך' },
             ].map((item) => (
               <div key={item.title} className="bg-card rounded-2xl p-4 border border-border/50 flex items-start gap-3">
-                <div className="w-9 h-9 rounded-xl bg-background flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="flex-shrink-0 mt-0.5">
                   {item.icon}
                 </div>
                 <div>

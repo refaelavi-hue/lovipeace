@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Wind, Mountain, MessageCircleHeart, Phone, Home } from 'lucide-react';
+import { ArrowRight, Phone, Home } from 'lucide-react';
+import { AppIcon } from '@/components/AppIcon';
 import BreathingExercise from '@/components/BreathingExercise';
 import { useOnboarding } from '@/hooks/useOnboarding';
 import { g } from '@/lib/genderedText';
@@ -100,9 +101,7 @@ const SOS: React.FC = () => {
             onClick={() => setActiveModule('breathing')}
             className="w-full rounded-3xl bg-primary/10 border-2 border-primary/20 hover:border-primary/40 p-7 text-right flex items-center gap-5 transition-all duration-300 active:scale-[0.97]"
           >
-            <div className="w-16 h-16 rounded-2xl bg-primary/15 flex items-center justify-center shrink-0">
-              <Wind size={32} className="text-primary" />
-            </div>
+            <AppIcon name="breathing" size={64} alt="נשימה" />
             <div>
               <h3 className="text-foreground text-xl font-semibold">נשימה מונחית</h3>
               <p className="text-muted-foreground text-sm mt-1">שאיפה, החזקה, נשיפה</p>
@@ -113,9 +112,7 @@ const SOS: React.FC = () => {
             onClick={() => setActiveModule('grounding')}
             className="w-full rounded-3xl bg-primary/10 border-2 border-primary/20 hover:border-primary/40 p-7 text-right flex items-center gap-5 transition-all duration-300 active:scale-[0.97]"
           >
-            <div className="w-16 h-16 rounded-2xl bg-primary/15 flex items-center justify-center shrink-0">
-              <Mountain size={32} className="text-primary" />
-            </div>
+            <AppIcon name="grounding" size={64} alt="הארקה" />
             <div>
               <h3 className="text-foreground text-xl font-semibold">הארקה</h3>
               <p className="text-muted-foreground text-sm mt-1">5-4-3-2-1 לחזרה להווה</p>
@@ -126,9 +123,7 @@ const SOS: React.FC = () => {
             onClick={() => setActiveModule('affirmations')}
             className="w-full rounded-3xl bg-accent/10 border-2 border-accent/20 hover:border-accent/40 p-7 text-right flex items-center gap-5 transition-all duration-300 active:scale-[0.97]"
           >
-            <div className="w-16 h-16 rounded-2xl bg-accent/15 flex items-center justify-center shrink-0">
-              <MessageCircleHeart size={32} className="text-accent" />
-            </div>
+            <AppIcon name="self-compassion" size={64} alt="חמלה עצמית" />
             <div>
               <h3 className="text-foreground text-xl font-semibold">משפטי הרגעה</h3>
               <p className="text-muted-foreground text-sm mt-1">תזכורות שהכל בסדר</p>
@@ -186,8 +181,8 @@ const SOS: React.FC = () => {
 
       {activeModule === 'affirmations' && (
         <div className="px-6 pt-16 flex flex-col items-center animate-fade-up">
-          <div className="w-20 h-20 rounded-full bg-accent/15 flex items-center justify-center mb-12">
-            <MessageCircleHeart size={36} className="text-accent" />
+          <div className="mb-12">
+            <AppIcon name="self-compassion" size={80} alt="חמלה עצמית" />
           </div>
 
           <p className="text-foreground text-3xl font-light text-center leading-relaxed max-w-sm mb-16">

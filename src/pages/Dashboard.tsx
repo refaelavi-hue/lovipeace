@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOnboarding } from '@/hooks/useOnboarding';
 import BottomNav from '@/components/BottomNav';
-import { Heart, Sparkles, Calendar, Wind, Volume2 } from 'lucide-react';
+import { AppIcon, type AppIconName } from '@/components/AppIcon';
 import { useProgress } from '@/hooks/useProgress';
 import { useRecentMeditations } from '@/hooks/useRecentMeditations';
 import { WEEKS_DATA } from '@/data/weeksData';
@@ -32,39 +32,39 @@ const Dashboard: React.FC = () => {
   const gender = profile.gender || 'female';
   const question = g(gender, 'מה את צריכה עכשיו?', 'מה אתה צריך עכשיו?');
 
-  const actions = [
+  const actions: { label: string; subtitle: string; icon: AppIconName; path: string; accent: boolean }[] = [
     {
       label: 'מדיטציית שקט 16 דק׳',
       subtitle: 'צליל קערה טיבטית בהתחלה ובסוף — ובאמצע, שקט',
-      icon: Volume2,
+      icon: 'meditation',
       path: '/exercise/silent-16',
       accent: true,
     },
     {
       label: 'הרגעה מהירה',
       subtitle: g(gender, 'עזרה מיידית ברגע של חרדה', 'עזרה מיידית ברגע של חרדה'),
-      icon: Wind,
+      icon: 'quick-relief',
       path: '/quick',
       accent: false,
     },
     {
       label: 'SOS',
       subtitle: g(gender, 'אני צריכה עזרה עכשיו', 'אני צריך עזרה עכשיו'),
-      icon: Heart,
+      icon: 'sos',
       path: '/sos',
       accent: false,
     },
     {
       label: 'תרגול יומי',
       subtitle: WEEKS_DATA[currentWeek - 1]?.title || 'נשימה + קרקוע',
-      icon: Sparkles,
+      icon: 'daily-practice',
       path: `/weeks/${currentWeek}`,
       accent: false,
     },
     {
       label: 'השבוע שלי',
       subtitle: `שבוע ${currentWeek}`,
-      icon: Calendar,
+      icon: 'my-week',
       path: '/weeks',
       accent: false,
     },
@@ -94,7 +94,6 @@ const Dashboard: React.FC = () => {
       {/* 3 Action Cards */}
       <div className="px-8 flex flex-col gap-4">
         {actions.map((action) => {
-          const Icon = action.icon;
           return (
             <button
               key={action.path}
@@ -106,16 +105,7 @@ const Dashboard: React.FC = () => {
               }`}
             >
               <div className="flex items-center gap-4">
-                <div
-                  className={`rounded-2xl p-3 ${
-                    action.accent ? 'bg-accent/20' : 'bg-primary/10'
-                  }`}
-                >
-                  <Icon
-                    size={24}
-                    className={action.accent ? 'text-accent' : 'text-primary'}
-                  />
-                </div>
+                <AppIcon name={action.icon} size={56} alt={action.label} />
                 <div className="flex flex-col items-start">
                   <span className="text-foreground text-lg font-semibold">
                     {action.label}

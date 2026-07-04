@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import BottomNav from '@/components/BottomNav';
 import { useJournal, type MoodLabel, type BodyMetrics } from '@/hooks/useJournal';
-import { Check, Trash2, BookOpen, Heart, Activity } from 'lucide-react';
+import { Check, Trash2, Heart, Activity } from 'lucide-react';
+import { AppIcon } from '@/components/AppIcon';
 
 const MOOD_LABELS: { id: MoodLabel; emoji: string }[] = [
   { id: 'רגוע', emoji: '😌' },
@@ -208,10 +209,8 @@ const Journal: React.FC = () => {
 
         {entries.length === 0 ? (
           <div className="flex flex-col items-center py-12 text-center">
-            <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
-              <BookOpen size={28} className="text-muted-foreground/50" />
-            </div>
-            <p className="text-muted-foreground text-sm">עוד אין רשומות.</p>
+            <AppIcon name="journal-entry" size={72} alt="יומן" />
+            <p className="text-muted-foreground text-sm mt-3">עוד אין רשומות.</p>
             <p className="text-muted-foreground/60 text-xs mt-1">הרשומה הראשונה שלך מחכה 💛</p>
           </div>
         ) : (
