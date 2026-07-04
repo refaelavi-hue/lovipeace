@@ -4,14 +4,21 @@ import { useOnboarding } from '@/hooks/useOnboarding';
 import BottomNav from '@/components/BottomNav';
 import { Heart, Sparkles, Calendar, Wind, Volume2 } from 'lucide-react';
 import { useProgress } from '@/hooks/useProgress';
+import { useRecentMeditations } from '@/hooks/useRecentMeditations';
 import { WEEKS_DATA } from '@/data/weeksData';
+import { GUIDED_MEDITATIONS } from '@/data/guidedMeditations';
 import { g } from '@/lib/genderedText';
 
 const Dashboard: React.FC = () => {
   const { profile } = useOnboarding();
   const navigate = useNavigate();
   const { getUnlockedWeek } = useProgress();
+  const { recent } = useRecentMeditations();
   const currentWeek = Math.min(getUnlockedWeek(), 10);
+
+  const recentMeditations = recent
+    .map((id) => GUIDED_MEDITATIONS.find((m) => m.id === id))
+    .filter((m): m is NonNullable<typeof m> => Boolean(m));
 
   const greeting = () => {
     const hour = new Date().getHours();
@@ -114,6 +121,35 @@ const Dashboard: React.FC = () => {
           );
         })}
       </div>
+
+      {/* Recently Played */}
+      {recentMeditations.length > 0 && (
+        <div className="mt-10">
+          <div className="px-8 mb-3 flex items-center gap-2">
+            <div className="h-0.5 w-8 bg-primary rounded-full" />
+            <h2 className="text-foreground text-sm font-semibold tracking-wide">
+              נוגנו לאחרונה
+            </h2>
+          </div>
+          <div className="flex gap-3 overflow-x-auto px-8 pb-2 scrollbar-none">
+            {recentMeditations.map((m) => (
+              <button
+                key={m.id}
+                onClick={() => navigate(`/exercise/${m.id}`)}
+                className="shrink-0 w-36 rounded-2xl bg-card border border-border p-4 text-right hover:bg-muted transition-colors active:scale-[0.97]"
+              >
+                <span className="text-3xl block mb-3">{m.icon}</span>
+                <span className="text-foreground text-sm font-semibold block leading-tight">
+                  {m.title}
+                </span>
+                <span className="text-muted-foreground text-xs mt-1 block">
+                  {m.totalDuration}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Safety note */}
       <p className="text-muted-foreground text-xs text-center px-8 mt-6 mb-4">
