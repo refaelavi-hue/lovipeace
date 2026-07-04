@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowRight, Play, Pause, Volume2, VolumeX, RotateCcw, Mic } from 'lucide-react';
+import { ArrowRight, Play, Pause, Volume2, VolumeX, RotateCcw, Mic, ChevronUp } from 'lucide-react';
 import { GUIDED_MEDITATIONS, type MeditationStep } from '@/data/guidedMeditations';
 import { useAmbientSound } from '@/hooks/useAmbientSound';
 import { useVoiceCues } from '@/hooks/useVoiceCues';
 import { useOnboarding } from '@/hooks/useOnboarding';
+import { useRecentMeditations } from '@/hooks/useRecentMeditations';
 import BreathingCircleTimer from '@/components/BreathingCircleTimer';
 import { useWakeLock } from '@/hooks/useWakeLock';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import tibetanBellAsset from '@/assets/tibetan-bell.m4a.asset.json';
 
 const BELL_URL = tibetanBellAsset.url;
@@ -47,7 +49,9 @@ const GuidedExercise: React.FC = () => {
   const meditation = GUIDED_MEDITATIONS.find(m => m.id === id);
   const { play, stop } = useAmbientSound();
   const { unlock, playCue, stopCue } = useVoiceCues();
-  const { profile } = useOnboarding();
+  const { profile, updateProfile } = useOnboarding();
+  const { record: recordRecent } = useRecentMeditations();
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   // Audio guide support
   const voiceAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -153,6 +157,8 @@ const GuidedExercise: React.FC = () => {
   const startMeditation = useCallback(() => {
     if (!meditation) return;
     unlock();
+    recordRecent(meditation.id);
+    setSheetOpen(false);
 
     if (isSilent) {
       preloadBell();
@@ -172,11 +178,13 @@ const GuidedExercise: React.FC = () => {
     if (soundOn) {
       play(meditation.soundType, 0.6);
     }
-  }, [meditation, play, playCue, soundOn, unlock, isSilent, playBell]);
+  }, [meditation, play, playCue, soundOn, unlock, isSilent, playBell, preloadBell, recordRecent]);
 
   const startAudioMeditation = useCallback(() => {
     if (!meditation || !voiceUrl) return;
     unlock();
+    recordRecent(meditation.id);
+    setSheetOpen(false);
     setAudioMode(true);
     setPhase('active');
     setIsPaused(false);
@@ -190,7 +198,7 @@ const GuidedExercise: React.FC = () => {
       setTimeLeft(8);
     };
     voiceAudioRef.current = audio;
-  }, [meditation, voiceUrl, play, soundOn, unlock]);
+  }, [meditation, voiceUrl, play, soundOn, unlock, recordRecent]);
 
   const resetMeditation = useCallback(() => {
     clearTimer();
@@ -371,53 +379,116 @@ const GuidedExercise: React.FC = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center justify-center px-8 text-center">
         {phase === 'idle' && (
-          <div className="animate-fade-up">
-            <span className="text-6xl mb-6 block">{meditation.icon}</span>
-            <h1 className="text-2xl font-bold text-foreground mb-2">{meditation.title}</h1>
-            <p className="text-muted-foreground mb-6">{meditation.subtitle}</p>
+          <div className="animate-fade-up flex flex-col items-center">
+            <span className="text-7xl mb-6 block">{meditation.icon}</span>
+            <h1 className="text-3xl font-bold text-foreground mb-2">{meditation.title}</h1>
+            <p className="text-muted-foreground mb-8 max-w-xs">{meditation.subtitle}</p>
 
-            {/* Duration selector (hidden for silent meditation) */}
-            {!isSilent && (
-              <div className="flex gap-2 mb-8 w-full max-w-xs mx-auto">
-                {DURATION_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.id}
-                    onClick={() => handleDurationChange(opt.id)}
-                    className={`flex-1 rounded-2xl py-3 px-2 text-center transition-all duration-200 ${
-                      durationMode === opt.id
-                        ? 'bg-primary/20 border-2 border-primary'
-                        : 'bg-card border-2 border-transparent hover:border-primary/20'
-                    }`}
-                  >
-                    <span className="text-foreground text-sm font-semibold block">{opt.label}</span>
-                    <span className="text-muted-foreground text-xs">{opt.desc}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-
-            <p className="text-xs text-muted-foreground mb-6">{SOUND_LABELS[meditation.soundType]}</p>
-            
-            <div className="flex items-center justify-center gap-4">
-              <button
-                onClick={startMeditation}
-                aria-label="התחל תרגול טקסט"
-                className="bg-primary text-primary-foreground w-20 h-20 rounded-full flex items-center justify-center shadow-lg hover:opacity-90 transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-              >
-                <Play size={32} className="mr-[-2px]" />
-              </button>
-
+            {/* Quick summary chips */}
+            <div className="flex items-center gap-3 mb-10 text-xs text-muted-foreground">
+              {!isSilent && (
+                <span className="px-3 py-1.5 rounded-full bg-card border border-border">
+                  {DURATION_OPTIONS.find(o => o.id === durationMode)?.desc}
+                </span>
+              )}
+              <span className="px-3 py-1.5 rounded-full bg-card border border-border">
+                {SOUND_LABELS[meditation.soundType]}
+              </span>
               {hasAudio && (
-                <button
-                  onClick={startAudioMeditation}
-                  aria-label="התחל תרגול עם הנחיה קולית"
-                  className="bg-accent/15 text-accent-foreground w-16 h-16 rounded-full flex flex-col items-center justify-center border-2 border-accent/25 hover:bg-accent/25 transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                >
-                  <Mic size={22} />
-                  <span className="text-[9px] font-medium mt-0.5">קולי</span>
-                </button>
+                <span className="px-3 py-1.5 rounded-full bg-card border border-border">
+                  {profile.voicePreference === 'male' ? '🎙️ קול גברי' : '🎙️ קול נשי'}
+                </span>
               )}
             </div>
+
+            <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+              <SheetTrigger asChild>
+                <button
+                  aria-label="פתח אפשרויות והתחל"
+                  className="bg-primary text-primary-foreground px-10 py-4 rounded-full flex items-center gap-3 shadow-lg hover:opacity-90 transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                >
+                  <Play size={22} className="mr-[-2px]" />
+                  <span className="font-semibold text-lg">התחל</span>
+                  <ChevronUp size={18} className="opacity-70" />
+                </button>
+              </SheetTrigger>
+              <SheetContent
+                side="bottom"
+                className="rounded-t-3xl border-t-0 pb-8"
+                dir="rtl"
+              >
+                <SheetHeader className="text-right">
+                  <SheetTitle className="text-xl">{meditation.title}</SheetTitle>
+                </SheetHeader>
+
+                {!isSilent && (
+                  <div className="mt-6">
+                    <p className="text-sm font-medium text-foreground mb-3">משך התרגול</p>
+                    <div className="flex gap-2">
+                      {DURATION_OPTIONS.map((opt) => (
+                        <button
+                          key={opt.id}
+                          onClick={() => handleDurationChange(opt.id)}
+                          className={`flex-1 rounded-2xl py-3 px-2 text-center transition-all duration-200 ${
+                            durationMode === opt.id
+                              ? 'bg-primary/15 border-2 border-primary'
+                              : 'bg-card border-2 border-border hover:border-primary/30'
+                          }`}
+                        >
+                          <span className="text-foreground text-sm font-semibold block">{opt.label}</span>
+                          <span className="text-muted-foreground text-xs">{opt.desc}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {hasAudio && (
+                  <div className="mt-6">
+                    <p className="text-sm font-medium text-foreground mb-3">קול המנחה</p>
+                    <div className="flex gap-2">
+                      {[
+                        { id: 'female', label: 'נשי', emoji: '👩' },
+                        { id: 'male', label: 'גברי', emoji: '👨' },
+                      ].map((v) => (
+                        <button
+                          key={v.id}
+                          onClick={() => updateProfile({ voicePreference: v.id })}
+                          className={`flex-1 rounded-2xl py-3 px-2 flex items-center justify-center gap-2 transition-all duration-200 ${
+                            profile.voicePreference === v.id
+                              ? 'bg-accent/15 border-2 border-accent'
+                              : 'bg-card border-2 border-border hover:border-accent/30'
+                          }`}
+                        >
+                          <span className="text-xl">{v.emoji}</span>
+                          <span className="text-foreground text-sm font-semibold">{v.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="mt-8 flex flex-col gap-3">
+                  <button
+                    onClick={startMeditation}
+                    className="w-full bg-primary text-primary-foreground rounded-2xl py-4 font-semibold text-lg flex items-center justify-center gap-2 shadow-lg hover:opacity-90 transition-all active:scale-[0.98]"
+                  >
+                    <Play size={20} />
+                    התחל תרגול
+                  </button>
+
+                  {hasAudio && (
+                    <button
+                      onClick={startAudioMeditation}
+                      className="w-full bg-card border-2 border-accent/30 text-foreground rounded-2xl py-4 font-medium flex items-center justify-center gap-2 hover:bg-accent/10 transition-all active:scale-[0.98]"
+                    >
+                      <Mic size={18} className="text-accent" />
+                      התחל עם הנחיה קולית
+                    </button>
+                  )}
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         )}
 
