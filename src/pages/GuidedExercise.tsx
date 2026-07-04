@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowRight, Play, Pause, Volume2, VolumeX, RotateCcw, Mic, ChevronUp } from 'lucide-react';
+import { AppIcon } from '@/components/AppIcon';
 import { GUIDED_MEDITATIONS, type MeditationStep } from '@/data/guidedMeditations';
 import { getIllustration } from '@/data/meditationIllustrations';
 import { useAmbientSound } from '@/hooks/useAmbientSound';
