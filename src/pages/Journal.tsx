@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import BottomNav from '@/components/BottomNav';
 import { useJournal, type MoodLabel, type BodyMetrics } from '@/hooks/useJournal';
-import { Check, Trash2, BookOpen, Heart, Activity } from 'lucide-react';
+import { Check, Trash2, Heart, Activity } from 'lucide-react';
+import { AppIcon } from '@/components/AppIcon';
 
 const MOOD_LABELS: { id: MoodLabel; emoji: string }[] = [
   { id: 'רגוע', emoji: '😌' },
