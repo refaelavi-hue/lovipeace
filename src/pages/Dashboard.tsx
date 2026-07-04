@@ -133,21 +133,39 @@ const Dashboard: React.FC = () => {
             </h2>
           </div>
           <div className="flex gap-3 overflow-x-auto px-8 pb-2 scrollbar-none">
-            {recentMeditations.map((m) => (
-              <button
-                key={m.id}
-                onClick={() => navigate(`/exercise/${m.id}`)}
-                className="shrink-0 w-36 rounded-2xl bg-card border border-border p-4 text-right hover:bg-muted transition-colors active:scale-[0.97]"
-              >
-                <span className="text-3xl block mb-3">{m.icon}</span>
-                <span className="text-foreground text-sm font-semibold block leading-tight">
-                  {m.title}
-                </span>
-                <span className="text-muted-foreground text-xs mt-1 block">
-                  {m.totalDuration}
-                </span>
-              </button>
-            ))}
+            {recentMeditations.map((m) => {
+              const illustration = getIllustration(m.id);
+              return (
+                <button
+                  key={m.id}
+                  onClick={() => navigate(`/exercise/${m.id}`)}
+                  className="shrink-0 w-40 rounded-2xl bg-card border border-border overflow-hidden text-right hover:bg-muted transition-colors active:scale-[0.97]"
+                >
+                  {illustration ? (
+                    <img
+                      src={illustration}
+                      alt=""
+                      width={160}
+                      height={112}
+                      loading="lazy"
+                      className="w-full h-28 object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-28 flex items-center justify-center bg-muted text-4xl">
+                      {m.icon}
+                    </div>
+                  )}
+                  <div className="p-3">
+                    <span className="text-foreground text-sm font-semibold block leading-tight">
+                      {m.title}
+                    </span>
+                    <span className="text-muted-foreground text-xs mt-1 block">
+                      {m.totalDuration}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
