@@ -101,9 +101,7 @@ const SOS: React.FC = () => {
             onClick={() => setActiveModule('breathing')}
             className="w-full rounded-3xl bg-primary/10 border-2 border-primary/20 hover:border-primary/40 p-7 text-right flex items-center gap-5 transition-all duration-300 active:scale-[0.97]"
           >
-            <div className="w-16 h-16 rounded-2xl bg-primary/15 flex items-center justify-center shrink-0">
-              <Wind size={32} className="text-primary" />
-            </div>
+            <AppIcon name="breathing" size={64} alt="נשימה" />
             <div>
               <h3 className="text-foreground text-xl font-semibold">נשימה מונחית</h3>
               <p className="text-muted-foreground text-sm mt-1">שאיפה, החזקה, נשיפה</p>
@@ -114,9 +112,7 @@ const SOS: React.FC = () => {
             onClick={() => setActiveModule('grounding')}
             className="w-full rounded-3xl bg-primary/10 border-2 border-primary/20 hover:border-primary/40 p-7 text-right flex items-center gap-5 transition-all duration-300 active:scale-[0.97]"
           >
-            <div className="w-16 h-16 rounded-2xl bg-primary/15 flex items-center justify-center shrink-0">
-              <Mountain size={32} className="text-primary" />
-            </div>
+            <AppIcon name="grounding" size={64} alt="הארקה" />
             <div>
               <h3 className="text-foreground text-xl font-semibold">הארקה</h3>
               <p className="text-muted-foreground text-sm mt-1">5-4-3-2-1 לחזרה להווה</p>
@@ -127,9 +123,7 @@ const SOS: React.FC = () => {
             onClick={() => setActiveModule('affirmations')}
             className="w-full rounded-3xl bg-accent/10 border-2 border-accent/20 hover:border-accent/40 p-7 text-right flex items-center gap-5 transition-all duration-300 active:scale-[0.97]"
           >
-            <div className="w-16 h-16 rounded-2xl bg-accent/15 flex items-center justify-center shrink-0">
-              <MessageCircleHeart size={32} className="text-accent" />
-            </div>
+            <AppIcon name="self-compassion" size={64} alt="חמלה עצמית" />
             <div>
               <h3 className="text-foreground text-xl font-semibold">משפטי הרגעה</h3>
               <p className="text-muted-foreground text-sm mt-1">תזכורות שהכל בסדר</p>
