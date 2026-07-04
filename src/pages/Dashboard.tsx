@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOnboarding } from '@/hooks/useOnboarding';
 import BottomNav from '@/components/BottomNav';
-import { Heart, Sparkles, Calendar, Wind, Volume2 } from 'lucide-react';
+import { AppIcon, type AppIconName } from '@/components/AppIcon';
 import { useProgress } from '@/hooks/useProgress';
 import { useRecentMeditations } from '@/hooks/useRecentMeditations';
 import { WEEKS_DATA } from '@/data/weeksData';
