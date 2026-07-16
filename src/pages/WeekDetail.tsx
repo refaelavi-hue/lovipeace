@@ -320,6 +320,17 @@ const WeekDetail: React.FC = () => {
           }}
         />
       )}
+
+      {mindfulWalkOpen && (
+        <MindfulWalkExercise
+          onClose={() => setMindfulWalkOpen(false)}
+          onComplete={() => {
+            if (!isExerciseComplete(weekNum, 'movement')) {
+              toggleExerciseComplete(weekNum, 'movement');
+            }
+          }}
+        />
+      )}
     </div>
   );
 };
