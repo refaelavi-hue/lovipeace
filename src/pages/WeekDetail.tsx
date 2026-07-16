@@ -8,6 +8,7 @@ import { GUIDED_MEDITATIONS } from '@/data/guidedMeditations';
 import LongExhaleExercise from '@/components/LongExhaleExercise';
 import Grounding54321Exercise from '@/components/Grounding54321Exercise';
 import BrainDumpExercise from '@/components/BrainDumpExercise';
+import MindfulWalkExercise from '@/components/MindfulWalkExercise';
 
 const WeekDetail: React.FC = () => {
   const { weekNumber } = useParams();
