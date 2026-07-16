@@ -6,6 +6,7 @@ import { useAdmin } from '@/hooks/useAdmin';
 import { useProgress } from '@/hooks/useProgress';
 import { GUIDED_MEDITATIONS } from '@/data/guidedMeditations';
 import LongExhaleExercise from '@/components/LongExhaleExercise';
+import Grounding54321Exercise from '@/components/Grounding54321Exercise';
 
 const WeekDetail: React.FC = () => {
   const { weekNumber } = useParams();
@@ -17,6 +18,7 @@ const WeekDetail: React.FC = () => {
   const [expandedExercise, setExpandedExercise] = useState<string | null>(null);
   const [bypassConfirmed, setBypassConfirmed] = useState(false);
   const [longExhaleOpen, setLongExhaleOpen] = useState(false);
+  const [groundingOpen, setGroundingOpen] = useState(false);
 
 
   const currentWeek = getUnlockedWeek();
@@ -148,6 +150,8 @@ const WeekDetail: React.FC = () => {
                     onClick={() => {
                       if (weekNum === 1 && exercise.category === 'breathing') {
                         setLongExhaleOpen(true);
+                      } else if (weekNum === 1 && exercise.category === 'mind') {
+                        setGroundingOpen(true);
                       } else {
                         toggleExercise(exercise.category);
                       }
@@ -162,7 +166,7 @@ const WeekDetail: React.FC = () => {
                       <h3 className={`font-semibold text-base ${completed ? 'line-through opacity-60' : ''}`}>{exercise.title}</h3>
                       <p className="text-sm opacity-70 mt-0.5">{exercise.duration}</p>
                     </div>
-                    {weekNum === 1 && exercise.category === 'breathing' ? (
+                    {weekNum === 1 && (exercise.category === 'breathing' || exercise.category === 'mind') ? (
                       <Play className="w-5 h-5 opacity-60 shrink-0" />
                     ) : (
                       <ChevronDown
@@ -282,6 +286,17 @@ const WeekDetail: React.FC = () => {
           onComplete={() => {
             if (!isExerciseComplete(weekNum, 'breathing')) {
               toggleExerciseComplete(weekNum, 'breathing');
+            }
+          }}
+        />
+      )}
+
+      {groundingOpen && (
+        <Grounding54321Exercise
+          onClose={() => setGroundingOpen(false)}
+          onComplete={() => {
+            if (!isExerciseComplete(weekNum, 'mind')) {
+              toggleExerciseComplete(weekNum, 'mind');
             }
           }}
         />
