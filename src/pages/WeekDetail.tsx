@@ -209,13 +209,23 @@ const WeekDetail: React.FC = () => {
 
           {/* Weekly Exposure */}
           <div className="px-5 mb-6">
-            <div className="bg-card rounded-2xl p-5 border border-border/50">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-xl">🎯</span>
-                <h3 className="font-semibold text-foreground text-base">חשיפה שבועית</h3>
+            {weekNum === 1 ? (
+              <div className="bg-muted/40 rounded-2xl p-5 border border-border/40">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-xl">🌱</span>
+                  <h3 className="font-medium text-foreground text-base">הערה עדינה לשבוע</h3>
+                </div>
+                <p className="text-muted-foreground text-base leading-relaxed">{week.exposure}</p>
               </div>
-              <p className="text-muted-foreground text-base leading-relaxed">{week.exposure}</p>
-            </div>
+            ) : (
+              <div className="bg-card rounded-2xl p-5 border border-border/50">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-xl">🎯</span>
+                  <h3 className="font-semibold text-foreground text-base">חשיפה שבועית</h3>
+                </div>
+                <p className="text-muted-foreground text-base leading-relaxed">{week.exposure}</p>
+              </div>
+            )}
           </div>
 
           {/* Tip */}
