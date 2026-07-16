@@ -5,6 +5,7 @@ import { WEEKS_DATA, CATEGORY_INFO } from '@/data/weeksData';
 import { useAdmin } from '@/hooks/useAdmin';
 import { useProgress } from '@/hooks/useProgress';
 import { GUIDED_MEDITATIONS } from '@/data/guidedMeditations';
+import LongExhaleExercise from '@/components/LongExhaleExercise';
 
 const WeekDetail: React.FC = () => {
   const { weekNumber } = useParams();
@@ -15,6 +16,8 @@ const WeekDetail: React.FC = () => {
   const week = WEEKS_DATA.find((w) => w.weekNumber === weekNum);
   const [expandedExercise, setExpandedExercise] = useState<string | null>(null);
   const [bypassConfirmed, setBypassConfirmed] = useState(false);
+  const [longExhaleOpen, setLongExhaleOpen] = useState(false);
+
 
   const currentWeek = getUnlockedWeek();
 
@@ -142,7 +145,13 @@ const WeekDetail: React.FC = () => {
                 >
                   {/* Header - always visible */}
                   <button
-                    onClick={() => toggleExercise(exercise.category)}
+                    onClick={() => {
+                      if (weekNum === 1 && exercise.category === 'breathing') {
+                        setLongExhaleOpen(true);
+                      } else {
+                        toggleExercise(exercise.category);
+                      }
+                    }}
                     className="w-full text-right p-4 flex items-center gap-3"
                   >
                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0 ${catInfo.iconBg}`}>
@@ -153,12 +162,17 @@ const WeekDetail: React.FC = () => {
                       <h3 className={`font-semibold text-base ${completed ? 'line-through opacity-60' : ''}`}>{exercise.title}</h3>
                       <p className="text-sm opacity-70 mt-0.5">{exercise.duration}</p>
                     </div>
-                    <ChevronDown
-                      className={`w-5 h-5 opacity-40 shrink-0 transition-transform duration-300 ${
-                        isExpanded ? 'rotate-180' : ''
-                      }`}
-                    />
+                    {weekNum === 1 && exercise.category === 'breathing' ? (
+                      <Play className="w-5 h-5 opacity-60 shrink-0" />
+                    ) : (
+                      <ChevronDown
+                        className={`w-5 h-5 opacity-40 shrink-0 transition-transform duration-300 ${
+                          isExpanded ? 'rotate-180' : ''
+                        }`}
+                      />
+                    )}
                   </button>
+
 
                   {/* Expanded content */}
                   <div
@@ -261,8 +275,20 @@ const WeekDetail: React.FC = () => {
           )}
         </>
       )}
+
+      {longExhaleOpen && (
+        <LongExhaleExercise
+          onClose={() => setLongExhaleOpen(false)}
+          onComplete={() => {
+            if (!isExerciseComplete(weekNum, 'breathing')) {
+              toggleExerciseComplete(weekNum, 'breathing');
+            }
+          }}
+        />
+      )}
     </div>
   );
 };
+
 
 export default WeekDetail;
