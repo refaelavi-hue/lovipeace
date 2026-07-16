@@ -305,6 +305,17 @@ const WeekDetail: React.FC = () => {
           }}
         />
       )}
+
+      {brainDumpOpen && (
+        <BrainDumpExercise
+          onClose={() => setBrainDumpOpen(false)}
+          onComplete={() => {
+            if (!isExerciseComplete(weekNum, 'creation')) {
+              toggleExerciseComplete(weekNum, 'creation');
+            }
+          }}
+        />
+      )}
     </div>
   );
 };
