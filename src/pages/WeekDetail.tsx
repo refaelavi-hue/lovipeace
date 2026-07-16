@@ -275,8 +275,20 @@ const WeekDetail: React.FC = () => {
           )}
         </>
       )}
+
+      {longExhaleOpen && (
+        <LongExhaleExercise
+          onClose={() => setLongExhaleOpen(false)}
+          onComplete={() => {
+            if (!isExerciseComplete(weekNum, 'breathing')) {
+              toggleExerciseComplete(weekNum, 'breathing');
+            }
+          }}
+        />
+      )}
     </div>
   );
 };
+
 
 export default WeekDetail;
