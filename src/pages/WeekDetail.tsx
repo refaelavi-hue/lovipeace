@@ -158,6 +158,8 @@ const WeekDetail: React.FC = () => {
                         setGroundingOpen(true);
                       } else if (weekNum === 1 && exercise.category === 'creation') {
                         setBrainDumpOpen(true);
+                      } else if (weekNum === 1 && exercise.category === 'movement') {
+                        setMindfulWalkOpen(true);
                       } else {
                         toggleExercise(exercise.category);
                       }
@@ -172,7 +174,7 @@ const WeekDetail: React.FC = () => {
                       <h3 className={`font-semibold text-base ${completed ? 'line-through opacity-60' : ''}`}>{exercise.title}</h3>
                       <p className="text-sm opacity-70 mt-0.5">{exercise.duration}</p>
                     </div>
-                    {weekNum === 1 && (exercise.category === 'breathing' || exercise.category === 'mind' || exercise.category === 'creation') ? (
+                    {weekNum === 1 && (exercise.category === 'breathing' || exercise.category === 'mind' || exercise.category === 'creation' || exercise.category === 'movement') ? (
                       <Play className="w-5 h-5 opacity-60 shrink-0" />
                     ) : (
                       <ChevronDown
