@@ -5,6 +5,7 @@ import { WEEKS_DATA, CATEGORY_INFO } from '@/data/weeksData';
 import { useAdmin } from '@/hooks/useAdmin';
 import { useProgress } from '@/hooks/useProgress';
 import { GUIDED_MEDITATIONS } from '@/data/guidedMeditations';
+import LongExhaleExercise from '@/components/LongExhaleExercise';
 
 const WeekDetail: React.FC = () => {
   const { weekNumber } = useParams();
@@ -15,6 +16,8 @@ const WeekDetail: React.FC = () => {
   const week = WEEKS_DATA.find((w) => w.weekNumber === weekNum);
   const [expandedExercise, setExpandedExercise] = useState<string | null>(null);
   const [bypassConfirmed, setBypassConfirmed] = useState(false);
+  const [longExhaleOpen, setLongExhaleOpen] = useState(false);
+
 
   const currentWeek = getUnlockedWeek();
 
