@@ -26,6 +26,7 @@ const WeekDetail: React.FC = () => {
   const [brainDumpOpen, setBrainDumpOpen] = useState(false);
   const [mindfulWalkOpen, setMindfulWalkOpen] = useState(false);
   const [safetyBehaviorOpen, setSafetyBehaviorOpen] = useState(false);
+  const [mindfulBreathingOpen, setMindfulBreathingOpen] = useState(false);
 
 
   const currentWeek = getUnlockedWeek();
