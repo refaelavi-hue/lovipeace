@@ -202,7 +202,7 @@ const WeekDetail: React.FC = () => {
                       <p className="text-sm opacity-70 mt-0.5">{exercise.duration}</p>
                     </div>
                     {(weekNum === 1 && (exercise.category === 'breathing' || exercise.category === 'mind' || exercise.category === 'creation' || exercise.category === 'movement')) ||
-                    (weekNum === 2 && (exercise.category === 'breathing' || exercise.category === 'mind')) ? (
+                    (weekNum === 2 && (exercise.category === 'breathing' || exercise.category === 'mind' || exercise.category === 'movement')) ? (
                       <Play className="w-5 h-5 opacity-60 shrink-0" />
                     ) : (
                       <ChevronDown
