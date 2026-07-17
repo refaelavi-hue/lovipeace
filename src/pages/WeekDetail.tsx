@@ -250,10 +250,10 @@ const WeekDetail: React.FC = () => {
 
           {/* Weekly Exposure */}
           <div className="px-5 mb-6">
-            {weekNum === 1 ? (
+            {weekNum === 1 || weekNum === 2 ? (
               <div className="bg-muted/40 rounded-2xl p-5 border border-border/40">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xl">🌱</span>
+                  <span className="text-xl">{weekNum === 1 ? '🌱' : '🍃'}</span>
                   <h3 className="font-medium text-foreground text-base">הערה עדינה לשבוע</h3>
                 </div>
                 <p className="text-muted-foreground text-base leading-relaxed">{week.exposure}</p>
