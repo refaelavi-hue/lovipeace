@@ -135,6 +135,21 @@ const WeekDetail: React.FC = () => {
             </div>
           )}
 
+          {/* Week 2 Intention */}
+          {weekNum === 2 && (
+            <div className="px-5 mb-6">
+              <div className="bg-primary/5 rounded-2xl p-5 border border-primary/10">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-xl">🪞</span>
+                  <h3 className="font-semibold text-primary text-base">הכוונה לשבוע</h3>
+                </div>
+                <p className="text-muted-foreground text-base leading-relaxed">
+                  השבוע לא ננסה להילחם בחרדה. נלמד לזהות בעדינות מה אנחנו עושים כדי להרגיש בטוחים, ולבחור אם יש מקום להרפות מעט.
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Exercises */}
           <div className="px-5 space-y-3 mb-6">
             <h2 className="text-lg font-semibold text-foreground mb-2">תרגילים יומיים</h2>
@@ -235,10 +250,10 @@ const WeekDetail: React.FC = () => {
 
           {/* Weekly Exposure */}
           <div className="px-5 mb-6">
-            {weekNum === 1 ? (
+            {weekNum === 1 || weekNum === 2 ? (
               <div className="bg-muted/40 rounded-2xl p-5 border border-border/40">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xl">🌱</span>
+                  <span className="text-xl">{weekNum === 1 ? '🌱' : '🍃'}</span>
                   <h3 className="font-medium text-foreground text-base">הערה עדינה לשבוע</h3>
                 </div>
                 <p className="text-muted-foreground text-base leading-relaxed">{week.exposure}</p>
