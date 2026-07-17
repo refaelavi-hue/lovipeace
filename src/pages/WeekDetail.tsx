@@ -351,6 +351,17 @@ const WeekDetail: React.FC = () => {
           }}
         />
       )}
+
+      {safetyBehaviorOpen && (
+        <SafetyBehaviorExercise
+          onClose={() => setSafetyBehaviorOpen(false)}
+          onComplete={() => {
+            if (!isExerciseComplete(weekNum, 'mind')) {
+              toggleExerciseComplete(weekNum, 'mind');
+            }
+          }}
+        />
+      )}
     </div>
   );
 };
