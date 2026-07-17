@@ -10,6 +10,7 @@ import Grounding54321Exercise from '@/components/Grounding54321Exercise';
 import BrainDumpExercise from '@/components/BrainDumpExercise';
 import MindfulWalkExercise from '@/components/MindfulWalkExercise';
 import SafetyBehaviorExercise from '@/components/SafetyBehaviorExercise';
+import MindfulBreathingExercise from '@/components/MindfulBreathingExercise';
 
 const WeekDetail: React.FC = () => {
   const { weekNumber } = useParams();
