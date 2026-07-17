@@ -28,6 +28,7 @@ const WeekDetail: React.FC = () => {
   const [mindfulWalkOpen, setMindfulWalkOpen] = useState(false);
   const [safetyBehaviorOpen, setSafetyBehaviorOpen] = useState(false);
   const [mindfulBreathingOpen, setMindfulBreathingOpen] = useState(false);
+  const [comfortableMovementOpen, setComfortableMovementOpen] = useState(false);
 
 
   const currentWeek = getUnlockedWeek();
