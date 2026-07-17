@@ -182,9 +182,10 @@ const MindfulBreathingExercise: React.FC<MindfulBreathingExerciseProps> = ({ onC
       <div className="flex-1 flex flex-col items-center justify-center gap-10">
         {/* Subtle ambient shape — not a breath pacing guide */}
         <div
-          className={`w-40 h-40 rounded-full bg-primary/10 transition-transform duration-[3000ms] ease-in-out ${
+          className={`w-40 h-40 rounded-full bg-primary/10 transition-transform ease-in-out ${
             status === 'running' ? 'scale-100 opacity-100' : 'scale-90 opacity-70'
           }`}
+          style={{ transitionDuration: '3000ms' }}
           aria-hidden="true"
         />
 
