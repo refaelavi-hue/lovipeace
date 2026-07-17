@@ -185,6 +185,8 @@ const WeekDetail: React.FC = () => {
                         setMindfulBreathingOpen(true);
                       } else if (weekNum === 2 && exercise.category === 'mind') {
                         setSafetyBehaviorOpen(true);
+                      } else if (weekNum === 2 && exercise.category === 'movement') {
+                        setComfortableMovementOpen(true);
                       } else {
                         toggleExercise(exercise.category);
                       }
