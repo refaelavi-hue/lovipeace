@@ -37,9 +37,6 @@ const formatTime = (seconds: number): string => {
 };
 
 const ComfortableMovementExercise: React.FC<ComfortableMovementExerciseProps> = ({ onClose, onComplete }) => {
-  const { profile } = useOnboarding();
-  const gender: Gender = (profile.gender as Gender) || 'female';
-
   const [status, setStatus] = useState<Status>('intro');
   const [movementType, setMovementType] = useState<MovementType | null>(null);
   const [elapsed, setElapsed] = useState(0);
