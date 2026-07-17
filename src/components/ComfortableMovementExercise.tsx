@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { X, Play, Pause, Check, Square } from 'lucide-react';
-import { useOnboarding } from '@/hooks/useOnboarding';
-import { g, Gender } from '@/lib/genderedText';
 
 interface ComfortableMovementExerciseProps {
   onClose: () => void;
