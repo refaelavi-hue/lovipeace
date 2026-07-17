@@ -11,6 +11,7 @@ import BrainDumpExercise from '@/components/BrainDumpExercise';
 import MindfulWalkExercise from '@/components/MindfulWalkExercise';
 import SafetyBehaviorExercise from '@/components/SafetyBehaviorExercise';
 import MindfulBreathingExercise from '@/components/MindfulBreathingExercise';
+import ComfortableMovementExercise from '@/components/ComfortableMovementExercise';
 
 const WeekDetail: React.FC = () => {
   const { weekNumber } = useParams();
