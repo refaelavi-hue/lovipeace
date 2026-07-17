@@ -179,6 +179,8 @@ const WeekDetail: React.FC = () => {
                         setBrainDumpOpen(true);
                       } else if (weekNum === 1 && exercise.category === 'movement') {
                         setMindfulWalkOpen(true);
+                      } else if (weekNum === 2 && exercise.category === 'breathing') {
+                        setMindfulBreathingOpen(true);
                       } else if (weekNum === 2 && exercise.category === 'mind') {
                         setSafetyBehaviorOpen(true);
                       } else {
