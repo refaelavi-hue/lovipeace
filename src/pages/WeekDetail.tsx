@@ -381,6 +381,17 @@ const WeekDetail: React.FC = () => {
           }}
         />
       )}
+
+      {comfortableMovementOpen && (
+        <ComfortableMovementExercise
+          onClose={() => setComfortableMovementOpen(false)}
+          onComplete={() => {
+            if (!isExerciseComplete(weekNum, 'movement')) {
+              toggleExerciseComplete(weekNum, 'movement');
+            }
+          }}
+        />
+      )}
     </div>
   );
 };
