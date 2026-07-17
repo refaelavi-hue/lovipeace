@@ -10,6 +10,7 @@ import Grounding54321Exercise from '@/components/Grounding54321Exercise';
 import BrainDumpExercise from '@/components/BrainDumpExercise';
 import MindfulWalkExercise from '@/components/MindfulWalkExercise';
 import SafetyBehaviorExercise from '@/components/SafetyBehaviorExercise';
+import MindfulBreathingExercise from '@/components/MindfulBreathingExercise';
 
 const WeekDetail: React.FC = () => {
   const { weekNumber } = useParams();
@@ -25,6 +26,7 @@ const WeekDetail: React.FC = () => {
   const [brainDumpOpen, setBrainDumpOpen] = useState(false);
   const [mindfulWalkOpen, setMindfulWalkOpen] = useState(false);
   const [safetyBehaviorOpen, setSafetyBehaviorOpen] = useState(false);
+  const [mindfulBreathingOpen, setMindfulBreathingOpen] = useState(false);
 
 
   const currentWeek = getUnlockedWeek();
@@ -177,6 +179,8 @@ const WeekDetail: React.FC = () => {
                         setBrainDumpOpen(true);
                       } else if (weekNum === 1 && exercise.category === 'movement') {
                         setMindfulWalkOpen(true);
+                      } else if (weekNum === 2 && exercise.category === 'breathing') {
+                        setMindfulBreathingOpen(true);
                       } else if (weekNum === 2 && exercise.category === 'mind') {
                         setSafetyBehaviorOpen(true);
                       } else {
@@ -194,7 +198,7 @@ const WeekDetail: React.FC = () => {
                       <p className="text-sm opacity-70 mt-0.5">{exercise.duration}</p>
                     </div>
                     {(weekNum === 1 && (exercise.category === 'breathing' || exercise.category === 'mind' || exercise.category === 'creation' || exercise.category === 'movement')) ||
-                    (weekNum === 2 && exercise.category === 'mind') ? (
+                    (weekNum === 2 && (exercise.category === 'breathing' || exercise.category === 'mind')) ? (
                       <Play className="w-5 h-5 opacity-60 shrink-0" />
                     ) : (
                       <ChevronDown
@@ -358,6 +362,17 @@ const WeekDetail: React.FC = () => {
           onComplete={() => {
             if (!isExerciseComplete(weekNum, 'mind')) {
               toggleExerciseComplete(weekNum, 'mind');
+            }
+          }}
+        />
+      )}
+
+      {mindfulBreathingOpen && (
+        <MindfulBreathingExercise
+          onClose={() => setMindfulBreathingOpen(false)}
+          onComplete={() => {
+            if (!isExerciseComplete(weekNum, 'breathing')) {
+              toggleExerciseComplete(weekNum, 'breathing');
             }
           }}
         />
