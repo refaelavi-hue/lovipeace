@@ -117,7 +117,7 @@ const ComfortableMovementExercise: React.FC<ComfortableMovementExerciseProps> = 
             className="w-full bg-primary text-primary-foreground rounded-2xl py-4 text-lg font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
           >
             <Play className="w-5 h-5" />
-            {g(gender, 'לבחור תנועה', 'לבחור תנועה')}
+            לבחור תנועה
           </button>
           <button
             onClick={onClose}
