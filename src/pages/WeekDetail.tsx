@@ -366,6 +366,17 @@ const WeekDetail: React.FC = () => {
           }}
         />
       )}
+
+      {mindfulBreathingOpen && (
+        <MindfulBreathingExercise
+          onClose={() => setMindfulBreathingOpen(false)}
+          onComplete={() => {
+            if (!isExerciseComplete(weekNum, 'breathing')) {
+              toggleExerciseComplete(weekNum, 'breathing');
+            }
+          }}
+        />
+      )}
     </div>
   );
 };
